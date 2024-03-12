@@ -1,0 +1,514 @@
+/*Lab 05 Pb 1, Handru Radu, Problema 1 consta in definirea unor clase de obiecte, Scerc si Cerc,
+clasa Scerc va avea o variabila raza de tip (intreg), o functie pentru arie, una pentru circumferinta, una getter pentru raza si un setter pentru raza
+clasa Cerc va avea o variabila raza de tip int, un constructor explicit cu parametru, o functie pentru arie, una pentru perimetru, un getter pentru raza,
+o functie de afisare a razei si un destructor, acestea vor fi afisate in main cu ajutorul unor obiecte de tipul claselor,
+iar pentru obiectele din clasa Cerc afisarea va avea loc si prin pointer si referinta nu doar prin obiectul in sine
+*/
+#include <iostream>
+#include <math.h>
+
+using namespace std;
+
+class Scerc {
+private:
+    int raza;
+public:
+    Scerc() {raza = 0;}
+    double aria(Scerc c);
+    double circumf(Scerc c);
+    int getRaza();
+    void setRaza(int r);
+};
+
+double Scerc::aria(Scerc c) {
+    return 3.14 * raza * raza;
+}
+
+double Scerc::circumf(Scerc c) {
+    return 2 * 3.14 * raza;
+}
+
+int Scerc::getRaza() {
+    return raza;
+}
+
+void Scerc::setRaza(int r) {
+    if (r > 0)
+        raza = r;
+}
+
+class Cerc {
+private:
+    int raza;
+public:
+    //Constructor
+    Cerc(int r) { raza = r; }
+    double aria();
+    double perimetru();
+    int getRaza();
+    void displayRaza();
+    //Destructor
+    ~Cerc() { cout << "\nDestructor-ul Cerc"; }
+};
+
+double Cerc::aria() {
+    return 3.14 * raza * raza;
+}
+
+double Cerc::perimetru() {
+    return 2 * 3.14 * raza;
+}
+
+int Cerc::getRaza() {
+    return raza;
+}
+
+void Cerc::displayRaza() {
+    cout << "\nRaza cercului este: " << raza;
+}
+
+int main() {
+    //Clasa Scerc
+    int ra1, ra2;
+    cout << "Introduceti raza scercului 1: ";
+    cin >> ra1;
+    cout << "Introduceti raza scercului 2: ";
+    cin >> ra2;
+    Scerc c1, c2;
+    c1.setRaza(ra1), c2.setRaza(ra2);
+
+    //Raza cercului 1 alaturi de arie si circumferinta
+    cout << "\nCercul 1:";
+    cout << "\nRaza c1= " << c1.getRaza();
+    cout << "\nAria c1= " << c1.aria(c1);
+    cout << "\nCircumf c1= " << c1.circumf(c1) << "\n";
+
+    //Raza cercului 2 alaturi de arie si circumferinta
+    cout << "\nCercul 2:";
+    cout << "\nRaza c2= " << c2.getRaza();
+    cout << "\nAria c2= " << c2.aria(c2);
+    cout << "\nCircumf c2= " << c2.circumf(c2) << "\n";
+
+
+    //Clasa Cerc
+    int raz1, raz2, raz3;
+    cout << "\n";
+    cout << "Introduceti raza cercului 1: ";
+    cin >> raz1;
+    cout << "Introduceti raza cercului 2: ";
+    cin >> raz2;
+    cout << "Introduceti raza cercului 3: ";
+    cin >> raz3;
+
+    //Definirea obiectelor 
+    Cerc cerc1(raz1), cerc2(raz2), cerc3(raz3);
+
+    //Afisare prin pointer
+    Cerc* p = &cerc1;
+    cout << "\nCercul 1 este: ";
+    p->displayRaza();
+    cout << "\nAria cercului 1 este: " << p->aria();
+    cout << "\nPerimetrul cercului 1 este: " << p->perimetru() << "\n";
+
+    //Afisare prin referinta
+    Cerc& refc2 = cerc2;
+    cout << "\nCercul 2 este: ";
+    refc2.displayRaza();
+    cout << "\nAria cercului 2 este: " << refc2.aria();
+    cout << "\nPerimetrul cercului 2 este: " << refc2.perimetru() << "\n";
+
+    //Afisare prin obiectul instantiat
+    cout << "\nCercul 3 este: ";
+    cerc3.displayRaza();
+    cout << "\nAria cercului 3 este: " << cerc3.aria();
+    cout << "\nPerimetrul cercului 3 este: " << cerc3.perimetru() << "\n";
+
+    return 0;
+}
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#pragma once
+
+/*Lab 05 Pb 2, Handru Radu, Problema 2 consta in definirea unei clase MyString intr-un fisier numit strClass.h care sa fie compusa din
+metodele specifice care efectueaza urmatoarele operatii pe siruri de caractere:
+- determina lungimea sirului primit la intrare.
+- determina ultima pozitie de aparitie a unui anumit caracter din sirul de intrare.
+- returneaza sirul primit la intrare, scris cu caractere majuscule.
+- returneaza sirul primit la intrare, scris cu caractere minuscule.
+- returneaza numarul de aparitii ale unui anumit caracter din sirul primit.
+*/
+
+#define DIM 11
+#include <string.h>
+
+class MyString {
+private:
+    char sir[DIM];
+public:
+    void set_sir(char sir1[]);
+    int lungimea();
+    int poz_finala(char c);
+    void sir_majuscule(char sir1[]);
+    void sir_minuscule(char sir1[]);
+    int nr_aparatii(char c);
+};
+
+void MyString::set_sir(char sir1[]) {
+    strcpy_s(sir, sir1);
+}
+
+int MyString::lungimea() {
+    return strlen(sir);
+}
+
+int MyString::poz_finala(char c) {
+    for (int i = strlen(sir) - 1; i >= 0; i--)
+        if (sir[i] == c)
+            return i;
+    return -1;
+}
+
+void MyString::sir_majuscule(char sir1[]) {
+    for (int i = 0; i < strlen(sir); i++)
+        if (sir[i] >= 'a' && sir[i] <= 'z')
+            sir1[i] = sir[i] - 32;
+        else sir1[i] = sir[i];
+    sir1[strlen(sir)] = NULL;
+}
+
+void MyString::sir_minuscule(char sir1[]) {
+    for (int i = 0; i < strlen(sir); i++)
+        if (sir[i] >= 'A' && sir[i] <= 'Z')
+            sir1[i] = sir[i] + 32;
+        else sir1[i] = sir[i];
+    sir1[strlen(sir)] = NULL;
+}
+
+int MyString::nr_aparatii(char c) {
+    int nr_ap = 0;
+    for (int i = 0; i < strlen(sir); i++)
+        if (sir[i] == c)
+            nr_ap++;
+    return nr_ap;
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 05 Pb 3, Handru Radu, Problema 3 consta in citirea unui sir de maxim 10 caractere si in implementarea
+clasei create anterior, efectuand asupra sirului de intrare operatiile definite in cadrul clasei
+*/
+#include <iostream>
+#include <string.h>
+using namespace std;
+#include "MyString.h"
+#define DIM 11
+
+
+int main() {
+    //Test clasa
+    MyString s;
+    char sir1[DIM];
+    cout << "Introduceti un sir: ";
+    cin >> sir1;
+    s.set_sir(sir1);
+
+    //Lungimea sirului de caractere
+    cout << "\nLungimea sirului este: " << s.lungimea();
+
+    //Ultima pozitie a unui caracter introdus, daca acesta exista in sir
+    char c;
+    cout << "\nCititi un caracter:";
+    cin >> c;
+    if (s.poz_finala(c) != -1)
+        cout << "\nUltima pozitie pe care caracterul apare este: " << s.poz_finala(c) << "\n";
+    else cout << "\nCaracterul nu se gaseste in sir!";
+
+    //Numarul de aparatii ale unui caracter citit de la tastura
+    cout << "\nCititi un caracter:";
+    cin >> c;
+    cout << "\nNumarul de aparitii ale caracterului " << c << " este: " << s.nr_aparatii(c) << "\n";
+
+    //Sirul cu majuscule
+    char sir2[DIM];
+    s.sir_majuscule(sir2);
+    cout << "\nSirul cu majuscule: " << sir2;
+
+    //Sirul cu minuscule 
+    s.sir_minuscule(sir2);
+    cout << "\nSirul cu minuscule: " << sir2;
+
+    return 0;
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/*Lab 05 Pb 4, Handru Radu, Problema 4 consta in implementarea unei clase Numar cu un atribut de tip int val si care in cadrul functiei main,
+declara un obiect un obiect de tipul clasei si apoi un pointer la acesta, prin intermediul carora se va afisa pe ecran rezultatul adunarii a doua numere
+de tip Numar cu valorile preluate de la tastatura in cadrul unor obiecte Numar. Implementati metoda int
+suma_nr(Numar) care realizeaza suma în cadrul clasei si o returneaza ca un int, metoda care
+însumeaza cele doua obiecte (curent si parametru). Implementati metoda in cadrul clasei si
+alta metoda cu acelasi scop, dar nume diferit, în afara clasei.
+*/
+
+#include <iostream>
+using namespace std;
+
+class Numar {
+private:
+    int val;
+public:
+    int getVal() {
+        return val;
+    }
+    void setVal(int val1);
+    int suma_nr(Numar n1) {
+        return val + n1.val;
+    }
+};
+
+void Numar::setVal(int val1) {
+    val = val1;
+}
+
+int Suma_nrr(Numar n1, Numar n2) {
+    return n1.getVal() + n2.getVal();
+}
+
+int main() {
+    int val1, val2;
+    Numar n1, n2;
+    Numar* p = &n1;
+    //Numar *p1 = &n1, *p2 = &n2;
+    cout << "Introduceti valoarea numarului 1: ";
+    cin >> val1;
+    cout << "Introduceti valoarea numarului 2: ";
+    cin >> val2;
+    n1.setVal(val1);
+    n2.setVal(val2);
+
+    //Suma numerelor
+    cout << "\nSuma numerelor este: " << p->suma_nr(n2);
+    cout << "\nSuma numerelor este (functie din afara clasei): " << Suma_nrr(*p,n2);
+    //cout << "\nSuma numerelor este: " << p1->suma_nr(*p2);
+    //cout << "\nSuma numerelor este (functie din afara clasei): " << Suma_nrr(*p1,*p2);
+    return 0;
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 05 Pb 5, Handru Radu, Problema 5 consta in definirea unei clase care implementeaza metodele:
+- int plus(int x, int y), care returneaza suma valorilor primite la apelul metodei
+- int minus(int x, int y), care returneaza diferenta valorilor primite la apelul metodei
+- int inmultit(int x, int y), care returneaza produsul valorilor primite la apelul metodei
+- float impartit(int x, int y), care returneaza catul valorilor primite la apelul metodei
+si apoi sa se scrie aplicatia care utilizeaza aceasta clasa. Considerati si cazul in care in cadrul
+clasei aveti atributele de tip int x si y, caz în care metodele nu vor mai avea parametrii.
+
+Observatie: In cazul impartirii, trebuie verificata validitatea operatiei (impartitor diferit de
+zero). In cazul în care operatia este imposibila, trebuie afisat un mesaj de eroare.
+*/
+
+#include <iostream>
+#include <stdlib.h>
+using namespace std;
+
+//Operatii.h
+
+class Operatii1 {
+public:
+    int plus(int x, int y);
+    int minus(int x, int y);
+    int inmultit(int x, int y);
+    float impartit(int x, int y);
+};
+
+int Operatii1::plus(int x, int y) {
+    return x + y;
+}
+
+int Operatii1::minus(int x, int y) {
+    return x - y;
+}
+
+int Operatii1::inmultit(int x, int y) {
+    return x * y;
+}
+
+float Operatii1::impartit(int x, int y) {
+    if (y != 0)
+        return (float)x / y;
+    else
+        return 0;
+}
+
+class Operatii2 {
+private:
+    int x, y;
+public:
+    Operatii2(int x1, int y1);
+    int plus();
+    int minus();
+    int inmultit();
+    float impartit();
+};
+
+Operatii2::Operatii2(int x1, int y1) {
+    x = x1;
+    y = y1;
+}
+
+int Operatii2::plus() {
+    return x + y;
+}
+
+int Operatii2::minus() {
+    return x - y;
+}
+
+int Operatii2::inmultit() {
+    return x * y;
+}
+
+float Operatii2::impartit() {
+    if (y != 0)
+        return (float)x / y;
+    else
+        return 0;
+}
+
+int main() {
+    //Operatii1 cu parametrii la functii
+    Operatii1 op1;
+    int x, y;
+    cout << "Introduceti valoarea lui x: ";
+    cin >> x;
+    cout << "Introduceti valoarea lui y: ";
+    cin >> y;
+    cout << "\nSuma acestor numere este: " << op1.plus(x, y);
+    cout << "\nScaderea acestor numere este: " << op1.minus(x, y);
+    cout << "\nInmultirea acestor numere este: " << op1.inmultit(x, y);
+    if (op1.impartit(x, y) == 0 && y == 0)
+        cout << "\n\tAceasta operatie nu poate fi realizata!\n";
+    else cout << "\nImpartirea acestor numere este: " << op1.impartit(x, y);
+
+    //Operatii2 fara parametrii la functii si cu variabilele de tip private
+    cout << "\n\n";
+    cout << "\nIntroduceti valoarea lui x: ";
+    cin >> x;
+    cout << "Introduceti valoarea lui y: ";
+    cin >> y;
+    Operatii2 op2(x, y);
+    cout << "\nSuma acestor numere este: " << op2.plus();
+    cout << "\nScaderea acestor numere este: " << op2.minus();
+    cout << "\nInmultirea acestor numere este: " << op2.inmultit();
+    if (op2.impartit() == 0 && y == 0)
+        cout << "\n\tAceasta operatie nu poate fi realizata!\n";
+    else cout << "\nImpartirea acestor numere este: " << op2.impartit();
+
+
+    return 0;
+}
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 05 Pb 7, Handru Radu, Problema 7 consta in implementarea operatiilor de adunare, scadere, impartire si in multire
+plecand de la exemplul 4*/
+
+#include <iostream>
+using namespace std;
+
+class Complex {
+private:
+    double re, im;
+public:
+    void setRe(double x);
+    void setIm(double x);
+    double getRe();
+    double getIm();
+    Complex adunare(Complex c);
+    Complex diferenta(Complex c);
+    Complex inmultire(Complex c);
+    Complex impartire(Complex c);
+};
+
+void Complex::setRe(double x) {
+    re = x;
+}
+
+void Complex::setIm(double x) {
+    im = x;
+}
+
+double Complex::getRe() {
+    return re;
+}
+
+double Complex::getIm() {
+    return im;
+}
+
+Complex Complex::adunare(Complex c) {
+    Complex rez;
+    rez.re = (re + c.re);
+    rez.im = (im + c.im);
+    return rez;
+}
+
+Complex Complex::diferenta(Complex c) {
+    Complex rez;
+    rez.re = (re - c.re);
+    rez.im = (im - c.im);
+    return rez;
+}
+
+Complex Complex::inmultire(Complex c) {
+    Complex rez;
+    rez.re = (re * c.re) - (im * c.im);
+    rez.im = (re * c.im) + (c.re * im);
+    return rez;
+}
+
+Complex Complex::impartire(Complex c) {
+    Complex rez;
+    rez.re = ((re * c.re) + (im * c.im)) / ((c.re * c.re) + (c.im * c.im));
+    rez.im = ((c.re * im) - (re * c.im)) / ((c.re * c.re) + (c.im * c.im));
+    return rez;
+}
+
+int main() {
+    Complex nr1, nr2;
+    double re1, im1, re2, im2;
+    cout << "Introduceti valoarea parti reale a numarului complex 1: ";
+    cin >> re1;
+    cout << "Introduceti valoarea parti imaginare a numarului complex 1: ";
+    cin >> im1;
+    cout << "Introduceti valoarea parti reale a numarului complex 2: ";
+    cin >> re2;
+    cout << "Introduceti valoarea parti imaginare a numarului complex 2: ";
+    cin >> im2;
+    nr1.setRe(re1);
+    nr1.setIm(im1);
+    nr2.setRe(re2);
+    nr2.setIm(im2);
+
+    //Afisarea operatiilor
+    cout << "\nOperatiile celor doua numere complexe:\n";
+    Complex adunare, diferenta, inmultire, impartire;
+    adunare = nr1.adunare(nr2);
+    diferenta = nr1.diferenta(nr2);
+    inmultire = nr1.inmultire(nr2);
+    impartire = nr1.impartire(nr2);
+    cout << "\nAdunarea este: " << adunare.getRe() << " + " << adunare.getIm() << " * i";
+    cout << "\nDiferenta este: " << diferenta.getRe() << " + " << diferenta.getIm() << " * i";
+    cout << "\nInmultirea este: " << inmultire.getRe() << " + " << inmultire.getIm() << " * i";
+    cout << "\nImpartirea este: " << impartire.getRe() << " + " << impartire.getIm() << " * i";
+
+
+    return 0;
+}
+

@@ -1,0 +1,137 @@
+/*Lab 13 Pb 1, Handru Radu, Problema 1 consta in sa se scrie un program care foloseste metoda seekg( )
+pentru pozitionare la mijlocul fisierului si apoi afiseaza continutul fisierului începand cu aceasta pozitie.
+Numele fisierului se citeste din linia de comanda.
+*/
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+int main(int argc, char* argv[]) {
+        //Mesaj de eroare in cazul in care nu s-a introdus numele fisierului in linia de comanda
+        if (argc != 2) {
+                cout << "\n\tUtilizare: <nume_fisier> \n";
+                exit(1);
+        }
+
+        //Deschiderea fisierului
+        ifstream fis;
+        fis.open(argv[1]);
+        if (!fis) {
+                cout << "\n\tFisierul nu a putut fi deschis!\n";
+                exit(1);
+        }
+        
+        fis.seekg(0, fis.end);
+        int lungime = fis.tellg() / 2;
+        fis.seekg(lungime, fis.beg);
+
+        char* sir = new (nothrow) char[lungime + 1];
+        //Citirea din fisier
+        fis.read(sir, lungime + 1);
+        //Afisarea in consola a sirului de la jumatate
+        cout.write(sir, lungime + 1);
+
+        //Eliberarea memoriei
+        delete[]sir;
+        //Inchiderea fisierului
+        fis.close();
+        return 0;
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 13 Pb 2, Handru Radu, Problema 2 consta in scrierea unui program care utilizeaza metoda write( ) 
+pentru a scrie intr-un fisier siruri de caractere.
+Afisati apoi continutul fisierului folosind metoda get(). 
+Numele fisierului se va citi de la tastatura. 
+*/
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+const int dimSir = 31;
+
+int main() {
+        char* numeFisier;
+        numeFisier = new(nothrow)char[dimSir];
+        cout << "Introduceti numele fisierului: ";
+        cin >> numeFisier;
+
+        //Deschiderea fisierului
+        ofstream fis_out;
+        fis_out.open(numeFisier);
+        if (!fis_out) {
+                cout << "\n\tFisierul nu a putut fi deschis!\n";
+                exit(1);
+        }
+        
+        int n;
+        char* sir;
+        sir = new(nothrow)char[dimSir];
+        cout << "\nIntroduceti numarul de siruri de caractere pe care doriti sa le introduceti: ";
+        cin >> n;
+        for (int i = 0; i < n; i++) {
+                cout << "\nIntroduceti un sir: ";
+                cin >> sir;
+                fis_out.write(sir, strlen(sir));
+        }
+
+        fis_out.close();
+
+
+
+        ifstream fis_in;
+        fis_in.open(numeFisier);
+        if (!fis_in) {
+                cout << "\n\tFisierul nu a putut fi deschis!\n";
+                exit(1);
+        }
+        
+        char c;
+        cout << "\n\nAfisarea sirurilor din fisier: \n";
+        while (fis_in.get(c) && fis_in.eof() == 0) {
+                cout << c;
+        }
+        
+        
+        fis_in.close();
+        delete[]numeFisier;
+        return 0;
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 13 Pb 3, Handru Radu, Problema 3 consta in scrierea unei aplicatii C++ care citeste un fisier utilizand metoda read( ).
+Verificati starea sistemului dupa fiecare operatie de citire.
+Numele fisierului se va citi din linia de comanda.
+Afisati pe ecran continutul fisierului. 
+*/
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+int main(int argc, char* argv[]) {
+    if (argc != 2) {
+        cout << "\n\tUtilizare: <nume_fisier> \n";
+        exit(1);
+    }
+
+    ifstream fis;
+    fis.open(argv[1]);
+    if (!fis) {
+        cout << "\n\tFisierul nu a putut fi deschis!\n";
+        exit(1);
+    }
+
+    fis.seekg(0, fis.end);
+    int lungime = fis.tellg();
+    fis.seekg(0, fis.beg);
+
+    char* sir = new (nothrow) char[lungime];
+    fis.read(sir, lungime);
+    cout.write(sir, lungime);
+
+    delete[]sir;
+    fis.close();
+    return 0;
+}

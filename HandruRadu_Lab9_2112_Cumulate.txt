@@ -1,0 +1,780 @@
+/*Lab 09 Pb 1, Handru Radu, Problema 1 consta in implementarea clasei Complex care supraincarca operatorii aritmetici cu scopul de a efectua adunari, scaderi, inmultiri si impartiri de numere complexe
+folosind metode (+,-) si functii friend (*,/).
+OBS: partea reala si cea imaginara ale numerelor complexe sunt reprezentate de numere reale
+*/
+#include <iostream>
+using namespace std;
+
+class Complex {
+private:
+    double re;
+    double im;
+public:
+    Complex() {
+        re = 0;
+        im = 0;
+    }
+    Complex(double re, double im) {
+        this->re = re;
+        this->im = im;
+    }
+    double getRe() {
+        return re;
+    }
+    double getIm() {
+        return im;
+    }
+    void setRe(double re) {
+        this->re = re;
+    }
+    void setIm(double im) {
+        this->im = im;
+    }
+    Complex operator+(Complex nr1) {
+        Complex suma;
+        suma.re = re + nr1.re;
+        suma.im = im + nr1.im;
+        return suma;
+    }
+    Complex operator-(Complex nr1) {
+        Complex dif;
+        dif.re = re - nr1.re;
+        dif.im = im - nr1.im;
+        return dif;
+    }
+    friend Complex operator*(Complex nr1, Complex nr2);
+    friend Complex operator/(Complex nr1, Complex nr2);
+};
+
+Complex operator*(Complex nr1, Complex nr2) {
+    Complex inmultire;
+    inmultire.re = nr1.re * nr2.re - nr1.im * nr2.im;
+    inmultire.im = nr1.re * nr2.im + nr1.im * nr2.re;
+    return inmultire;
+}
+
+Complex operator/(Complex nr1, Complex nr2) {
+    Complex impartire;
+    impartire.re = ((nr1.re * nr2.re) + (nr1.im * nr2.im)) / ((nr2.re * nr2.re) + (nr2.im * nr2.im));
+    impartire.im = ((nr2.re * nr1.im) - (nr1.re * nr2.im)) / ((nr2.re * nr2.re) + (nr2.im * nr2.im));
+    return impartire;
+}
+
+int main() {
+    double x, y;
+    cout << "Valoarea reala este: ";
+    cin >> x;
+    cout << "Valoarea imaginara este: ";
+    cin >> y;
+    Complex c1(x, y);
+    cout << "Valoarea reala este: ";
+    cin >> x;
+    cout << "Valoarea imaginara este: ";
+    cin >> y;
+    Complex c2(x, y);
+
+    //Suma
+    Complex Suma = c1 + c2;
+    if(Suma.getIm() > 0)
+        cout << "\nSuma = " << Suma.getRe() << " + " << Suma.getIm() << "j";
+    else cout << "\nSuma = " << Suma.getRe() << " " << Suma.getIm() << "j";
+
+    //Diferenta
+    Complex Dif = c1 - c2;
+    if(Dif.getIm() > 0)
+        cout << "\nDiferenta = " << Dif.getRe() << " + " << Dif.getIm() << "j";
+    else cout << "\nDiferenta = " << Dif.getRe() << " " << Dif.getIm() << "j";
+
+    //Inmutlire
+    Complex Inmultire = c1 * c2;
+    if(Inmultire.getIm() > 0)
+        cout << "\nInmultire = " << Inmultire.getRe() << " + " << Inmultire.getIm() << "j";
+    else cout << "\nInmultire = " << Inmultire.getRe() << " " << Inmultire.getIm() << "j";
+
+    //Impartire
+    Complex Impartire = c1 / c2;
+    if (Impartire.getIm() > 0)
+        cout << "\nImpartire = " << Impartire.getRe() << " + " << Impartire.getIm() << "j";
+    else cout << "\nImpartire = " << Impartire.getRe() << " " << Impartire.getIm() << "j";
+
+
+    return 0;
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 09 Pb 2, Handru Radu, Problema 2 consta in modificarea supraincarcarii operatorului -, care sa permita scaderea a mai multor aparitii din sirul initial.
+Analizati functionarea aplicatiei
+*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+using namespace std;
+
+const int dim = 31;
+
+class String {
+    char* sir;
+public:
+    String() {
+        sir = new (nothrow) char[dim];
+    }
+    String(char* x) {
+        sir = new (nothrow) char[strlen(x) + 1];
+        strcpy(sir, x);
+    }
+    String(const String& x) {//copy constructor
+        sir = new (nothrow) char[strlen(x.sir) + 1];
+        strcpy(sir, x.sir);
+        cout << "\nCopy constructor";
+    }
+    String& operator= (const String& x) {//supraincarcare assign
+        if (this == &x) return *this;
+        delete[] sir;//eliberez sir din obiectul current pt. ca pot diferi ca dimensiune, echivalent cu: this-> ~String();
+        sir = new (nothrow) char[strlen(x.sir) + 1];//aloc spatiu pentru sir pornind de la sirul de asignat
+        strcpy(sir, x.sir);
+        cout << "\nAssign overload";
+        return *this;
+    }
+    String(String&& a) {//move constructor
+        sir = a.sir;
+        cout << "\nMove constructor";
+        a.sir = nullptr;
+    }
+    ~String() {
+        if (sir != nullptr) cout << "\nCall Destructor";
+        else cout << "\nDestructor is called for nullptr with move";
+        delete[] sir;
+    }
+
+    char* getSir() {
+        return sir;
+    }
+    void setSir(char* x) {
+        strcpy(sir, x);
+    }
+
+    String operator+ (String x1) {
+        String rez;
+        rez.~String();//apel destrctor pt. a elibera tabloul sir
+        rez.sir = new (nothrow) char[strlen(this->sir) + strlen(x1.sir) + 1];
+        strcpy(rez.sir, sir);
+        strcat(rez.sir, x1.sir);
+        return rez;
+    }
+
+    char operator[ ](int poz) { // supraincarcarea op [ ] pt. returnarea unui
+        char rez; // caracter din pozitia data in sir
+        rez = sir[poz];
+        return rez;
+    }
+
+    friend String operator- (const String& x1, const String& x2);
+};
+
+String operator- (const String& x1, const String& x2) {
+    char* pp;
+    pp = strstr(x1.sir, x2.sir); // adresa unde începe sirul x2.sir in sirul x1.sir
+    if (pp == NULL)
+        return String(x1.sir);
+    else {
+        char* buf = new (nothrow) char[strlen(x1.sir) + 1];
+        while (pp != NULL) {
+            strncpy(buf, x1.sir, pp - x1.sir);
+            strcpy(buf + (pp - x1.sir), pp + strlen(x2.sir));
+            strcpy(x1.sir, pp + strlen(x2.sir));
+            pp = strstr(x1.sir, x2.sir);
+        }
+        if (x1.sir != NULL) {
+            strcat(buf, x1.sir);
+        }
+        return String(buf);
+    }
+}
+
+int main() {
+    char xx[dim];
+    cout << "Dati un sir de caractere (ob1), mai mic de " << dim << " :";
+    cin.getline(xx, sizeof(xx));
+    String ob1(xx);
+
+    cout << "Dati un sir de caractere (ob2), mai mic de " << dim << " :";
+    cin.getline(xx, sizeof(xx));
+    String ob2(xx);
+
+    String ob3;
+    ob3 = ob1 + ob2;//assign, +(functie de compilator)
+    cout << "\n\nSirul (ob3) obtinut in urma adunarii prin supraincarcare operator = : " << ob3.getSir();
+
+    cout << "\n\nDati un sir (ob4) care va fi scazut din cel initial, mai mic de " << dim << " :";
+    cin.getline(xx, sizeof(xx));
+    String ob4(xx);
+
+    String ob5 = ob1 - ob4;//copy constructor, - (functie de compilator)
+    cout << "Sirul obtinut (ob5) in urma scaderii cu copy constructor: " << ob5.getSir();
+
+    String ob6;
+    cout << "\n Dati un sir de caractere (ob6) pentru un obiect, mai mic de " << dim << " :";
+    cin.getline(xx, _countof(xx));
+    ob6.setSir(xx);
+    cout << "Sirul : " << ob6.getSir();
+
+    ob3.setSir(xx);
+    cout << "\nSirul ob3 setat la ob6: " << ob3.getSir();
+    char c = ob3[0];
+    cout << "\nPrimul caracter e: " << c;
+
+    String obx = move(ob3);
+    cout << "\nSirul obtinut (obx) in urma unui move( ) cu ob3 move constructor: " << obx.getSir();
+
+
+    return 0;
+}
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 09 Pb 3, Handru Radu, Problema 3 consta in modificarea exemplului 4b astfel,
+Introduceti metode de tip set la atributele clasei Persoana astfel incat introducerea datelor sa fie facuta
+cu metoda introdu() si metode setter in loc de constructor.
+Preluati optiunile cu confirmare, la fel ca la exemplul 4a. Continuati la optiune gresita dand un mesaj adecvat.
+Asigurati consecinta supraincarcarii operatorilor de indexare (cand nu se gaseste obiectul).
+Considerati atributul nume de tip char*, alocarea spatiului fiind facuta in constructori.
+Definiti copy constructorul si supraincarcati operatorul de asignare in cadrul clasei Persoana. Introduceti destructori in ambele clase.
+Considerati acum procesul de sortare dupa aceleasi chei ca si la cautare cu afisarea rezultatelor in ordine descrescatoare.
+Verificati functionalitatea elementeleor introduse.
+*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+using namespace std;
+
+const int maxx = 31;        //nr. caractere
+const int dim = 5;                //nr. obiecte implicit
+
+class Persoana {
+    char* nume;
+    double greutate;
+    int varsta;
+public:
+    Persoana() {
+        nume = new(nothrow)char[maxx];
+        strcpy(nume, "Necunoscut");
+        greutate = 0.0;
+        varsta = 0;
+    }
+    Persoana(char* nume, double greutate, int varsta) {
+        this->nume = new (nothrow) char[strlen(nume) + 1];
+        strcpy(this->nume, nume);
+        this->greutate = greutate;
+        this->varsta = varsta;
+    }
+    Persoana(Persoana& pers1) {
+        nume = new (nothrow) char[strlen(pers1.nume) + 1];
+        strcpy(nume, pers1.nume);
+        greutate = pers1.greutate;
+        varsta = pers1.varsta;
+    }
+    ~Persoana() {
+        if (nume)
+            delete[]nume;
+    }
+
+    Persoana operator = (Persoana p1) {
+        nume = new (nothrow) char[strlen(p1.nume) + 1];
+        strcpy(nume, p1.nume);
+        greutate = p1.greutate;
+        varsta = p1.varsta;
+        return *this;
+    }
+
+    char* getNume() {
+        return nume;
+    }
+    double getGreutate() {
+        return greutate;
+    }
+    int getVarsta() {
+        return varsta;
+    }
+    void setNume(char* nume1) {
+        strcpy(nume, nume1);
+    }
+    void setGreutate(double greutate) {
+        this->greutate = greutate;
+    }
+    void setVarsta(int varsta) {
+        this->varsta = varsta;
+    }
+    void display() {
+        cout << "\nNume: " << nume;
+        cout << "\nGreutate: " << greutate;
+        cout << "\nVarsta: " << varsta;
+        cout << "\n";
+    }
+};
+
+//Analize si Persoana sunt in relatie de asociere
+class Analize {
+    Persoana* p;
+    int n;
+public:
+    Analize() {
+        p = new (nothrow) Persoana[dim];
+        n = dim;
+    }
+    Analize(int nr) {
+        p = new (nothrow) Persoana[nr];
+        n = nr;
+    }
+    ~Analize() {
+        if (p)
+            delete[]p;
+    }
+    void introdu() {
+        int j;
+        char nume[maxx];
+        double greutate;
+        int varsta;
+        for (j = 0; j < n; j++) {
+            cout << "\nDatele pentru persoana: " << j + 1; cout << "\nNume: ";
+            cin >> nume;
+            p[j].setNume(nume);
+            cout << "\nGreutate: ";
+            cin >> greutate;
+            p[j].setGreutate(greutate);
+            cout << "\nVarsta: ";
+            cin >> varsta;
+            p[j].setVarsta(varsta);
+        }
+    }
+
+    Persoana get_Pers_i(int i) {
+        return p[i];
+    }
+
+    void operator[ ](char* nume) {
+        int j;
+        for (j = 0; j < n; j++)
+            if (strcmp(nume, p[j].getNume()) == 0) p[j].display();
+    }
+    void operator[ ](double greutate) {
+        int j;
+        for (j = 0; j < n; j++)
+            if (greutate == p[j].getGreutate()) p[j].display();
+    }
+    void operator[ ](int varsta) {
+        int j;
+        for (j = 0; j < n; j++)
+            if (varsta == p[j].getVarsta()) p[j].display();
+    }
+};
+
+int main() {
+    int n;
+    char c;
+    char nume[maxx];
+    double greutate;
+    int varsta;
+    cout << "\nCate persoane? ";
+    cin >> n;
+    Analize a(n);
+    a.introdu();
+
+    //Meniu Cautare
+    while (1) {
+        cout << "\nCautare dupa (v = varsta, g = greutate, n = nume, e=exit)? ";
+        cin >> c;
+        if (strchr("VGNE", toupper(c)) != 0)
+            switch (toupper(c)) {
+            case 'V': { cout << "\nVarsta: "; cin >> varsta; a[varsta]; break; }
+            case 'G': { cout << "\nGreutate: "; cin >> greutate; a[greutate]; break; }
+            case 'N': { cout << "\nNume: "; cin >> nume; a[nume]; break; }
+            case 'E': return 0;
+            }
+    }
+    return 0;
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 09 Pb 5, Handru Radu, Problema 5 consta in supraincarcarea operatorului [] astfel incat, folosit fiind asupra unor obiecte din clasa Departament
+ce contine un tablou de obiecte de tip Angajat (clasa Angajat contine variabilele, nume(sir de caractere) si salariul(double).
+Sa returneze toata informatia legata de angajatul al carei numar de ordine este trimis ca si parametru.*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+using namespace std;
+
+const int nr_ang = 10;          //nr angajati impliciti
+const int dim_sir = 31;
+
+class Angajat {
+private:
+    char* nume;
+    double salariu;
+public:
+    Angajat() {
+        nume = new(nothrow) char[dim_sir];
+        salariu = 0;
+    }
+    Angajat(char* nume, double salariu) {
+        this->nume = new (nothrow) char[strlen(nume) + 1];
+        strcpy(this->nume, nume);
+        this->salariu = salariu;
+    }
+    char* getNume() {
+        return nume;
+    }
+    double getSalar() {
+        return salariu;
+    }
+    void setNume(char nume[]) {
+        strcpy(this->nume, nume);
+    }
+    void setSalar(int salar) {
+        salariu = salar;
+    }
+};
+
+class Departament {
+private:
+    Angajat* grup;
+public:
+    Departament() {
+        grup = new (nothrow) Angajat[nr_ang];
+    }
+    Departament(int nr) {
+        grup = new (nothrow) Angajat[nr];
+    }
+
+    void Citire_Grup(int nr) {
+        char nume[dim_sir];
+        double salar;
+        for (int i = 0; i < nr; i++) {
+            cout << "Introduceti numele: ";
+            cin >> nume;
+            cout << "Introduceti salariul: ";
+            cin >> salar;
+            grup[i] = Angajat(nume, salar);
+        }
+    }
+
+    Angajat operator[](int ind) {
+        return grup[ind];
+    }
+
+};
+
+int main() {
+    int n;
+    cout << "Introduceti numarul de Angajati din departament: ";
+    cin >> n;
+    Departament dep1(n);
+    dep1.Citire_Grup(n);
+    //Afisarea angajatilor
+    /*
+    cout << "\nAngajatii sunt: \n";
+    for (int i = 0; i < n; i++) {
+        cout << "Numele este: " << dep1[i].getNume() << " avand salariul = " << dep1[i].getSalar() << "\n";
+    }
+    */
+
+    //Afisarea angajatului dorit
+    int ind;
+    cout << "\nIntroduceti angajatul ale carui date doriti sa le aflati (0 <= nr <= " << n - 1 << "): ";
+    cin >> ind;
+    if (ind < 0 || ind > n)
+    {
+        cout << "\n\tValoare introdusa gresit!\n";
+        exit(1);
+    }
+    cout << "Angajatul cu numele: " << dep1[ind].getNume() << " are salariul = " << dep1[ind].getSalar() << "\n";
+
+    return 0;
+}
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 09 Pb 6, Handru Radu, Problema 6 consta in modificarea problemei 5 astfel incat aceasta sa aiba o supraincarcare a operatorilor new si delete*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+using namespace std;
+
+const int nr_ang = 10;          //nr angajati impliciti
+const int dim_sir = 31;
+
+class Angajat {
+private:
+    char* nume;
+    double salariu;
+public:
+    Angajat() {
+        nume = new(nothrow) char[dim_sir];
+        salariu = 0;
+    }
+    Angajat(char* nume, double salariu) {
+        this->nume = new (nothrow) char[strlen(nume) + 1];
+        strcpy(this->nume, nume);
+        this->salariu = salariu;
+    }
+    char* getNume() {
+        return nume;
+    }
+    double getSalar() {
+        return salariu;
+    }
+    void setNume(char nume[]) {
+        strcpy(this->nume, nume);
+    }
+    void setSalar(int salar) {
+        salariu = salar;
+    }
+    void* operator new(size_t dim);
+    void operator delete(void* grup);
+};
+
+void* Angajat::operator new(size_t dim) {
+    return new(nothrow)char[dim];
+}
+
+void Angajat:: operator delete(void* ang) {
+    delete[]ang;
+}
+
+class Departament {
+private:
+    Angajat* grup;
+public:
+    Departament() {
+        grup = new (nothrow) Angajat[nr_ang];
+    }
+    Departament(int nr) {
+        grup = new (nothrow) Angajat[nr];
+    }
+
+    void Citire_Grup(int nr) {
+        char nume[dim_sir];
+        double salar;
+        for (int i = 0; i < nr; i++) {
+            cout << "Introduceti numele: ";
+            cin >> nume;
+            cout << "Introduceti salariul: ";
+            cin >> salar;
+            grup[i] = Angajat(nume, salar);
+        }
+    }
+
+    Angajat operator[](int ind) {
+        return grup[ind];
+    }
+
+    void* operator new(size_t dim);
+    void operator delete(void* grup);
+};
+
+void* Departament::operator new(size_t dim) {
+    return new (nothrow) Angajat[dim];
+}
+
+void Departament::operator delete(void* grup) {
+    delete[]grup;
+}
+
+int main() {
+    int n;
+    cout << "Introduceti numarul de Angajati din departament: ";
+    cin >> n;
+    Departament dep1(n);
+    dep1.Citire_Grup(n);
+
+    cout << "\nCitirea separata a unui angajat: \n";
+    char nume[dim_sir];
+    double salar;
+    cout << "\nCititi numele: ";
+    cin >> nume;
+    cout << "Cititi salarul: ";
+    cin >> salar;
+    Angajat* ang1 = new Angajat();
+    ang1->setNume(nume);
+    ang1->setSalar(salar);
+    cout << "Angajatul cu numele: " << ang1->getNume() << " are salarul = " << ang1->getSalar() << "\n";
+    delete[]ang1;
+
+    /*
+    //Afisarea angajatilor
+    cout << "\nAngajatii sunt: \n";
+    for (int i = 0; i < n; i++) {
+        cout << "Numele este: " << dep1[i].getNume() << " avand salariul = " << dep1[i].getSalar() << "\n";
+    }
+    */
+
+
+    //Afisarea angajatului dorit
+    int ind;
+    cout << "\nIntroduceti angajatul ale carui date doriti sa le aflati (0 <= nr <= " << n - 1 << "): ";
+    cin >> ind;
+    if (ind < 0 || ind > n)
+    {
+        cout << "\n\tValoare introdusa gresit!\n";
+        exit(1);
+    }
+    cout << "Angajatul cu numele: " << dep1[ind].getNume() << " are salariul = " << dep1[ind].getSalar() << "\n";
+
+    return 0;
+}
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 09 Pb 7, Handru Radu, Problema 7 consta in scrierea unui program care contine o clasa MyClass cu trei atribute de tip int.
+Clasa considera pe baza mecanismului de supraincarcare metode publice int MyFunction(...), care in functie de numarul de parametrii primiti
+returneaza fie valoarea primita (1 parametru), fie produsul atributelor de intrare ( >= 2 parametrii).
+Instantiati un obiect din clasa in main(), setati atributele cu metode setter adecvate din clasa si afisati valorile la apelurile metodelor*/
+
+#include <iostream>
+#include <stdarg.h>
+using namespace std;
+
+class MyClass {
+private:
+    int nr1;
+    int nr2;
+    int nr3;
+public:
+    int MyFunction(int a) {
+        return a;
+    }
+    int MyFunction(int a, int b) {
+        return a * b;
+    }
+    int MyFunction(int a, int b, int c) {
+        return a * b * c;
+    }
+    void setA(int a) {
+        nr1 = a;
+    }
+    void setB(int b) {
+        nr2 = b;
+    }
+    void setC(int c) {
+        nr3 = c;
+    }
+};
+
+
+
+int main() {
+    MyClass numere1;
+    int a, b, c;
+    cout << "Introduceti valoarea lui a: ";
+    cin >> a;
+    cout << "Introduceti valoarea lui b: ";
+    cin >> b;
+    cout << "Introduceti valoarea lui c: ";
+    cin >> c;
+    numere1.setA(a);
+    numere1.setB(b);
+    numere1.setC(c);
+    cout << "Valoarea cu un singur parametru: " << numere1.MyFunction(a) << "\n";
+    cout << "Valoarea cu doi parametri: " << numere1.MyFunction(a, b) << "\n";
+    cout << "Valoarea cu trei parametri: " << numere1.MyFunction(a, b, c) << "\n";
+    return 0;
+}
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 09 Pb 10, Handru Radu, Problema 10 consta in definirea unei clase numita Number care are o variabila private de tip double.
+Clasa mai contine un constructor explicit vid si unul cu un parametru si o metoda accesor care afiseaza valoarea variabilei din clasa.
+Scrieti o clasa numita Mathemathics, care supraincarca operatorii specifici operatiilor aritmetice elementare (+, -, *, /).
+Clasa are ca si atribut un obiect instantiat din prima clasa.
+Operatiile artimetice se efectueaza asupra datelor obtinute din obiectul de tip Number.*/
+#include <iostream>
+using namespace std;
+
+class Number {
+private:
+    double nr;
+public:
+    Number() {
+        nr = 0;
+    }
+    Number(double nr) {
+        this->nr = nr;
+    }
+    double getNr() {
+        return nr;
+    }
+    void setNr(double nr) {
+        this->nr = nr;
+    }
+    void afisare_Nr() {
+        cout << "\nNumarul este: " << nr << "\n";
+    }
+};
+
+class Mathemathics {
+private:
+    Number nr;
+public:
+    Mathemathics() {
+        nr.setNr(0);
+    }
+    Mathemathics(double val) {
+        nr.setNr(val);
+    }
+    Number get_Nr() {
+        return nr;
+    }
+    friend Mathemathics operator+(Mathemathics n1, Mathemathics n2);
+    friend Mathemathics operator-(Mathemathics n1, Mathemathics n2);
+    friend Mathemathics operator*(Mathemathics n1, Mathemathics n2);
+    friend Mathemathics operator/(Mathemathics n1, Mathemathics n2);
+};
+
+Mathemathics operator+(Mathemathics n1, Mathemathics n2) {
+    Mathemathics Suma;
+    Suma = n1.nr.getNr() + n2.nr.getNr();
+    return Suma;
+}
+
+Mathemathics operator-(Mathemathics n1, Mathemathics n2) {
+    Mathemathics Dif;
+    Dif = n1.nr.getNr() - n2.nr.getNr();
+    return Dif;
+}
+
+Mathemathics operator*(Mathemathics n1, Mathemathics n2) {
+    Mathemathics Inmultire;
+    Inmultire = n1.nr.getNr() * n2.nr.getNr();
+    return Inmultire;
+}
+
+Mathemathics operator/(Mathemathics n1, Mathemathics n2) {
+    Mathemathics Impartire;
+    Impartire = n1.nr.getNr() / n2.nr.getNr();
+    return Impartire;
+}
+
+
+int main() {
+    double nr1, nr2;
+    cout << "Introduceti valoarea numarului 1: ";
+    cin >> nr1;
+    cout << "Introduceti valoarea numarului 2: ";
+    cin >> nr2;
+    Mathemathics m1(nr1);
+    Mathemathics m2(nr2);
+
+    Mathemathics Suma = m1 + m2;
+    Mathemathics Dif = m1 - m2;
+    Mathemathics Inmultire = m1 * m2;
+    Mathemathics Impartire = m1 / m2;
+
+    cout << "\nSuma numerelor este: " << Suma.get_Nr().getNr();
+    cout << "\nDiferenta numerelor este: " << Dif.get_Nr().getNr();
+    cout << "\nInmultirea numerelor este: " << Inmultire.get_Nr().getNr();
+    cout << "\nImpartirea numerelor este: " << Impartire.get_Nr().getNr() << "\n";
+    return 0;
+}
+
+

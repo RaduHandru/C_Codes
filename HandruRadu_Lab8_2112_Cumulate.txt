@@ -1,0 +1,522 @@
+/*Lab 08 Pb 1, Handru Radu, Problema 1 consta in implementarea unei aplicatii in care clasa OraCurenta are ca si atribute private: ora, min si sec (alaturi de metodele publice setter/getter pentru fiecare dintre acestea).
+Prima cerinta: adaugarea unei functii friend clasei prin care sa se poata copia continutul unui obiect dat ca si parametru, intr-un alt obiect a aceleasi clase care va fi returnat de functie, ora fiind insa modificata la Greenwich Mean Time. Utilizati timpul curent al calculatorului.
+*/
+#include <iostream>
+
+using namespace std;
+
+class OraCurenta {
+private:
+    int ora, min, sec;
+public:
+    OraCurenta(int ora, int min, int sec) {
+        this->ora = ora;
+        this->min = min;
+        this->sec = sec;
+    }
+
+    int getOra() {
+        return ora;
+    }
+    int getMin() {
+        return min;
+    }
+    int getSec() {
+        return sec;
+    }
+    void setOra(int ora) {
+        this->ora = ora;
+    }
+    void setMin(int min) {
+        this->min = min;
+    }
+    void setSec(int sec) {
+        this->sec = sec;
+    }
+    friend OraCurenta Copiere(OraCurenta timp1) {
+        timp1.ora -= 3;
+        if (timp1.ora < 0) {
+            timp1.ora += 24;
+        }
+        return timp1;
+    }
+};
+
+int main() {
+    int ora, min, sec;
+    cout << "Introduceti ora (<= 24): ";
+    cin >> ora;
+    if (ora < 0 || ora > 24) {
+        cout << "Valoare incorecta!";
+        exit(1);
+    }
+    cout << "Introduceti minutele (<= 60): ";
+    cin >> min;
+    if (min < 0 || min > 60) {
+        cout << "Valoare incorecta!";
+        exit(1);
+    }
+    cout << "Introduceti secundele (<= 60): ";
+    cin >> sec;
+    if (sec < 0 || sec > 60) {
+        cout << "Valoare incorecta!";
+        exit(1);
+    }
+    OraCurenta timp1(ora, min, sec);
+    cout << "\n\tOraCurenta modificata la Greenwich Mean Time este: \n";
+    OraCurenta timp2 = Copiere(timp1);
+    cout << "\nOra: " << timp2.getOra();
+    cout << "\nMinutul: " << timp2.getMin();
+    cout << "\nSecunda: " << timp2.getSec();
+
+    return 0;
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 08 Pb 2, Handru Radu, Problema 2 consta in scrierea unei aplicatii in care clasa Calculator are un atribut privat memorie_RAM (int)
+si o functie prietena tehnician_service() care permite modificarea valorii acestui atribut.
+Functia friend va fi membra intr-o alta clasa, Placa_de_baza care are o componenta denumire_procesor (sir de caractere).
+Scrieti codul necesar care permite functiei prietene tehnician_service() sa modifice valoarea atributului denumire_procesor si memorie_RAM.
+*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+using namespace std;
+
+const int dim_sir = 21;
+
+class Placa_de_baza;
+
+class Calculator {
+private:
+    int memorie_RAM;
+    friend void tehnician_service(Calculator& pc1, Placa_de_baza& placa1, int mem_RAM, char den_proc[]);
+public:
+    void setMem(int mem) {
+        memorie_RAM = mem;
+    }
+    int getMem() {
+        return memorie_RAM;
+    }
+};
+
+class Placa_de_baza {
+private:
+    char denumire_procesor[dim_sir];
+    friend void tehnician_service(Calculator& pc1, Placa_de_baza& placa1, int mem_RAM, char den_proc[]);
+public:
+    void setDen_proc(char den_proc[]) {
+        strcpy(denumire_procesor, den_proc);
+    }
+    char* getDen_proc() {
+        return denumire_procesor;
+    }
+};
+
+void tehnician_service(Calculator& pc1, Placa_de_baza& placa1, int mem_RAM, char den_proc[dim_sir]) {
+    pc1.setMem(mem_RAM);
+    placa1.setDen_proc(den_proc);
+}
+
+int main() {
+    Calculator pc1;
+    Placa_de_baza placa1;
+    int mem_RAM;
+    char den_proc[dim_sir];
+    cout << "Introduceti o valoare de memorie ram: ";
+    cin >> mem_RAM;
+    pc1.setMem(mem_RAM);
+    cout << "Introduceti un nume de procesor: ";
+    cin >> den_proc;
+    placa1.setDen_proc(den_proc);
+
+    cout << "\n\tInainte de service: ";
+    cout << "\nPC: " << pc1.getMem();
+    cout << "\nPlaca_de_baza: " << placa1.getDen_proc() << "\n\n";
+
+    //Introducerea componentelor cu care cele actuale trebuie schimbate
+    cout << "Introduceti Capacitatea memoriei ram cu care doriti sa fie inlocuita cea actuala: ";
+    cin >> mem_RAM;
+    cout << "Introduceti denumirea procesorului: ";
+    cin >> den_proc;
+
+    //Apelarea functiei friend tehnician_service
+    tehnician_service(pc1, placa1, mem_RAM, den_proc);
+
+    cout << "\n\tDupa service: ";
+    cout << "\nPC: " << pc1.getMem();
+    cout << "\nPlaca_de_baza: " << placa1.getDen_proc() << "\n";
+    return 0;
+}
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 08 Pb 3, Handru Radu, Problema 3 consta in definirea unei clase numita Repository care are doua atribute private de tip intreg (int).
+Clasa va contine un constructor explicit vid si unul cu 2 parametri si metode accesor care afiseaza valorile atributelor din clasa.
+Scrieti o clasa numita Matemathics, friend cu prima clas, care implementeaza operatiile aritmetice elementare (+, -, *, /) asupra atributelor din prima clasa.
+Fiecare metoda primeste ca si parametru un obiect al clasei Repository.
+*/
+#include <iostream>
+
+using namespace std;
+
+class Repository {
+private:
+    int nr1;
+    int nr2;
+public:
+    Repository() {
+        nr1 = 0;
+        nr2 = 0;
+    }
+    Repository(int n1, int n2) {
+        this->nr1 = n1;
+        this->nr2 = n2;
+    }
+    int getNr1() {
+        return nr1;
+    }
+    int getNr2() {
+        return nr2;
+    }
+    friend class Mathemathics;
+};
+
+class Mathemathics {
+public:
+    static Repository Adunare(Repository n1, Repository n2) {
+        return Repository(n1.nr1 + n2.nr1, n1.nr2 + n2.nr2);
+    }
+    static Repository Scadere(Repository n1, Repository n2) {
+        return Repository(n1.nr1 - n2.nr1, n1.nr2 - n2.nr2);
+    }
+    static Repository Inmultire(Repository n1, Repository n2) {
+        return Repository(n1.nr1 * n2.nr1, n1.nr2 * n2.nr2);
+    }
+    static Repository Impartire(Repository n1, Repository n2) {
+        return Repository(n1.nr1 / n2.nr1, n1.nr2 / n2.nr2);
+    }
+};
+
+int main() {
+    int n1, n2;
+    cout << "Introduceti 2 numere intregi pentru Repository-ul 1: ";
+    cin >> n1 >> n2;
+    Repository numar1(n1, n2);
+    cout << "Introduceti 2 numere intregi pentru Repository-ul 2: ";
+    cin >> n1 >> n2;
+    Repository numar2(n1, n2);
+
+    //Suma
+    Repository Suma = Mathemathics::Adunare(numar1, numar2);
+
+    cout << "\n\tSuma celor doua Repository-uri este: \n";
+    cout << "Nr1 = " << Suma.getNr1() << "\n";
+    cout << "Nr2 = " << Suma.getNr2() << "\n";
+
+    //Diferenta
+    Repository Dif = Mathemathics::Scadere(numar1, numar2);
+
+    cout << "\n\tDiferenta celor doua Repository-uri este: \n";
+    cout << "Nr1 = " << Dif.getNr1() << "\n";
+    cout << "Nr2 = " << Dif.getNr2() << "\n";
+
+    //Inmultire
+    Repository Inmultire = Mathemathics::Inmultire(numar1, numar2);
+
+    cout << "\n\tInmultirea celor doua Repository-uri este: \n";
+    cout << "Nr1 = " << Inmultire.getNr1() << "\n";
+    cout << "Nr2 = " << Inmultire.getNr2() << "\n";
+
+    //Impartire
+    Repository Impartire = Mathemathics::Impartire(numar1, numar2);
+
+    cout << "\n\tImpartirea celor doua Repository-uri este: \n";
+    cout << "Nr1 = " << Impartire.getNr1() << "\n";
+    cout << "Nr2 = " << Impartire.getNr2() << "\n";
+
+    return 0;
+}
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 08 Pb 4, Handru Radu, Problema 4 consta in definirea intr-o clasa a atributului public contor atr_static de tip static intreg.
+Acesta se va incrementa in cadrul constructorului. Dupa o serie de instantieri, sa se afiseze numarul de obiecte create (continutul variabilei atr_static).
+*/
+#include <iostream>
+
+using namespace std;
+
+class Atribut {
+public:
+    static int atr_static;
+    Atribut() {
+        atr_static++;
+    }
+};
+
+int Atribut::atr_static;
+
+int main() {
+    Atribut a1, a2, a3, a4, a5, a6, a7;
+    cout << "Numarul de obiecte instantiate este: " << Atribut::atr_static;
+    return 0;
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 08 Pb 5, Handru Radu, Problema 5 consta in rezolvarea problemei 4 in cazul in care atributul art_static este de tip private.
+Definiti o metoda accesor care returneaza metoda accesorului. Analizati cazul in care metoda accesor e statica sau nestatica si modul in care e apelata.
+*/
+#include <iostream>
+
+using namespace std;
+
+class Atribut {
+private:
+    static int atr_static;
+public:
+    Atribut() {
+        atr_static++;
+    }
+    static int getAtr_static() {
+        return atr_static;
+    }
+    int getAtr_nestatic() {
+        return atr_static;
+    }
+};
+
+int Atribut::atr_static;
+
+int main() {
+    Atribut a1, a2, a3, a4, a5, a6, a7;
+
+    //Metoda accesor de tip static trebuie sa fie apelata pentru clasa
+    cout << "Numarul de obiecte instantiate este: " << Atribut::getAtr_static() << "\n";
+
+    //Metoda accesor de tip nestatic trebuie sa fie apelata pentru ultimul obiect instantiat
+    cout << "Numarul de obiecte instantiate este: " << a7.getAtr_nestatic();
+    return 0;
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 08 Pb 6, Handru Radu, Problema 6 consta in definirea unei clase numita Triunghi. Clasa contine ca si atribute statice private int
+laturile a, b si c ale triunghiului, iar in zona publica un constructor cu parametri si metode adecvate setter si
+getter pentru fiecare atribut, cu metode separate.
+Clasa va contine metode care vor calcula aria si perimetrul formei.
+Scrieti o metoda statica distincta fara parametri care va afisa un mesaj specific daca triunghiul este dreptunghic.
+Scrieti o metoda publica statica care va determina daca valorile laturilor date ca si parametri formeaza un triunghi.
+Metoda va fi apelata în main( ) inainte de instantierea unui obiect si in metodele setter,
+daca schimbam laturile unui obiect existent. Setter-ul va pastra valoarea laturii vechi daca cea noua nu este o latura valida.
+Inainte de a instantia un obiect se preiau de la tastatura 3 valori int pentru cele 3 laturi, cu confirmare prin reintroducerea valorilor,
+daca este cazul, si se verifica prin metoda statica (cu parametri) valabilitatea sa fie laturi ale unui triunghi.
+*/
+#include <iostream>
+
+using namespace std;
+
+class Triunghi {
+private:
+    static int a, b, c;
+public:
+    Triunghi(int a1, int b1, int c1) {
+        a = a1;
+        b = b1;
+        c = c1;
+    }
+    static int getA() {
+        return a;
+    }
+    static int getB() {
+        return b;
+    }
+    static int getC() {
+        return c;
+    }
+    void setA(int a1) {
+        if (e_triunghi(a1, b, c) == 1)
+            a = a1;
+        else cout << "\n\tValoare incorecta!\n";
+    }
+    void setB(int b1) {
+        if (e_triunghi(a, b1, c) == 1)
+            b = b1;
+        else cout << "\n\tValoare incorecta!\n";
+    }
+    void setC(int c1) {
+        if (e_triunghi(a, b, c1) == 1)
+            c = c1;
+        else cout << "\n\tValoare incorecta!\n";
+    }
+    double aria() {
+        double p = (double)(a + b + c) / 2.;
+        return sqrt(p) * sqrt(p - a) * sqrt(p - b) * sqrt(p - c);
+    }
+    int perimetrul() {
+        return a + b + c;
+    }
+    static int dreptunghic() {
+        if ((a * a) + (b * b) == (c * c))
+            return 1;
+        else if ((a * a) + (c * c) == (b * b))
+            return 1;
+        else if ((b * b) + (c * c) == (a * a))
+            return 1;
+        return 0;
+    }
+
+    static int e_triunghi(int a1, int b1, int c1) {
+        if (a1 > 0 && b1 > 0 && c1 > 0)
+        {
+            if (((a1 + b1) > c1) && ((a1 + c1) > b1) && ((b1 + c1) > a1))
+                return 1;
+            return 0;
+        }
+        else return 0;
+    }
+};
+
+int Triunghi::a;
+int Triunghi::b;
+int Triunghi::c;
+
+int main() {
+    int a1, b1, c1;
+    cout << "Introduceti a1: ";
+    cin >> a1;
+    cout << "Introduceti b1: ";
+    cin >> b1;
+    cout << "Introduceti c1: ";
+    cin >> c1;
+    if (Triunghi::e_triunghi(a1, b1, c1) == 0) {
+        cout << "\n\tLaturile introduse nu formeaza un triunghi!\n";
+        exit(1);
+    }
+    Triunghi t1(a1, b1, c1);
+
+    cout << "\nPerimetrul triunghiului este: " << t1.perimetrul();
+    cout << "\nAria triunghiului este: " << t1.aria();
+    if (t1.dreptunghic() == 1) {
+        cout << "\nTriunghiul este dreptunghic!" << "\n";
+    }
+    else cout << "\nTriunghiul nu este dreptunghic!" << "\n";
+
+    cout << "\nIntroduceti o valoare care sa fie citita pentru latura 1: ";
+    cin >> a1;
+    t1.setA(a1);
+    cout << "\nValorile actuale ale laturilor sunt: " << t1.getA() << " " << t1.getB() << " " << t1.getC() << "\n";
+    return 0;
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 08 Pb 7, Handru Radu, Problema 7 consta in scrierea unei clase Punct cu atributele private x si y.
+Implementati doua functii friend care sa calculeze si sa afiseze aria si perimetrul a doua forme geometrice definite de doua puncte,
+considerand ca acestea au doua puncte ca si parametri P0(x0,y0) si P1 (x1,y1).
+Adaugati functiilor un parametru intreg figura prin care sa indicati cele doua figuri geometrice cerc sau triunghi dreptungic, ce sunt
+definite de punctele (x0, y0) si (x1, y1).
+Astfel, pentru un cerc, figura=1, coordonatele (x0, y0) si (x1, y1) vor reprezenta doua puncte complementare pe cerc (diametrul).
+Daca este triunghi dreptunghic, punctele definesc ipotenuza iar figura va fi =2;
+Celelalte laturi ale triunghiului se vor determina pornind de la cele doua puncte.
+Coordonatele punctelor si apoi selectia figurii geometrice se va realiza introducand de la tastatura parametrii.
+*/
+#include <iostream>
+#include <math.h>
+#include <math.h>
+using namespace std;
+
+const double pi = 3.14;
+
+class Punct {
+private:
+    int x, y;
+public:
+    Punct(int x, int y) {
+        this->x = x;
+        this->y = y;
+    }
+    int getX() {
+        return x;
+    }
+    int getY() {
+        return y;
+    }
+    void setX(int x1) {
+        x = x1;
+    }
+    void setY(int y1) {
+        y = y1;
+    }
+    friend double aria(int fig, Punct p0, Punct p1);
+    friend double perimetrul(int fig, Punct p0, Punct p1);
+};
+
+double aria(int fig, Punct p0, Punct p1) {
+    if (fig == 1) { // cerc
+        double r;
+        r = sqrt(pow(p0.x - p1.x, 2) + pow(p0.y - p1.y, 2)) / 2;
+        return pi * pow(r, 2);
+    }
+    else if (fig == 2) { // triunghi dreptunghic
+        double a, b, c;
+        a = p0.x - p1.x;
+        b = p0.y - p1.y;
+        c = sqrt(pow(a, 2) + pow(b, 2));
+        return (pow(a, 2) + pow(b, 2)) / 2.;
+    }
+}
+
+double perimetrul(int fig, Punct p0, Punct p1) {
+    if (fig == 1) { // cerc
+        double r;
+        r = sqrt(pow(p0.x - p1.x, 2) + pow(p0.y - p1.y, 2)) / 2;
+        return 2 * pi * r; //lungimea cercului sau perimetrul
+    }
+    else if (fig == 2) { // triunghi dreptunghic
+        double a, b, c;
+        a = p0.x - p1.x;
+        b = p0.y - p1.y;
+        c = sqrt(pow(a, 2) + pow(b, 2));
+        return a + b + c;
+    }
+}
+
+
+int main() {
+    int fig;
+    cout << "Figurile sunt:\n1. Cerc \n2. Triunghi dreptunghic\nIntroduceti numarul pentru figura: ";
+    cin >> fig;
+    if (fig <= 0 || fig > 2) {
+        cout << "\n\tNu exista figura geometrica cu numarul introdus de dumneavoastra!\n";
+        exit(1);
+    }
+    int x, y;
+    cout << "Introduceti valoarea lui x: ";
+    cin >> x;
+    cout << "Introduceti valoarea lui y: ";
+    cin >> y;
+    Punct p1(x, y);
+    cout << "Introduceti valoarea lui x: ";
+    cin >> x;
+    cout << "Introduceti valoarea lui y: ";
+    cin >> y;
+    Punct p2(x, y);
+
+    if (fig == 1) {
+        cout << "\nAria cercului este: " << aria(fig, p1, p2);
+        cout << "\nPerimetrul cercului este: " << perimetrul(fig, p1, p2);
+    }
+    else if (fig == 2) {
+        cout << "\nAria triunghiului dreptunghic este: " << aria(fig, p1, p2);
+        cout << "\nPerimetrul triunghiului dreptunghic este: " << perimetrul(fig, p1, p2);
+    }
+    cout << "\n";
+
+    return 0;
+}
+
+

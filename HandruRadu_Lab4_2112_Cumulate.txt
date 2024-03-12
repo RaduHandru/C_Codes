@@ -1,0 +1,716 @@
+/*Lab 04 Pb 1, Handru Radu, Problema 1 consta in implementarea algoritmului bubble sort optimizat, cu un indicator flag*/
+#include <iostream>
+#define DIM 101
+
+using namespace std;
+
+void Bubble_Sort_optimizat(int n, int* ptab);
+
+int main() {
+    int n, tab[DIM];
+    cout << "Introduceti numarul de elemente: ";
+    cin >> n;
+    cout << "\nIntroduceti elementele tabloului: \n";
+    for (int i = 0; i < n; i++)
+    {
+        cout << "tab[" << i << "] = ";
+        cin >> tab[i];
+    }
+
+    //Afisarea sirului initial
+    cout << "\nSirul initial este: \n";
+    for (int i = 0; i < n; i++)
+        cout << tab[i] << " ";
+
+    //Pointer pentru tablou
+    int* p;
+    p = tab;
+
+    //Apelarea algoritmului Bubblesort
+    Bubble_Sort_optimizat(n, p);
+
+    //Afisarea sirului dupa sortare
+    cout << "\nSirul dupa sortare: \n";
+    for (int i = 0; i < n; i++)
+        cout << tab[i] << " ";
+
+    return 0;
+}
+
+void Bubble_Sort_optimizat(int n, int* ptab) {
+    int aux, k = 0;
+    bool flag;
+    do {
+        flag = 0;
+        for (int j = 0; j < n - k - 1; j++) {
+            if (ptab[j] > ptab[j + 1]) {
+                aux = ptab[j];
+                ptab[j] = ptab[j + 1];
+                ptab[j + 1] = aux;
+                flag = 1;
+            }
+        }
+        k++;
+    } while (flag);
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 04 Pb 2, Handru Radu, Problema 2 consta in implementarea algoritmului quick sort in ordine descrescatoare*/
+#include <iostream>
+#define DIM 101
+
+using namespace std;
+
+void Quick_Sort_Descrescator(int* p, int prim, int ultim);
+
+int main() {
+    int n, tab[DIM];
+    cout << "Introduceti numarul de elemente: ";
+    cin >> n;
+    cout << "\nIntroduceti elementele tabloului: \n";
+    for (int i = 0; i < n; i++)
+    {
+        cout << "tab[" << i << "] = ";
+        cin >> tab[i];
+    }
+
+    //Afisarea sirului initial
+    cout << "\nSirul initial este: \n";
+    for (int i = 0; i < n; i++)
+        cout << tab[i] << " ";
+
+    //Pointer pentru tablou
+    int* p;
+    p = tab;
+
+    //Apelarea algoritmului Bubblesort
+    Quick_Sort_Descrescator(p, 0, n - 1);
+
+    //Afisarea sirului dupa sortare
+    cout << "\nSirul dupa sortare: \n";
+    for (int i = 0; i < n; i++)
+        cout << tab[i] << " ";
+
+    return 0;
+}
+
+void Quick_Sort_Descrescator(int* p, int prim, int ultim) {
+    int i, j, pivot, aux;
+    i = prim;
+    j = ultim;
+    pivot = p[prim];
+    do {
+        while (p[i] > pivot)
+            i++;
+        while (p[j] < pivot)
+            j--;
+        if (i < j) {
+            aux = p[i];
+            p[i] = p[j];
+            p[j] = aux;
+        }
+        if (i <= j) {
+            j--;
+            i++;
+        }
+    } while (i < j);
+
+    if (prim < j)
+        Quick_Sort_Descrescator(p, prim, j);
+    if (i < ultim)
+        Quick_Sort_Descrescator(p, i, ultim);
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/*Lab 04 Pb 3, Handru Radu, Problema 3 consta in folosirea functiei qsort pentru a aranja un tablou de structuri in functie de doua campuri ale acestei structuri*/
+#include <iostream>
+#include <malloc.h>
+#include <stdlib.h>
+#include <string.h>
+#define DIM 51
+
+using namespace std;
+
+struct Data_angajarii {
+    int an;
+    char luna[DIM];
+    int zi;
+};
+
+struct Persoana {
+    char nume[DIM];
+    char prenume[DIM];
+    int cnp;
+    Data_angajarii data_angajarii;
+    void Citire_Persoana(Persoana*);
+    void Afisare_Persoana(Persoana*);
+};
+
+void Citire_Persoana(Persoana* p) {
+    cout << "Introduceti numele: ";
+    cin >> p->nume;
+    cout << "Introduceti prenumele: ";
+    cin >> p->prenume;
+    cout << "Introduceti CNP-ul: ";
+    cin >> p->cnp;
+    cout << "Introduceti anul angajarii: ";
+    cin >> p->data_angajarii.an;
+    cout << "Introduceti luna angajarii: ";
+    cin >> p->data_angajarii.luna;
+    cout << "Introduceti ziua angajarii: ";
+    cin >> p->data_angajarii.zi;
+    cout << "\n";
+}
+
+void Afisare_Persoana(Persoana* p) {
+    cout << "\nNumele: " << p->nume;
+    cout << "\nPrenumele: " << p->prenume;
+    cout << "\nCNP: " << p->cnp;
+    cout << "\nAnul angajarii: " << p->data_angajarii.an;
+    cout << "\nLuna angajarii: " << p->data_angajarii.luna;
+    cout << "\nZiua angajarii: " << p->data_angajarii.zi;
+    cout << "\n";
+}
+
+int comp1(const void* pa, const void* pb);
+int comp2(const void* pa, const void* pb);
+
+int main() {
+    int n;
+    struct Persoana* p;
+    cout << "Introduceti numarul de inregistrari: ";
+    cin >> n;
+
+    p = (Persoana*)malloc(n * sizeof(Persoana));
+    if (p == 0) {
+        cout << "\n\tAlocarea nu a avut loc!\n";
+        exit(1);
+    }
+
+    //Citire inregistrari
+    for (int i = 0; i < n; i++)
+        Citire_Persoana(p + i);
+
+    //Afisare inregistrari
+    cout << "\nAfisarea inregistrarilor: \n";
+    for (int i = 0; i < n; i++)
+        Afisare_Persoana(p + i);
+
+    //Sortare dupa data angajarii in ordine descrescatoare si dupa nume in ordine crescatoare
+    qsort(p, n, sizeof(Persoana), comp1);
+
+    cout << "\nInregistrarile au fost aranjate dupa data angajarii in ordine descrescatoare si dupa nume in ordine cresctoare";
+    cout << "\nAfisarea inregistrarilor dupa sortare: \n";
+    for (int i = 0; i < n; i++)
+        Afisare_Persoana(p + i);
+
+    //Sortarea dupa prenume in ordine descrescatoare si dupa cnp in ordine crescatoare
+    qsort(p, n, sizeof(Persoana), comp2);
+
+    cout << "\nInregistrarile au fost aranjate dupa prenume in ordine descrescatoare si dupa cnp in ordine crescatoare";
+    cout << "\nAfisarea inregistrarilor dupa sortare: \n";
+    for (int i = 0; i < n; i++)
+        Afisare_Persoana(p + i);
+
+
+    //Eliberarea memoriei
+    if (p)
+        free(p);
+    return 0;
+}
+
+int comp1(const void* pa, const void* pb) {
+    Persoana* a = (Persoana*)pa;
+    Persoana* b = (Persoana*)pb;
+    if ((a->data_angajarii).an < (b->data_angajarii).an)
+        return 1;
+    else {
+        if ((a->data_angajarii).an > (b->data_angajarii.an))
+            return -1;
+        else {
+            if ((a->data_angajarii).luna < (b->data_angajarii).luna)
+                return 1;
+            else if ((a->data_angajarii).luna > (b->data_angajarii).luna)
+                return -1;
+            else {
+                if ((a->data_angajarii).zi < (b->data_angajarii).zi)
+                    return 1;
+                else if ((a->data_angajarii).zi > (b->data_angajarii).zi)
+                    return -1;
+                else {
+                    if ((strcmp(a->nume, b->nume) > 0))
+                        return 1;
+                    else if ((strcmp(a->nume, b->nume) < 0))
+                        return -1;
+                }
+                return 0;
+            }
+        }
+    }
+}
+
+int comp2(const void* pa, const void* pb) {
+    Persoana* a = (Persoana*)pa;
+    Persoana* b = (Persoana*)pb;
+    if (strcmp(a->prenume, b->prenume) < 0)
+        return 1;
+    else {
+        if (strcmp(a->prenume, b->prenume) > 0)
+            return -1;
+        else {
+            if (a->cnp > b->cnp)
+                return 1;
+            else if (a->cnp < b->cnp)
+                return -1;
+        }
+        return 0;
+    }
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 04 Pb 4, Handru Radu, Problema 4 consta in obtinerea unui al 3-lea tablou din intreclasarea a 2 tablouri de numere naturale
+continand toate elementele din cele 2 tablouri fara a se repeta, aranjate in ordine crescatoare*/
+#include <iostream>
+#include <stdlib.h>
+#include <algorithm>
+#define DIMT 202
+#define DIM 101
+
+using namespace std;
+
+void Interclasare(int n1, int tab1[], int n2, int tab2[], int& n3, int tab[]);
+
+int main() {
+    int tab[DIMT];
+    int tab1[DIM], tab2[DIM];
+    int n1, n2, n3;
+
+    //Citirea tabloului 1
+    cout << "Introduceti numarul de elementele ale tabloului 1: ";
+    cin >> n1;
+    for (int i = 0; i < n1; i++)
+    {
+        cout << "tab[" << i << "] = ";
+        cin >> tab1[i];
+    }
+
+    //Citirea tabloului 2
+    cout << "Introduceti numarul de elementele ale tabloului 2: ";
+    cin >> n2;
+    for (int i = 0; i < n2; i++)
+    {
+        cout << "tab[" << i << "] = ";
+        cin >> tab2[i];
+    }
+
+    sort(tab1, tab1 + n1);
+    sort(tab2, tab2 + n2);
+
+    //Interclasare
+    Interclasare(n1, tab1, n2, tab2, n3, tab);
+
+    //Afisarea tabloului final
+    cout << "\nTablou final: \n";
+    for (int i = 0; i < n3; i++)
+        cout << tab[i] << " ";
+    cout << "\n";
+    return 0;
+}
+
+void Interclasare(int n1, int tab1[], int n2, int tab2[], int& n3, int tab[]) {
+    int i = 0, j = 0;
+    n3 = 0;
+    while (i < n1 && j < n2) {
+        if (tab1[i] < tab2[j]) {
+            if (tab[n3 - 1] != tab1[i])
+                tab[n3++] = tab1[i++];
+            else i++;
+        }
+        else {
+            if (tab[n3 - 1] != tab2[j])
+                tab[n3++] = tab2[j++];
+            else j++;
+        }
+    }
+    while (i < n1)
+        if (tab[n3 - 1] != tab1[i])
+            tab[n3++] = tab1[i++];
+        else i++;
+    while (j < n2)
+        if (tab[n3 - 1] != tab2[j])
+            tab[n3++] = tab2[j++];
+        else j++;
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 04 Pb 7, Handru Radu, Problema 7 consta in sortarea la alegerea utilizatorului a unui stoc de calculatoare cu ajutorul functiei qsort()*/
+#include <iostream>
+#include <stdlib.h>
+#include <malloc.h>
+#define DIM 101
+
+using namespace std;
+
+struct Calculator {
+    char nume[DIM];
+    char tip_cpu[DIM];
+    long int frecv_tact;
+    int ram;
+    float pret;
+    void Citire_Calculator(Calculator* p);
+    void Afisare_Calculator(Calculator* p);
+};
+
+void Citire_Calculator(Calculator* p) {
+    cout << "Nume: ";
+    cin >> p->nume;
+    cout << "Tip de procesor: ";
+    cin >> p->tip_cpu;
+    cout << "Frecventa de tact: ";
+    cin >> p->frecv_tact;
+    cout << "Ram: ";
+    cin >> p->ram;
+    cout << "Pret:";
+    cin >> p->pret;
+    cout << "\n";
+}
+
+void Afisare_Calculator(Calculator* p) {
+    cout << "\nNume: " << p->nume;
+    cout << "\nTip procesor: " << p->tip_cpu;
+    cout << "\nFrecventa de tact: " << p->frecv_tact;
+    cout << "\nRam: " << p->ram;
+    cout << "\nPret: " << p->pret;
+    cout << "\n";
+}
+
+void Sortare(Calculator* p, int n, int decizie);
+int comp1(const void* a, const void* b);
+int comp2(const void* a, const void* b);
+int comp3(const void* a, const void* b);
+int comp4(const void* a, const void* b);
+
+int main() {
+    struct Calculator* pc;
+    int n;
+    cout << "Cititi numarul de calculatoare:";
+    cin >> n;
+    pc = (Calculator*)malloc(n * sizeof(Calculator));
+    if (pc == 0) {
+        cout << "\n\tAlocare nereusita!\n";
+        exit(1);
+    }
+    cout << "\n";
+    for (int i = 0; i < n; i++)
+        Citire_Calculator(pc + i);
+
+    cout << "\nAfisarea calculatoarelor: \n";
+    for (int i = 0; i < n; i++)
+        Afisare_Calculator(pc + i);
+
+    int decizie;
+    cout << "\nAlegeti o metoda de sortare: ";
+    cout << "\n1: Dupa pret";
+    cout << "\n2: Dupa memorie";
+    cout << "\n3: Dupa tact";
+    cout << "\n4: Dupa tipul de procesor";
+    cout << "\nIntroduceti varianta aleasa:";
+    cin >> decizie;
+    if (decizie < 1 || decizie > 4) {
+        cout << "\n\tValoare introdusa gresit!\n";
+        exit(1);
+    }
+    //Tipul de sortare
+    Sortare(pc, n, decizie);
+
+    //Afisarea calculatoarelor sortate
+    cout << "\nAfisarea calculatoarelor sortate: \n";
+    for (int i = 0; i < n; i++)
+        Afisare_Calculator(pc + i);
+
+    return 0;
+}
+
+void Sortare(Calculator* p, int n, int decizie) {
+    if (decizie == 1)
+        qsort(p, n, sizeof(Calculator), comp1);
+    else if (decizie == 2)
+        qsort(p, n, sizeof(Calculator), comp2);
+    else if (decizie == 3)
+        qsort(p, n, sizeof(Calculator), comp3);
+    else if (decizie == 4)
+        qsort(p, n, sizeof(Calculator), comp4);
+}
+
+int comp1(const void* a, const void* b) {
+    Calculator* pa = (Calculator*)a;
+    Calculator* pb = (Calculator*)b;
+    if (pa->pret > pb->pret)
+        return 1;
+    else if (pa->pret < pb->pret)
+        return -1;
+    else return 0;
+}
+int comp2(const void* a, const void* b) {
+    Calculator* pa = (Calculator*)a;
+    Calculator* pb = (Calculator*)b;
+    if (pa->ram > pb->ram)
+        return 1;
+    else if (pa->ram < pb->ram)
+        return -1;
+    else return 0;
+}
+int comp3(const void* a, const void* b) {
+    Calculator* pa = (Calculator*)a;
+    Calculator* pb = (Calculator*)b;
+    if (pa->frecv_tact > pb->frecv_tact)
+        return 1;
+    else if (pa->frecv_tact < pb->frecv_tact)
+        return -1;
+    else return 0;
+}
+int comp4(const void* a, const void* b) {
+    Calculator* pa = (Calculator*)a;
+    Calculator* pb = (Calculator*)b;
+    if (strcmp(pa->tip_cpu, pb->tip_cpu) > 0)
+        return 1;
+    else if (strcmp(pa->tip_cpu, pb->tip_cpu) < 0)
+        return -1;
+    else return 0;
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 04 Pb 8, Handru Radu, Problema 8 consta in preluarea a 2 tablouri unidimensionale ce contin valori reale din 2 fisiere,
+generati un al treilea tablou care sa contina toate valorile din cele doua tablouri si toate valorile obtinute prin medierea
+valorilor de pe aceeasi pozitie din cele doua tablouri initiale. Daca numarul de elemente ale tablourilor difera, media se va face
+considerand valoarea 0.0 pentru elementele lipsa. Ordonati al treilea tablou si numarati cate valori numerice sunt in sir*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <iostream>
+#include <stdlib.h>
+#define DIM 101
+#define DIMT 303
+
+using namespace std;
+
+int main() {
+    FILE* fis1_in, * fis2_in;
+    float tab3[DIMT];
+    float tab1[DIM], tab2[DIM];
+    int n1 = 0, n2 = 0, n3 = 0;
+
+    fis1_in = fopen("in1.txt", "r");
+    if (fis1_in == 0) {
+        cout << "\n\tFisierul nu s-a putut deschide\n";
+        exit(1);
+    }
+
+    while (!feof(fis1_in)) {
+        fscanf(fis1_in, "%f", &tab1[n1++]);
+    }
+
+    //Inchiderea fisierului 1
+    fclose(fis1_in);
+
+    fis2_in = fopen("in2.txt", "r");
+    if (fis2_in == 0) {
+        cout << "\n\tFisierul nu s-a putut deschide\n";
+        exit(1);
+    }
+
+    while (!feof(fis2_in)) {
+        fscanf(fis2_in, "%f", &tab2[n2++]);
+    }
+
+    //Inchiderea fisierului 2
+    fclose(fis2_in);
+
+    //Afisarea tabloului 1
+    cout << "\nTabloul 1 este: \n";
+    for (int i = 0; i < n1; i++)
+        cout << tab1[i] << " ";
+    cout << "\n";
+
+    //Afisarea tabloului 2
+    cout << "\nTabloul 2 este: \n";
+    for (int i = 0; i < n2; i++)
+        cout << tab2[i] << " ";
+    cout << "\n";
+
+    //Formarea tabloului 3
+    for (int i = 0; i < n1; i++)
+        tab3[n3++] = tab1[i];
+    for (int i = 0; i < n2; i++)
+        tab3[n3++] = tab2[i];
+    if (n1 > n2) {
+        for (int i = 0; i < n1; i++)
+            if (n1 >= n2)
+                tab3[n3++] = tab1[i] / 2.;
+            else
+                tab3[n3++] = (tab1[i] + tab2[i]) / 2;
+    }
+    else if (n1 < n2) {
+        for (int i = 0; i < n2; i++)
+            if (n2 >= n1)
+                tab3[n3++] = tab2[i] / 2.;
+            else
+                tab3[n3++] = (tab1[i] + tab2[i]) / 2;
+    }
+    else {
+        for (int i = 0; i < n1; i++)
+            tab3[n3++] = (tab1[i] + tab2[i]) / 2;
+    }
+
+    //Afisarea tabloului 3
+    cout << "\nTabloul 3: \n";
+    for (int i = 0; i < n3; i++)
+        cout << tab3[i] << " ";
+
+    return 0;
+}
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 04 Pb 9, Handru Radu, Problema 9 consta in generarea in mod aleatoriu a unui tablou de maxim 200 de valori intregi nu mai mari de 100
+Determinarea si afisarea valorii minime, mediane si maxime, sortand elementele cu ajutorul Selection sort-ului
+Determinarea valorii medii si compararea acesteia cu valoarea mediana (afisati diferenta). Verificati daca valoarea medie este in tablou*/
+#include <iostream>
+#include <stdlib.h>
+#include <time.h>
+#define DIM 201
+
+using namespace std;
+
+void Selection_Sort(int* p, int n);
+float Val_Med(int* p, int n);
+
+int main() {
+    int tab[DIM];
+    int n;
+    //Citirea numarului de elemente
+    cout << "Introduceti numarul de elemente a tabloului (val <= 200): ";
+    cin >> n;
+    if (n <= 0 || n > 200) {
+        cout << "\n\tValoare introdusa gresit!\n";
+        exit(1);
+    }
+
+    srand(time(NULL));
+
+    //Generarea tabloului
+    for (int i = 0; i < n; i++)
+        tab[i] = rand() % 101;
+
+    //Afisarea tabloului
+    for (int i = 0; i < n; i++)
+        cout << tab[i] << " ";
+    cout << "\n";
+
+    //Pointer pentru tablou
+    int* p;
+    p = tab;
+
+    //Aplicarea Selection sort-ului
+    Selection_Sort(p, n);
+
+    //Afisarea valorii minime, mediane si a celei maxime
+    cout << "\nValoarea minima este: " << tab[0];
+    cout << "\nValoarea mediana este: " << tab[n / 2];
+    cout << "\nValoarea maxima este: " << tab[n - 1];
+
+    //Determinarea valorii medii
+    float val_med = Val_Med(p, n);
+    cout << "\nValoarea medie este: " << val_med << "\n";
+    cout << "\nDiferenta dintre valoarea medie si cea mediana este: " << val_med - tab[n / 2] << "\n";
+
+    if ((int)val_med != val_med)
+    {
+        cout << "\n\tValoarea medie nu a fost gasita in tablou!!!!\n";
+        exit(1);
+    }
+
+    bool gasit = 0;
+    for (int i = 0; i < n; i++)
+        if (tab[i] == val_med)
+            gasit = 1;
+    if (gasit == 1)
+        cout << "\n\tValoarea medie a fost gasita in tablou!!!!\n";
+    else cout << "\n\tValoarea medie nu a fost gasita in tablou!!!!\n";
+
+
+    return 0;
+}
+
+void Selection_Sort(int* p, int n) {
+    int min_i;
+    for (int i = 0; i < n - 1; i++)
+    {
+        min_i = i;
+        for (int j = i + 1; j < n; j++)
+            if (p[j] < p[min_i])
+                min_i = j;
+        swap(p[i], p[min_i]);
+    }
+}
+
+float Val_Med(int* p, int n) {
+    float s = 0;
+    for (int i = 0; i < n; i++)
+        s += p[i];
+    return s / n;
+}
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/*Lab 04 Pb 10, Handru Radu, Problema 10 consta in generarea unui tablou de maxim 200 de valori reale, printr-un mecanism aleatoriu,
+primul fiind partea intreaga nu mai mare de 100, iar al doilea partea fractionara limitata la 20 ca intreg, ce devine 20 fractionar*/
+#include <iostream>
+#include <stdlib.h>
+#include <time.h>
+#define DIM 201
+
+using namespace std;
+
+int main() {
+    float tab[DIM];
+    int intreg[DIM];
+    float fractionar[DIM];
+    int n;
+    //Citirea numarului de elemente
+    cout << "Introduceti numarul de elemente a tabloului: ";
+    cin >> n;
+
+    srand(time(NULL));
+
+    //Generarea tablourilor
+    for (int i = 0; i < n; i++) {
+        intreg[i] = rand() % 101;
+        fractionar[i] = (rand() % 21) / 100.;
+        tab[i] = intreg[i] + fractionar[i];
+    }
+
+    cout << "\nTabloul de intregi este: \n";
+    for (int i = 0; i < n; i++)
+        cout << "intreg[" << i << "] = " << intreg[i] << "\n";
+
+    cout << "\nTabloul frationar este: \n";
+    for (int i = 0; i < n; i++)
+        cout << "fractionar[" << i << "] = " << fractionar[i] << "\n";
+
+    cout << "\nTabloul final este: \n";
+    for (int i = 0; i < n; i++)
+        cout << "tab[" << i << "] = " << tab[i] << "\n";
+
+
+    return 0;
+}
+

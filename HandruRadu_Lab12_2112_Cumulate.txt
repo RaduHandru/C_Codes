@@ -1,0 +1,177 @@
+/*Lab 12 Pb 1, Handru Radu, Problema 1 consta in scrierea unui program C++ in care afisati diferite valori în zecimal,
+octal si hexazecimal. 
+Afisati valorile aliniate la dreapta, respectiv la stanga intr-un camp de afisare cu dimensiunea 15.
+Utilizati manipulatorul setfill( ) pentru stabilirea caracterului de umplere si metodele width( )
+si precision( ) pentru stabilirea dimensiunii campului de afisare si a preciziei. 
+*/
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+int main() {
+    int val1 = 670;
+    double val2 = 5.6723123;
+
+    cout << "\nScriere in zecimal aliniat la dreapta: ";
+    cout << setfill('G') << right << val1 << "\n";
+
+    cout << "\nScriere in hexa la stanga: ";
+    cout << setw(15) << left << hex << val1 << "\n";
+
+    cout << "\nScriere in octal la dreapta: ";
+    cout << setw(15) << right << oct << val1 << "\n";
+
+    cout << "\n\n";
+    cout << "\nScriere in zecimal aliniat la stanga cu precizie de 5 zecimal: ";
+    cout << setw(15) << left << setprecision(5) << val2 << "\n";
+    
+    cout << "\nSciere in hexa la dreapta cu prezie de 6 zecimale: ";
+    cout << setw(15) << right << hex << setprecision(6) << val2 << "\n";
+
+    cout << "\nScriere in octal la stanga cu precizie de 3 zecimale: ";
+    cout << setw(15) << left << oct << setprecision(3) << val2 << "\n";
+    
+
+    return 0;
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 12 Pb 2, Handru Radu, Problema 2 consta in scrierea unei aplicatii C++ in care se citesc de la tastatura
+date de diferite tipuri,urmand a fi afisate pe ecran utilizand manipulatorii standard.
+*/
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+int main() {
+    int n;
+    double m;
+    char c;
+    cout << "Introduceti un intreg: ";
+    cin >> n;
+    cout << "Introduceti o valoare reala: ";
+    cin >> m;
+    cout << "Introduceti un caracter: ";
+    cin >> c;
+
+    cout << "\n\nIntreg: " << setw(3) << right << n;
+    cout << "\nReal: " << setprecision(3) << m;
+    cout << "\nCarcter: " << c;
+
+    return 0;
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 12 Pb 3, Handru Radu, Problema 3 consta a considera achizitia de date cu valori reale de la un dispozitiv electronic (10 date). 
+Afisati folosind un mesaj adecvat datele primite considerand un format minimal (partea întreaga).
+Determinati media acestor valori (partea întreaga), iar daca depaseste un prag stabilit anterior
+(definit sau citit), afisati aceste date in format detaliat considerand ca avem date de tip real, cu
+o precizie de 3 digiti la partea fractionara.
+*/
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+const int NrDate = 10;
+const float prag = 13;
+
+int main() {
+    float suma = 0;
+    float media = 0;
+    float date[NrDate];
+
+    cout << "\nIntroduceti 10 valori: \n";
+    for (int i = 0; i < NrDate; i++) {
+        cin >> date[i];
+        suma += date[i];
+    }
+
+    cout << "\nAfisarea valorilor: \n";
+    for (int i = 0; i < NrDate; i++)
+        cout << (int)date[i] << "\n";
+
+    media = suma / NrDate;
+    
+    if (media > prag) {
+        cout << "\nAfisarea numerelor cu 3 cifre la partea fractionara\n";
+        for (int i = 0; i < NrDate; i++)
+            cout << fixed << setprecision(3) << date[i] << "\n";
+    }
+
+    return 0;
+}
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 12 Pb 4, Handru Radu, Problema 4 consta in definirea unei clase numita MiscareAccelerata care contine atributele private dc (distanta curenta,
+vc (viteza curenta) si a (acceleratia), atributele dc, vc si a sunt initializate in constructor iar
+valoarea lor este cea data de d0 si v0, si a0 ca si parametri.
+In clasa sunt supraincarcati operatorii de extractie si de insertie pentru a se putea initializa
+si afisa caracteristicile unei instante. 
+Implementati metoda determinaMiscarea() care re-calculeaza variabilele dc si vc, pe
+baza unui numar de secunde primit ca si parametru si avand in vedere legea miscarii rectilinii
+uniform accelerate cu acceleratie a0. 
+Instantiati clasa si apoi folositi membrii definiti.
+*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+using namespace std;
+
+class MiscareAccelerata {
+private:
+    double dc, vc, a;
+public:
+    MiscareAccelerata(double d0, double v0, double a0) {
+        dc = d0;
+        vc = v0;
+        a = a0;
+    }
+    void determinaMiscarea(int nrSec);
+
+    friend istream& operator >>(istream& stream, MiscareAccelerata& ma1);
+    friend ostream& operator <<(ostream& stream, MiscareAccelerata ma1);
+};
+
+void MiscareAccelerata::determinaMiscarea(int nrSec) {
+    dc = vc * nrSec + 0.5 * a * nrSec * nrSec;
+    vc = vc + a * nrSec;
+}
+
+istream& operator >>(istream& stream, MiscareAccelerata& ma1) {
+    cout << "Introduceti valoarea lui dc: ";
+    stream >> ma1.dc;
+    cout << "Introduceti valoarea lui vc: ";
+    stream >> ma1.vc;
+    cout << "Introduceti valoarea lui a: ";
+    stream >> ma1.a;
+    return stream;
+}
+
+ostream& operator <<(ostream& stream, MiscareAccelerata ma1) {
+    stream << "\nValorile sunt: \n";
+    stream << "\ndc: " << ma1.dc;
+    stream << "\nvc: " << ma1.vc;
+    stream << "\na: " << ma1.a << "\n";
+    return stream;
+}
+
+int main() {
+    MiscareAccelerata ma1(3,4,5);
+    cin >> ma1;
+    cout << ma1;
+
+    int nrSec;
+
+    cout << "\nIntroduceti numarul de secunde: ";
+    cin >> nrSec;
+
+    ma1.determinaMiscarea(nrSec);
+
+    cout << ma1;
+
+    return 0;
+}
+

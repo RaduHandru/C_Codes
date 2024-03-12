@@ -1,0 +1,398 @@
+/*Lab 02 Pb 1, Handru Radu, Problema 1 consta in efectuarea aranjamentelor de n luate cate k, in mod recursiv*/
+#include <iostream>
+
+using namespace std;
+
+int fact(int n);
+float aranj(int n, int k);
+
+int main() {
+    int n, k;
+    cout << "Introduceti valoarea lui n: ";
+    cin >> n;
+    cout << "Introduceti valoarea lui k: ";
+    cin >> k;
+    if (k > n)
+    {
+        cout << "Numarul introdus nu este corect!";
+        return 1;
+    }
+    cout << "Rezultatul aranjamentelor este: " << aranj(n, k) << "\n";
+    cout << "Rezultatul aranjamentelor prin impartirea de factoriale este: " << fact(n) / fact(n - k) << "\n";
+    if (fact(n) / fact(n - k) == aranj(n, k))
+        cout << "Acesta este rezultatul aranjamentelor!";
+    else cout << "Acesta nu este rezultatul aranjamentelor!";
+
+    return 0;
+}
+
+int fact(int n) {
+    if (n == 0) return 1;
+    else return n * fact(n - 1);
+}
+
+float aranj(int n, int k) {
+    if (k == 1) return n;
+    else return n * aranj(n - 1, k - 1);
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 02 Pb 2, Handru Radu, Problema 2 consta in efectuarea combinarilor de n luate cate k, in mod recursiv*/
+#include <iostream>
+
+using namespace std;
+
+int fact(int n);
+float combinari(int n, int k);
+
+int main() {
+    int n, k;
+    cout << "Introduceti valoarea lui n: ";
+    cin >> n;
+    cout << "Introduceti valoarea lui k: ";
+    cin >> k;
+    if (k > n)
+    {
+        cout << "Numarul introdus nu este corect!";
+        return 1;
+    }
+    cout << "Rezultatul Combinarilor este: " << combinari(n, k) << "\n";
+    cout << "Rezultatul combinarilor prin impartirea de factoriale: " << fact(n) / (fact(k) * fact(n - k)) << "\n";
+    if (fact(n) / (fact(k) * fact(n - k)) == combinari(n, k))
+        cout << "Acesta este rezultatul combinarilor!";
+    else cout << "Acesta nu este rezultatul combinarilor!";
+
+    return 0;
+}
+
+int fact(int n) {
+    if (n == 0) return 1;
+    else return n * fact(n - 1);
+}
+
+float combinari(int n, int k) {
+    if (n == 0 || k == 0 || n == k) return 1;
+    else return n * combinari(n - 1, k) / (n - k);
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 02 Pb 3, Handru Radu, Problema 3 consta in efectuarea cmmdc-ului a doua numere folosind o functie recursiva */
+#include <iostream>
+
+using namespace std;
+
+int cmmdc_r(int a, int b);
+
+int main() {
+    int n, m;
+    cout << "Introduceti un numar: ";
+    cin >> n;
+    cout << "Introduceti un numar: ";
+    cin >> m;
+    cout << "Cel mai mare divizor comun al acestora este: " << cmmdc_r(n, m);
+    return 0;
+}
+
+int cmmdc_r(int a, int b) {
+    if (b == 0)
+        return a;
+    else return cmmdc_r(b, a % b);
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 02 Pb 4, Handru Radu, Problema 4 consta in determinarea lui an si bn, cu n, a0 si b0 introduse de la tastatura*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <math.h>
+using namespace std;
+
+
+float a_n(float a, float b, int n);
+float b_n(float a, float b, int n);
+
+int main() {
+    int n;
+    float a0, b0;
+    cout << "Introduceti valoarea lui n: ";
+    cin >> n;
+    cout << "Introduceti valoarea lui a0: ";
+    cin >> a0;
+    cout << "Introduceti valoarea lui b0: ";
+    cin >> b0;
+    cout << "\nAn= " << a_n(a0, b0, n);
+    cout << "\nBn= " << b_n(a0, b0, n);
+    return 0;
+}
+
+float a_n(float a, float b, int n) {
+    if (n == 0)
+        return 0;
+    return (a + b) / 2 + a_n(a, b_n(a, b, n - 1), n - 1);
+}
+
+float b_n(float a, float b, int n) {
+    if (n == 0)
+        return 0;
+    return sqrt(a * b) + b_n(a_n(a, b, n - 1), b, n - 1);
+}
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 02 Pb 6, Handru Radu, Problema 6 consta in determinarea produsului scalar a doi vectori printr-o functie recursiva si una nerecursiva
+folosind tablouri unidimensionale*/
+#include <iostream>
+#define DIM 51
+using namespace std;
+
+int prod_scalar_nerec(int n, int vec1[], int vec2[]);
+int prod_scalar_rec(int n, int vec1[], int vec2[]);
+
+int main() {
+    int vec1[DIM], vec2[DIM];
+    int n;
+    cout << "Cititi numarul de coordonate ale vectorilor: ";
+    cin >> n;
+    //Citirea primului vector
+    cout << "Introduceti valorile primului vector: " << "\n";
+    for (int i = 0; i < n; i++)
+    {
+        cout << "vec1[" << i << "] = ";
+        cin >> vec1[i];
+    }
+    //Citirea celui de al doilea vector
+    cout << "Introduceti valorile celui de al doilea vector: " << "\n";
+    for (int i = 0; i < n; i++)
+    {
+        cout << "vec2[" << i << "] = ";
+        cin >> vec2[i];
+    }
+    //Afisarea produsului scalar obtinut nerecursiv
+    cout << "Produsul scalar obtinut nerecursiv este: " << prod_scalar_nerec(n, vec1, vec2) << "\n";
+    //Afisarea produsului scalar obtinut recursiv
+    cout << "Produsul scalar obtinut recursiv este: " << prod_scalar_rec(n - 1, vec1, vec2);
+
+    return 0;
+}
+
+int prod_scalar_nerec(int n, int vec1[], int vec2[]) {
+    int p = 1;
+    for (int i = 0; i < n; i++)
+        p += (vec1[i] * vec2[i]);
+    return p;
+}
+
+int prod_scalar_rec(int n, int vec1[], int vec2[]) {
+    if (n < 0) return 1;
+    return (vec1[n] * vec2[n]) + prod_scalar_rec(n - 1, vec1, vec2);
+}
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 02 Pb 7, Handru Radu, Problema 7 consta in determinarea sumei numerelor impare, dintr-un tablou unidimensional de numere intregi,
+in mod recursiv*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#define DIM 51
+
+int suma_nr_imp(int n, int tab[]);
+
+int main() {
+    FILE* fis;
+    int n;
+    int tab[DIM];
+    fis = fopen("fis_in.txt", "r");
+    if (fis == 0) {
+        printf("\n\tEroare la deschiderea fisierului!\n");
+        return 1;
+    }
+    //Numarul de numere din vector
+    fscanf(fis, "%d", &n);
+    //Citirea tabloului din fisier
+    for (int i = 0; i < n; i++)
+        fscanf(fis, "%d", &tab[i]);
+
+    //Afisarea sumei numerelor impare
+    printf("\n\tSuma numerelor impare este: %d \n", suma_nr_imp(n - 1, tab));
+
+    fclose(fis);
+    return 0;
+}
+
+int suma_nr_imp(int n, int tab[]) {
+    if (n < 0) return 0;
+    if (tab[n] % 2 == 1) return tab[n] + suma_nr_imp(n - 1, tab);
+    else return suma_nr_imp(n - 1, tab);
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 02 Pb 8, Handru Radu, Problema 8 consta in determinarea produsului elementelor aflate pe pozitii impare, respectiv suma numerelor prime din tablou,
+dintr-un tablou unidimensional de numere intregi,in mod recursiv*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#define DIM 51
+
+int prim(int n, int d);
+int prod_poz_imp(int n, int tab[]);
+int suma_nr_prime(int n, int tab[]);
+
+int main() {
+    FILE* fis;
+    int n;
+    int tab[DIM];
+    fis = fopen("fis_in.txt", "r");
+    if (fis == 0) {
+        printf("\n\tEroare la deschiderea fisierului!\n");
+        return 1;
+    }
+    //Numarul de numere din vector
+    fscanf(fis, "%d", &n);
+    //Citirea tabloului din fisier
+    for (int i = 0; i < n; i++)
+        fscanf(fis, "%d", &tab[i]);
+
+    //Afisarea produsului numerelor de pe pozitii impare
+    printf("\n\tProdusul numerelor de pe pozitii impare este : %d \n", prod_poz_imp(n - 1, tab));
+    //Afisarea 
+    printf("\n\tSuma numerelor prime este: %d\n", suma_nr_prime(n - 1, tab));
+    fclose(fis);
+    return 0;
+}
+
+int prim(int n, int d) {
+    if (n <= 2) return 0;
+    else if (d > n / 2) return 1;
+    else if (n % d == 0) return 0;
+    else return prim(n, d + 1);
+}
+
+int prod_poz_imp(int n, int tab[]) {
+    if (n < 0) return 1;
+    if (n % 2 == 1) return tab[n] * prod_poz_imp(n - 1, tab);
+    else return prod_poz_imp(n - 1, tab);
+}
+
+int suma_nr_prime(int n, int tab[]) {
+    if (n < 0) return 0;
+    else if (prim(tab[n], 2) == 1) return tab[n] + suma_nr_prime(n - 1, tab);
+    else return suma_nr_prime(n - 1, tab);
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 02 Pb 11, Handru Radu, Problema 11 consta in convertirea unui numar pozitiv din baza 10 intr-o baza b introdusa de la tastatura
+avand conditia (1 < b < 10)*/
+#include <iostream>
+using namespace std;
+
+int convert(int n, int b);
+
+int main() {
+    int n, b;
+    cout << "Introduceti numarul n: ";
+    cin >> n;
+    if (n <= 0) {
+        cout << "\n\tValoare introdusa gresit!\n";
+        exit(1);
+    }
+    cout << "Introduceti baza in care acesta urmeaza sa fie convertit: ";
+    cin >> b;
+    if (b < 2 || b > 9) {
+        cout << "\n\tValoare introdusa gresit!\n";
+        exit(1);
+    }
+    n = convert(n, b);
+    cout << "\nNumarul convertit va fi: " << n;
+
+    return 0;
+}
+
+int convert(int n, int b) {
+    if (n == 0) return 0;
+    return (n % b) + 10 * convert(n / b, b);
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 02 Pb 12, Handru Radu, Problema 12 consta in determinarea lui Sn pentru functia de gradul 2, in mod recursiv, daca acest lucru este posibil*/
+#include <iostream>
+using namespace std;
+
+float Sum(int n, float s, float p);
+
+int main() {
+    int n;
+    float s, p;
+    cout << "Introduceti valoarea lui s: ";
+    cin >> s;
+    cout << "Introduceti valoarea lui p: ";
+    cin >> p;
+    float delta = (s * s) - (4 * p);
+    cout << "\ndelta= " << delta << "\n";
+    if (delta < 0) {
+        cout << "\n\tOperatia nu poate fi realizata!\n";
+        exit(1);
+    }
+
+    cout << "Introduceti valoarea lui n (Pentru calculul lui Sn) :";
+    cin >> n;
+    if (n < 0)
+    {
+        cout << "\n\tValoare incorecta!\n";
+        exit(1);
+    }
+    cout << "Valoarea lui Sn este: " << Sum(n, s, p);
+
+    return 0;
+}
+
+float Sum(int n, float s, float p) {
+    if (n == 0) return 2;
+    if (n == 1) return s;
+    else if (n > 1) return s * Sum(n - 1, s, p) - p * Sum(n - 2, s, p);
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 02 Pb 13, Handru Radu, Problema 13 consta in determinarea valorii seriei armonice in mod recursiv si nerecursiv*/
+#include <iostream>
+using namespace std;
+
+float seria_arm_nerecursiv(int n);
+float seria_arm_recursiv(int n);
+
+int main() {
+    int n;
+    cout << "\n\tPentru a inchide compilarea introduceti valoarea 0\n\n";
+    do {
+        cout << "Introduceti valoarea lui n: ";
+        cin >> n;
+        if (n != 0) {
+            cout << "Valoarea seriei armonice (nerecursiv) pentru n = " << n << " este: " << seria_arm_nerecursiv(n) << "\n";
+            cout << "Valoarea seriei armonice (recursiv) pentru n = " << n << " este: " << seria_arm_recursiv(n) << "\n";
+        }
+    } while (n != 0);
+
+    return 0;
+}
+
+float seria_arm_nerecursiv(int n) {
+    float s = 0;
+    for (int i = 1; i <= n; i++)
+        s += (float)1 / i;
+    return s;
+}
+
+float seria_arm_recursiv(int n) {
+    if (n == 0) return 0;
+    return (1. / n) + seria_arm_recursiv(n - 1);
+}
+
+
+
+

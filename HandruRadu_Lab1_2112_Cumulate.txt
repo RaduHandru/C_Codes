@@ -1,0 +1,218 @@
+/*Lab 01 Pb 1, Handru Radu, Problema 1 consta in determinarea maximului dintre 2 si 3 numere intregi prin implementarea functiilor macro*/
+#include <iostream>
+
+using namespace std;
+
+#define MAX2(a,b) ((a)>(b)?(a):(b))
+#define MAX3(a,b,c){if(MAX2(a,b) > c)\
+        c = MAX2(a, b);\
+}
+
+int main() {
+    float a, b, c;
+    cout << "Introduceti 2 numere: ";
+    cin >> a >> b;
+    cout << "Maximul dintre cele 2 numere introduse este: " << MAX2(a, b) << "\n";
+    cout << "Introduceti 3 numere: ";
+    cin >> a >> b >> c;
+    MAX3(a, b, c);
+    cout << "Maximul dintre cele 3 numere introduse este: " << c << "\n";
+    return 0;
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 01 Pb 2, Handru Radu, Problema 2 consta in definirea unor functii inline care determina minimul a 2 si a 3 numere*/
+#include <iostream>
+
+using namespace std;
+
+inline int MIN2(int a, int b);
+inline int MIN3(int a, int b, int c);
+
+int main() {
+        int a, b, c;
+        cout << "Introduceti 2 numere intregi: ";
+        cin >> a >> b;
+        cout << "Minimul dintre cele 2 numere introduse este: " << MIN2(a, b) << "\n";
+        cout << "Introduceti 3 numere intregi: ";
+        cin >> a >> b >> c;
+        cout << "Minimul dintre cele 3 numere introduse este: " << MIN3(a, b, c) << "\n";
+        return 0;
+}
+
+inline int MIN2(int a, int b) {
+        if (a > b)
+                return b;
+        else return a;
+}
+
+inline int MIN3(int a, int b, int c) {
+        if (a > MIN2(b, c))
+                return MIN2(b, c);
+        else return a;
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 01 Pb 3, Handru Radu, Problema 3 consta in definirea unei structuri Student cu un camp de nume prenume si unul pentru nota,
+ acestea vor fi validate cu asertiuni si in cazul in care conditiile sunt indeplinite, acestea vor fi afisate*/
+#include <iostream>
+#include <assert.h>
+#include <string.h>
+#define MAX_DIM 31
+
+using namespace std;
+
+struct Student {
+        char nume_prenume[MAX_DIM];
+        int nota;
+};
+
+int main() {
+        Student stud;
+        cout << "Introduceti Numele si Prenumele: ";
+        cin >> stud.nume_prenume;
+        assert(strlen(stud.nume_prenume) >= 5);
+        cout << "Introduceti nota: ";
+        cin >> stud.nota;
+        assert(stud.nota >= 5 && stud.nota <= 10);
+        cout << "Numele si prenumele sunt: " << stud.nume_prenume << "\n";
+        cout << "Nota este: " << stud.nota;
+        return 0;
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 01 Pb 4, Handru Radu, Problema 4 consta definirea unei functii cu 3 parametri impliciti (int, float, double) care returneaza
+produsul acestora*/
+#include <iostream>
+
+using namespace std;
+
+inline double produs(int a = 1, float b = 2, double c = 3) {
+    return (double)a * b * c;
+}
+
+int main() {
+    cout << produs() << "\n";
+    cout << produs(1) << "\n";
+    cout << produs(1, 2) << "\n";
+    cout << produs(1, 2, 3) << "\n";
+    return 0;
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 01 Pb 5, Handru Radu, Problema 5 consta in supraincarcarea a 3 a functii cu acelasi nume, dar cu tipuri diferite de parametri
+(int, int*, int&) */
+#include <iostream>
+#include <math.h>
+
+using namespace std;
+
+float sqrt1(int n);
+float sqrt1(int& n, int a);
+float sqrt1(int* n);
+
+int main() {
+    int n;
+    cout << "Introduceti un numar intreg: ";
+    cin >> n;
+    int* p = &n;
+    if (sqrt1(n) != -1) {
+        cout << "Apel prin valoare: " << sqrt1(n) << "\n";
+    }
+    else {
+        cout << "\n\tValoarea introdusa este negativa!!!\n";
+        exit(1);
+    }
+    cout << "Apel prin referinta: " << sqrt1(n, 1) << "\n";
+    cout << "Apel prin pointer: " << sqrt1(p) << "\n";
+    return 0;
+}
+
+float sqrt1(int n) {
+    if (n > 0)
+        return sqrt(n);
+    else return -1;
+}
+
+float sqrt1(int& n, int b) {
+    if (n > 0)
+        return sqrt(n);
+    else return -1;
+}
+
+float sqrt1(int* n) {
+    if (*n > 0)
+        return sqrt(*n);
+    else return -1;
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 01 Pb 7, Handru Radu, Problema 7 consta in folosirea unei functii macro pentru a aduna un numar n la codul ASCII a unui caracter (c) */
+#include <iostream>
+
+using namespace std;
+
+#define caracter(c,n) (c = c + n)
+
+int main() {
+    char c;
+    int n;
+    cout << "Introduceti caracterul: ";
+    cin >> c;
+    cout << "Introduceti numarul care doriti sa fie adaugat la codul ASCII: ";
+    cin >> n;
+    cout << "Caracterul devine: " << caracter(c, n);
+    return 0;
+}
+
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 01 Pb 8, Handru Radu, Problema 8 consta in afisarea numelui programului, a datei, ora compilarii si numarul 
+de linii pe care il are acest program*/
+#include <iostream>
+
+using namespace std;
+
+int main() {
+        cout << "Numele programului este: " << __FILE__ << "\n";
+        cout << "Data programului este: " << __DATE__ << "\n";
+        cout << "Ora compilarii este: " << __TIME__ << "\n";
+        cout << "Numarul de linii este: " << __LINE__ << "\n";
+        return 0;
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 01 Pb 9, Handru Radu, Problema 9 consta in 2 functii macro, una care codeaza si una care decodeaza un numar, cu ajutorul unei mastii
+si a sau-ului exclusiv*/
+#include <iostream>
+#include <string.h>
+using namespace std;
+#define DIM 31
+#define Codare(n, masca) (n ^masca)
+#define Decodare(n, masca) (n ^masca)
+
+const int mascaa = 60;
+
+int main() {
+    char sir[DIM];
+    cout << "Introduceti sirul: ";
+    cin >> sir;
+    //Codarea sirului
+    for (int i = 0; i < strlen(sir); i++)
+        sir[i] = Codare(sir[i], mascaa);
+    cout << "Sirul codat este: " << sir << "\n";
+    //Decodarea acestuia
+    for (int i = 0; i < strlen(sir); i++)
+        sir[i] = Decodare(sir[i], mascaa);
+    cout << "Sirul decodat este: " << sir << "\n";
+    return 0;
+}
+

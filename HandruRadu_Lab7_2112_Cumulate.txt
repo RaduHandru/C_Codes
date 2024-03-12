@@ -1,0 +1,736 @@
+/*Lab 07 Pb 1, Handru Radu, Problema 1 consta in modificarea exemplului 3 astfel incat sa permita obtinerea unui nou punct, avand coordonatele determinate prin adunarea coordonatelor a doua astfel de puncte
+Numele noului punct va fi obtinut din concatenarea numelor celor 2 puncte. Adaugati si testati o metoda care calculeaza distanta de la un punct la origine.
+Modificati clasa astfel incat sa eliminati metoda afis() folosind in schimb metode accesor adecvate.
+Eliminati de asemenea atributul lungime_sir modificand adecvat metodele clasei.
+Adaugarea unui move constructor. Testati ca si alta varianta utilizand si functii specifice sirurilor de caractere din VC++1y/2z (strcpy_s() si strcat_s())
+*/
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <math.h>
+using namespace std;
+
+const int dim_sir = 11;
+
+class CPunctText {
+private:
+    int x;
+    int y;
+    char* sNume;
+public:
+    CPunctText();
+
+    CPunctText(int ix, int iy, const char* sText = "Punct");
+
+    CPunctText(const CPunctText& pct);
+
+    CPunctText(CPunctText&& pct);
+
+    int getX() {
+        return x;
+    }
+
+    int getY() {
+        return y;
+    }
+
+    char* getsNume() {
+        return sNume;
+    }
+
+    void setX(int x1) {
+        x = x1;
+    }
+
+    void setY(int y1) {
+        y = y1;
+    }
+
+    void setsNume(char* snume1) {
+        sNume = new (nothrow)char[strlen(snume1) + 1];
+        strcpy(sNume, snume1);
+    }
+
+    char* ConcatNume(CPunctText punct2) {
+        char* nume1;
+        nume1 = new (nothrow) char[strlen(sNume) + strlen(punct2.getsNume()) + 1];
+        strcpy(nume1, sNume);
+        strcat(nume1, punct2.getsNume());
+        return nume1;
+    }
+
+    CPunctText Adunare(CPunctText punct2) {
+        CPunctText punct3;
+        punct3.setX(this->x + punct2.getX());
+        punct3.setY(this->y + punct2.getY());
+        punct3.setsNume(this->ConcatNume(punct2));
+        return punct3;
+    }
+
+    float Distanta_origine() {
+        return sqrt((float)(x * x) + (y * y));
+    }
+
+    ~CPunctText();
+};
+
+CPunctText::CPunctText() {
+    cout << "\n constructor explicit vid";
+    x = y = 0;
+    sNume = new (nothrow) char[dim_sir];
+    strcpy(sNume, "Necunoscut");
+}
+
+CPunctText::CPunctText(int ix, int iy, const char* sText) {
+    cout << "\nConstructor cu parametri";
+    sNume = new (nothrow) char[strlen(sText) + 1];
+    x = ix;
+    y = iy;
+    strcpy(sNume, sText);
+}
+
+CPunctText::CPunctText(const CPunctText& pct) {
+    cout << "\nConstructor de copiere";
+    sNume = new (nothrow) char[strlen(pct.sNume) + 1];
+    x = pct.x;
+    y = pct.y;
+    strcpy(sNume, pct.sNume);
+}
+
+
+CPunctText::CPunctText(CPunctText&& pct) {
+    cout << "\nMove constructor";
+    x = pct.x;
+    y = pct.y;
+    sNume = new (nothrow) char[strlen(pct.sNume) + 1];
+    strcpy(sNume, pct.sNume);
+}
+
+
+CPunctText::~CPunctText() {
+    cout << "\n destructor";
+    delete[] sNume;
+}
+
+int main() {
+    CPunctText cpt1(1, 2, "Punctul1");
+    CPunctText cpt2(cpt1);
+    CPunctText cpt3 = cpt2;
+    CPunctText cpt4(4, 5);
+
+    cout << "\n\nObiectul 3 are x= " << cpt3.getX();
+    cout << "\nObiectul 3 are y= " << cpt3.getY();
+    cout << "\nObiectul 3 are sirul = " << cpt3.getsNume() << "\n";
+
+    cout << "\nObiectul 4 are x= " << cpt4.getX();
+    cout << "\nObiectul 4 are y= " << cpt4.getY();
+    cout << "\nObiectul 4 are sirul = " << cpt4.getsNume() << "\n";
+
+    //Adunarea a 2 puncte
+    CPunctText cpt5 = cpt3.Adunare(cpt4);
+    cout << "\n\nObiectul 5 are x= " << cpt5.getX();
+    cout << "\nObiectul 5 are y= " << cpt5.getY();
+    cout << "\nObiectul 5 are sirul = " << cpt5.getsNume() << "\n";
+
+    //Distanta de la un punct la origine
+    cout << "\nDistanta de la punctul 5 la origine este: " << cpt5.Distanta_origine() << "\n";
+
+    //Move Constructor
+    CPunctText cpt6 = move(cpt5);
+    cout << "\n\nObiectul 6 are x= " << cpt6.getX();
+    cout << "\nObiectul 6 are y= " << cpt6.getY();
+    cout << "\nObiectul 6 are sirul = " << cpt6.getsNume() << "\n";
+
+    return 0;
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 07 Pb 2, Handru Radu, Problema 2 consta in scrierea unei aplicatii care sa modele obiectual un tablou unidimensional de numere reale de dimensiunea dim, ca si atribut, tabloul fiind dat printr-un pointer.
+Crearea a doua instante ale clasei si afisarea valorii unui al 3-lea tablou, obtinut prin scaderea elementelor corespunzatoare din primele 2 tablouri.
+Daca tablourile au lungimi diferite, tabloul rezultat va avea lungimea tabloului cel mai scurt. Initializarea, scaderea si afisarea tablourilor se vor face cu metode din clasa/ sau cu functii globale.*/
+#include <iostream>
+#define DIM 101
+
+using namespace std;
+
+class Tablou {
+private:
+    int dim;
+    float* ptab;
+public:
+    Tablou(int dim1) {
+        dim = dim1;
+        ptab = new(nothrow)float[dim];
+    }
+
+    int getDim() {
+        return dim;
+    }
+
+    float getTab_i(int i) {
+        return *(ptab + i);
+    }
+
+    void setDim(int dim1) {
+        dim = dim1;
+    }
+
+    void setTab_i(int i, float val) {
+        *(ptab + i) = val;
+    }
+
+    Tablou diferenta(Tablou tab2) {
+        int Dim_min = min(dim, tab2.dim);
+        Tablou tab3(Dim_min);
+        for (int i = 0; i < tab3.getDim(); i++)
+            tab3.setTab_i(i, getTab_i(i) - tab2.getTab_i(i));
+        return tab3;
+    }
+
+    //~Tablou() {
+    //    delete[]ptab;
+    //}
+};
+
+void Afisare_Tab(Tablou tab1) {
+    cout << "\nValorile din tablou sunt: ";
+    for (int i = 0; i < tab1.getDim(); i++)
+        cout << tab1.getTab_i(i) << " ";
+    cout << "\n";
+}
+
+int main() {
+    int dim1, dim2;
+    float tabb1[DIM], tabb2[DIM];
+    //Tabloul 1
+    cout << "Introduceti dimensiunea tabloului 1: ";
+    cin >> dim1;
+    Tablou tab1(dim1);
+    for (int i = 0; i < dim1; i++) {
+        cout << "tab1[" << i << "]= ";
+        cin >> tabb1[i];
+        tab1.setTab_i(i, tabb1[i]);
+    }
+    Afisare_Tab(tab1);
+
+    //Tabloul 2
+    cout << "\n\nIntroduceti dimensiunea tabloului 2: ";
+    cin >> dim2;
+    Tablou tab2(dim2);
+    for (int i = 0; i < dim2; i++) {
+        cout << "tab2[" << i << "]= ";
+        cin >> tabb2[i];
+        tab2.setTab_i(i, tabb2[i]);
+    }
+    Afisare_Tab(tab2);
+
+    //Diferenta
+    Tablou tab3 = tab1.diferenta(tab2);
+    Afisare_Tab(tab3);
+
+    return 0;
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 07 Pb 3, Handru Radu, Problema 3 consta in modelarea clasei Student care sa contina atributele private nume, prenume, note(tablou de 7 valori int), grupa. Alocati dinamic
+Alocati dinamic memorie pentru n studenti in main().
+Calculati media cu o metoda din clasa si sortati studentii dupa medie, afisand datele fiecarui student (nume ,prenume, grupa, medie).
+Implementati si destructorul clasei care sa afiseze un mesaj.
+*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <string.h>
+#include <algorithm>
+using namespace std;
+
+const int dim_sir = 31;
+const int dim_tab = 8;
+
+class Student {
+private:
+    char nume[dim_sir];
+    char prenume[dim_sir];
+    int* note;
+    int grupa;
+public:
+    Student() = default;
+
+    Student(char nume1[], char prenume1[], int notee[], int grupa1) {
+        strcpy(nume, nume1);
+        strcpy(prenume, prenume1);
+        note = new (nothrow)int[dim_tab];
+        for (int i = 0; i < dim_tab; i++)
+            *(note + i) = notee[i];
+        grupa = grupa1;
+    }
+
+    char* getNume() {
+        return nume;
+    }
+
+    char* getPrenume() {
+        return prenume;
+    }
+
+    int getNota(int i) {
+        return *(note + i);
+    }
+
+    int getGrupa() {
+        return grupa;
+    }
+
+    float media_Notelor() {
+        float s = 0;
+        for (int i = 0; i < dim_tab - 1; i++)
+            s += *(note + i);
+        return s / (dim_tab - 1);
+    }
+
+    ~Student() {
+        cout << "\nDestructorul studentului " << nume << " " << prenume << "\n\n";
+    }
+};
+
+void Afisare_Student(Student st) {
+    cout << "\nNumele este: " << st.getNume();
+    cout << "\nPrenumele este: " << st.getPrenume();
+    cout << "\nNotele sunt: \n";
+    for (int i = 0; i < dim_tab - 1; i++)
+        cout << st.getNota(i) << " ";
+    cout << "\nGrupa este: " << st.getGrupa();
+}
+
+int Comp_Medie(Student& st1, Student& st2) {
+    return st1.media_Notelor() < st2.media_Notelor();
+}
+
+int main() {
+    //Alocarea dinamica a n studenti in main
+    int n;
+    cout << "Introduceti numarul de studenti: ";
+    cin >> n;
+    Student* studenti = new (nothrow) Student[n];
+    for (int i = 0; i < n; i++)
+    {
+        char nume1[dim_sir], prenume1[dim_sir];
+        int notee[dim_tab], grupa1;
+
+        cout << "Introduceti numele: ";
+        cin >> nume1;
+
+        cout << "Introduceti prenumele: ";
+        cin >> prenume1;
+
+        cout << "Introduceti notele Studentului (7 note): \n";
+        for (int j = 0; j < dim_tab - 1; j++)
+            cin >> notee[j];
+
+        cout << "Introduceti grupa: ";
+        cin >> grupa1;
+
+        studenti[i] = Student(nume1, prenume1, notee, grupa1);
+    }
+
+    //Sortarea Studentilor
+    std::sort(studenti, studenti + n, Comp_Medie);
+
+    //Afisarea Stundetilor dupa sortare
+    cout << "\n\tAfisarea studentilor in ordinea mediilor: \n";
+    for (int i = 0; i < n; i++)
+        Afisare_Student(studenti[i]);
+
+    delete[] studenti;
+    return 0;
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 07 Pb 4, Handru Radu, Problema 4 consta in modelarea clasei Student cu nume, prenume, numar_note si notele din sesiunea de iarna declarat printr-un pointer de tip int.
+Sa se afiseze numele studentilor din grupa care au restanta si apoi numele primilor 3 studenti din grupa in ordinea mediilor, care se va afisa si ea.
+*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <string.h>
+#include <algorithm>
+using namespace std;
+
+const int dim_sir = 31;
+const int dim_tab = 8;
+
+class Student {
+private:
+    char nume[dim_sir];
+    char prenume[dim_sir];
+    int numar_note;
+    int* note;
+public:
+    Student() = default;
+
+    Student(char nume1[], char prenume1[], int nr_note) {
+        strcpy(nume, nume1);
+        strcpy(prenume, prenume1);
+        numar_note = nr_note;
+        note = new(nothrow)int[numar_note];
+    }
+
+    char* getNume() {
+        return nume;
+    }
+
+    char* getPrenume() {
+        return prenume;
+    }
+
+    int getNrnote() {
+        return numar_note;
+    }
+
+    int getNota(int i) {
+        return *(note + i);
+    }
+
+    void setNota(int i, int val) {
+        *(note + i) = val;
+    }
+
+    float media_Notelor() {
+        float s = 0;
+        for (int i = 0; i < numar_note; i++)
+            s += *(note + i);
+        return s / (dim_tab - 1);
+    }
+
+    bool restant() {
+        for (int i = 0; i < numar_note; i++)
+            if (*(note + i) < 5)
+                return 1;
+        return 0;
+    }
+
+    ~Student() {
+        cout << "\nDestructorul studentului " << nume << " " << prenume << "\n\n";
+    }
+};
+
+void Afisare_Student(Student st) {
+    cout << "\nNumele este: " << st.getNume();
+    cout << "\nPrenumele este: " << st.getPrenume();
+    cout << "\nNumarul de note este: " << st.getNrnote();
+    cout << "\nNotele sunt: \n";
+    for (int i = 0; i < st.getNrnote(); i++)
+        cout << st.getNota(i) << " ";
+}
+
+int Comp_Medie(Student& st1, Student& st2) {
+    return st1.media_Notelor() < st2.media_Notelor();
+}
+
+int main() {
+    //Alocarea dinamica a n studenti in main
+    int n;
+    cout << "Introduceti numarul de studenti: ";
+    cin >> n;
+
+    Student* studenti = new (nothrow) Student[n];
+
+    for (int i = 0; i < n; i++)
+    {
+        char nume1[dim_sir], prenume1[dim_sir];
+        int nota, nr_note;
+
+        cout << "Introduceti numele: ";
+        cin >> nume1;
+
+        cout << "Introduceti prenumele: ";
+        cin >> prenume1;
+
+        cout << "Introduceti nr de note: ";
+        cin >> nr_note;
+
+        studenti[i] = Student(nume1, prenume1, nr_note);
+
+        cout << "Introduceti notele Studentului: \n";
+        for (int j = 0; j < nr_note; j++) {
+            cin >> nota;
+            studenti[i].setNota(j, nota);
+        }
+    }
+
+    //Afisarea Stundetilor restanti
+    cout << "\n\t\tStudentii restanti sunt: \n";
+    for (int i = 0; i < n; i++)
+        if (studenti[i].restant() == 1)
+            Afisare_Student(studenti[i]);
+
+    //Sortarea Studentilor
+    sort(studenti, studenti + n, Comp_Medie);
+
+    cout << "\n\t\tPrimii 3 studenti in ordinea mediilor alaturi de aceasta\n";
+    if (n >= 3)
+        for (int i = 0; i < 2; i++) {
+            Afisare_Student(studenti[i]);
+            cout << "Media studentului " << studenti[i].getNume() << " " << studenti[i].getPrenume() << " este: " << studenti[i].media_Notelor() << "\n";
+        }
+    else
+        for (int i = 0; i < n; i++) {
+            Afisare_Student(studenti[i]);
+            cout << "Media studentului " << studenti[i].getNume() << " " << studenti[i].getPrenume() << " este: " << studenti[i].media_Notelor() << "\n";
+        }
+    return 0;
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 07 Pb 5, Handru Radu, Problema 5 consta in citirea de la tastatura a unui punct 3D prin coordonatele x, y si z.
+Sa se scrie o metoda prin care sa se faca translatia punctului cu o anumita distanta pe fiecare dintre cele 3 axe.
+Sa se verifice daca dreapta care uneste primul punct (netranslatat) si cel rezultat in urma translatiei trec printr-un al treilea punct dat de la consola.
+*/
+
+#include <iostream>
+#include <math.h>
+using namespace std;
+
+class Punct3D {
+private:
+    float x, y, z;
+public:
+    Punct3D(float x1, float y1, float z1) {
+        x = x1;
+        y = y1;
+        z = z1;
+    }
+
+    int getX() {
+        return x;
+    }
+    int getY() {
+        return y;
+    }
+    int getZ() {
+        return z;
+    }
+
+    void Translatare(float x1, float y1, float z1) {
+        x += x1;
+        y += y1;
+        z += z1;
+    }
+
+    float Distanta_la_punctul(Punct3D pct2) {
+        float dx = x - pct2.x;
+        float dy = y - pct2.y;
+        float dz = z - pct2.z;
+        return sqrt((dx * dx) + (dy * dy) + (dz * dz));
+    }
+
+    bool Trece_prin_linie(Punct3D pct2, Punct3D pct3) {
+        float dist1 = Distanta_la_punctul(pct2);
+        float dist2 = pct2.Distanta_la_punctul(pct3);
+        float dist3 = Distanta_la_punctul(pct3);
+        if (abs(dist1 - (dist2 + dist3)) == 0)
+            return 1;
+        return 0;
+    }
+};
+
+void Afisare_Coord(Punct3D pct1) {
+    cout << "\n" << pct1.getX() << " " << pct1.getY() << " " << pct1.getZ() << "\n";
+}
+
+int main() {
+    float x, y, z;
+    cout << "Introduceti coordonatele punctului 1: ";
+    cin >> x >> y >> z;
+    Punct3D p1(x, y, z);
+    //Declararea punctului 2 cu aceleasi coordonate ca si primul, urmand ca acesta sa fie translatat
+    Punct3D p2 = p1;
+
+    //Translatarea punctului
+    cout << "Introduceti distantele cu care punctul 1 va fi translatat: ";
+    cin >> x >> y >> z;
+    p2.Translatare(x, y, z);
+
+    cout << "Introduceti coordonatele punctului 3: ";
+    cin >> x >> y >> z;
+    Punct3D p3(x, y, z);
+
+    Afisare_Coord(p1);
+    Afisare_Coord(p2);
+    Afisare_Coord(p3);
+
+    if (p1.Trece_prin_linie(p2, p3)) {
+        cout << "\n\tDreapta trece prin punctul 3!\n";
+    }
+    else {
+        cout << "\n\tDreapta nu trece prin punctul 3!\n";
+    }
+
+    return 0;
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 07 Pb 6, Handru Radu, Problema 6 consta in definirea unei clase Complex modelata prin atributele de tip double real, imag si un pointer de tip char catre numele fiecarui numar complex.
+In cadrul clasei definiti un constructor explicit cu doi parametri care au implicit valoarea 1.0 si care aloca spatiu pentru nume un sir de maxim 15 caractere.
+De asemenea, definiti un constructor de copiere pentru clasa Complex.
+Clasa va mai contine metode setter/getter pentru fiecare membru al clasei, metode care permit operatiile de baza cu numere complexe si un destructor explicit.
+Definiti cel mult 10 numere complexe dintr-un tablou. Calculati suma numerelor complexe din tablou, valoare ce va fi folosita pentru a initializa un nou numar complex,
+cu numele "Suma_c". Realizati aceleasi actiuni facand diferenta si produsul numerelor complexe.
+*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+using namespace std;
+
+const int nr_numere = 10;
+const int dim = 16;
+
+class Complex {
+private:
+    double real, imag;
+    char* nume;
+public:
+    Complex(double re = 1.0, double im = 1.0) {
+        real = re;
+        imag = im;
+        nume = new(nothrow)char[dim];
+        strcpy(nume, "Complex 1");
+    }
+    Complex(const Complex& nr1) {
+        real = nr1.real;
+        imag = nr1.imag;
+        nume = new(nothrow)char[strlen(nr1.nume) + 1];
+        strcpy(nume, nr1.nume);
+    }
+
+    double getRe() {
+        return real;
+    }
+
+    double getIm() {
+        return imag;
+    }
+
+    char* getNume() {
+        return nume;
+    }
+
+    void setRe(double re) {
+        real = re;
+    }
+
+    void setIm(double im) {
+        imag = im;
+    }
+
+    void setNume(char* numele) {
+        strcpy(nume, numele);
+    }
+
+    Complex Adunare(Complex nr1) {
+        Complex result;
+        result.real = real + nr1.real;
+        result.imag = imag + nr1.imag;
+        return result;
+    }
+
+    Complex Scadere(Complex nr1) {
+        Complex result;
+        result.real = real - nr1.real;
+        result.imag = imag - nr1.imag;
+        return result;
+    }
+
+    Complex Inmutlire(Complex nr1) {
+        Complex rez;
+        rez.real = real * nr1.real - imag * nr1.imag;
+        rez.imag = real * nr1.imag + imag * nr1.real;
+        return rez;
+    }
+
+    /*
+    ~Complex() {
+        cout << "Destructor!";
+    }
+    */
+};
+
+void Afisare_Complex(Complex nr) {
+    cout << "\nReal: " << nr.getRe() << "\nImaginar: " << nr.getIm() << "\nNume: " << nr.getNume() << "\n";
+}
+
+
+int main() {
+    int n;
+    cout << "Introduceti numarul de numere complexe: ";
+    cin >> n;
+    if (n < 0 || n > nr_numere) {
+        cout << "\n\tValoare incorecta!\n";
+        exit(1);
+    }
+    Complex comp[nr_numere];
+    double real, imag;
+    char nume[dim];
+    for (int i = 0; i < n; i++) {
+        cout << "Introduceti valoarea reala: ";
+        cin >> real;
+        cout << "Introduceti valoarea iamginara: ";
+        cin >> imag;
+        cout << "Introduceti numele: ";
+        cin >> nume;
+        comp[i] = Complex(real, imag);
+        comp[i].setNume(nume);
+    }
+
+    double sum_re = 0, sum_im = 0;
+    double dif_re = 0, dif_im = 0;
+    double inm_re = 1, inm_im = 1;
+    if (n == 1) {
+        sum_re = comp[0].getRe();
+        sum_im = comp[0].getIm();
+        dif_re = comp[0].getRe();
+        dif_im = comp[0].getIm();
+        inm_re = comp[0].getRe();
+        inm_im = comp[0].getIm();
+    }
+    else {
+        for (int i = 0; i < n - 1; i++)
+        {
+            Complex Suma1(comp[i].Adunare(comp[i + 1]));
+            sum_re += Suma1.getRe();
+            sum_im += Suma1.getIm();
+            Complex Dif1(comp[i].Scadere(comp[i + 1]));
+            dif_re -= Dif1.getRe();
+            dif_im -= Dif1.getIm();
+            Complex Inmultire1(comp[i].Inmutlire(comp[i + 1]));
+            inm_re *= Inmultire1.getRe();
+            inm_im *= Inmultire1.getIm();
+        }
+    }
+
+    //Suma complex
+    cout << "\n\tSuma tuturor numerelor complexe: \n";
+    Complex Suma(sum_re, sum_im);
+    strcpy(nume, "Suma_c");
+    Suma.setNume(nume);
+    Afisare_Complex(Suma);
+
+    //Diferenta complex
+    cout << "\n\tDiferenta tuturor numerelor complexe: \n";
+    Complex Dif(dif_re, dif_im);
+    strcpy(nume, "Dif_c");
+    Dif.setNume(nume);
+    Afisare_Complex(Dif);
+
+    //Inmultire complex
+    cout << "\n\tInmultirea tuturor numerelor complexe: \n";
+    Complex Inmultire(inm_re, inm_im);
+    strcpy(nume, "Inm_c");
+    Inmultire.setNume(nume);
+    Afisare_Complex(Inmultire);
+
+    return 0;
+}
+

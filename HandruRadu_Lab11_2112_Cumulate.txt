@@ -1,0 +1,901 @@
+/*Lab 11 Pb 1, Handru Radu, Problema 1 consta in modificarea exemplului 3 (care exemplifica mostenirea simpla, cu clasa de baza Pozitie si derivata Punct)
+se cer urmatoarele:
+a. urmariti si verificati ordinea de apel pentru constructori/destructori
+b. extindeti functia main( ) pentru a utiliza toate metodele din clasa de baza si din clasa
+derivata
+c. introduceti o noua clasa Cerc (date-atribute si metode), derivata din clasa Pozitie
+d. scrieti un program ce utilizeaza aceste clase.*/
+#include <iostream>
+using namespace std;
+
+
+class Pozitie {
+protected:
+    int x, y;
+public:
+    Pozitie(int = 0, int = 0);
+    Pozitie(const Pozitie&);
+    ~Pozitie();
+
+    virtual void afisare();
+    virtual void deplasare(int, int);
+};//CB
+
+Pozitie::Pozitie(int abs, int ord) {
+    x = abs; y = ord;
+    cout << "Constructor CB \"Pozitie\", ";
+    afisare();
+}
+
+Pozitie::Pozitie(const Pozitie& p) {
+    x = p.x;
+    y = p.y;
+    cout << "Constructor de copiere CB \"Pozitie\", ";
+    afisare();
+}
+
+Pozitie::~Pozitie() {
+    cout << "Destructor CB \"Pozitie \", ";
+    afisare();
+}
+
+void Pozitie::afisare() {
+    cout << " CB afisare: coordonate: x = " << x << ", y = " << y << "\n";
+}
+
+void Pozitie::deplasare(int dx, int dy) {
+    cout << "CB: deplasare" << endl;
+    x += dx; y += dy;
+}
+
+
+//Clasa Punct
+class Punct : public Pozitie {
+    int vizibil;
+    char culoare;
+public:
+    Punct(int = 0, int = 0, char = 'A');
+    Punct(const Punct&);
+    ~Punct();
+    void arata() {
+        vizibil = 1;
+    }
+    void ascunde() {
+        vizibil = 0;
+    }
+    void coloreaza(char c) {
+        culoare = c;
+    }
+    void deplasare(int, int) override;
+    void afisare() override;
+};//CD
+
+Punct::Punct(int abs, int ord, char c) :Pozitie(abs, ord) {
+    vizibil = 0;
+    culoare = c;
+    cout << "Constructor CD \"Punct\", ";
+    afisare();
+}
+
+Punct::Punct(const Punct& p) :Pozitie(p.x, p.y) {
+    vizibil = p.vizibil;
+    culoare = p.culoare;
+    cout << "Constructor de copiere CD \"Punct\", ";
+    afisare();
+}
+
+Punct::~Punct() {
+    cout << "Destructor CD \"Punct\", ";
+    afisare();
+}
+
+//redefinire functie de deplasare pentru clasa derivata
+void Punct::deplasare(int dx, int dy) {
+    if (vizibil) {
+        cout << " CD: Deplasare afisare CD\n";
+        x += dx;
+        y += dy;
+        afisare();
+    }
+    else {
+        x += dx;
+        y += dy;
+        cout << "Deplasare prin CD afisare din CB\n";
+        Pozitie::afisare();
+    }
+}
+
+// Redefinirea metodei de afisare pentru clasa derivata
+void Punct::afisare() {
+    cout << "Pozitie: x = " << x << ", y = " << y;
+    cout << ", culoare: " << culoare;
+    if (vizibil)
+        cout << ", vizibil \n";
+    else 
+        cout << ", invizibil \n";
+}
+
+class Cerc : public Pozitie { 
+private:
+    int raza;
+public:
+    Cerc(int = 0, int = 0, int raza = 1);
+    Cerc(const Cerc&);
+    ~Cerc();
+
+    void deplasare(int, int)override;
+    void afisare() override;
+};//CD - CB Pozitie
+
+
+Cerc::Cerc(int abs, int ord, int raza) :Pozitie(abs, ord) {
+    x = abs;
+    y = ord;
+    this->raza = raza;
+    afisare();
+}
+
+Cerc::Cerc(const Cerc &c) :Pozitie(c.x, c.y) {
+    raza = c.raza;
+    cout << "\nConstructor de copiere \"Cerc\", ";
+    afisare();
+}
+
+Cerc::~Cerc() {
+    cout << "\n\tDestructor Cerc!\n";
+}
+
+void Cerc::deplasare(int dx, int dy) {
+    x = dx;
+    y = dy;
+}
+
+void Cerc::afisare() {
+    cout << "Pozitie: x = " << x << ", y = " << y;
+    cout << "Raza: raza = " << raza << "\n";
+}
+
+
+int main() {
+    Pozitie pp0(7, 7);
+
+    cout << "\nMetode CB \n";
+    pp0.afisare();
+    pp0.deplasare(6, 9);
+    pp0.afisare();
+
+    cout << "\nMetode CD \n";
+    Punct p0(1, 1, 'v');
+    p0.afisare();
+
+    //Copy Constructor
+    Punct p1(p0);
+    p1.arata();
+    p1.deplasare(10, 10);
+
+    cout << "\nUpcasting - obiecte:\n";
+    //Upcasting (un obiect din clasa de baza primeste un obiect din clasa derivata)
+    pp0 = p0;
+    pp0.afisare();
+
+
+    cout << "\nUpcasting - pointeri:\n ";
+    //Pointer al clasei de baza
+    Pozitie* p;
+    //Obiect derivat catre clasa de baza (Upcasting prin pointer)
+    p = new Punct(100, 100, 'Z');
+    cout << "\nAfisare CD: derived class object if virtual, else base class CB \n";
+    p->afisare();//afis invizibil
+
+
+    p = &pp0;
+    cout << "\nAfisare CB: base class object always\n";
+    p->afisare();
+
+
+    p = &p1;
+    cout << "\nAfisare CD: derived class object if virtual, else base class CB \n";
+    p->afisare();
+
+
+    //Clasa derivata
+    Punct* pp;
+    pp = &p1;
+    cout << "\nAfisare CD: derived class object always\n";
+    pp->afisare();
+
+    cout << "\n Deplasare CD with 10, 10 \n";
+    pp->deplasare(10, 10);
+
+    cout << "\nAfisare CD: derived class object with ascunde()\n";
+    pp->ascunde();
+    pp->afisare();
+
+    cout << "\n Deplasare CD with 10, 10 and ascunde()\n";
+    pp->deplasare(10, 10);
+
+    cout << "\nAfisare direct from CB: derived object displayed with base class method always\n";
+    pp->Pozitie::afisare();
+
+
+    cout << "\nDowncasting:\n ";
+    //Pointer derivat
+    Punct* pdown;
+
+    //Downcasting printr-un obiect din clasa de baza
+    pdown = (Punct*)&pp0;
+    cout << "\nAfisare CB: base class object using a derived pointer, else derived class CD \n";
+    pdown->afisare();
+
+    //Downcasting printr-un obiect din clasa derivata
+    pdown = (Punct*)p;
+    cout << "\n Afisare din Derivat, Punct" << endl;
+    pdown->afisare();
+
+
+
+
+    //Clasa Cerc
+    //Upcasting
+    Cerc c1(1, 1, 2);
+    Pozitie ppp1;
+    ppp1 = c1;
+
+    //Upcasting prin obiect
+    cout << "\n\tCB: Upcasting Cerc prin obiect: \n";
+    ppp1.afisare();
+
+    //Upcasting pointer
+    Pozitie* ppp2;
+    ppp2 = new Cerc(2, 2, 3);
+    cout << "\n\tCB: Upcasting Cerc prin pointer: \n";
+    ppp2->afisare();
+
+    //Upcasting pointer alt obiect din clasa derivata
+    ppp2 = &c1;
+    cout << "\n\tCB: Upcasting Cerc prin pointer: \n";
+    ppp2->afisare();
+
+    //Afisarea unui obiect din clasa Cerc cu ajutorul functiei de afisare din clasa Pozitie
+    cout << "\n\tAfisarea obiect din CD cu functia din CB\n";
+    c1.Pozitie::afisare();
+    
+
+    cout << "\n\n\n";
+    return 0;
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 11 Pb 2, Handru Radu, Problema 2 consta in extinderea clasei de baza (din exemplul 4) cu alte metode virtuale, redefinite in clasele
+derivate, cum ar fi metode get( ) si set( ) pentru greutatea vehiculului (variabila greutate).
+*/
+#include <iostream>
+using namespace std;
+
+class Vehicul {
+protected:
+	int roti;
+	float greutate;
+	int incarcatura_pasageri;
+	int volum_date;
+public:
+	Vehicul(int roti = 4, float greutate = 1500, int incarcatura_pasageri = 2, int volum_date = 500) {
+		this->roti = roti;
+		this->greutate = greutate;
+		this->incarcatura_pasageri = incarcatura_pasageri;
+		this->volum_date = volum_date;
+	}
+	virtual void mesaj() {
+		cout << "Mesaj din clasa Vehicul\n";
+	}
+
+	int getRoti() {
+		return roti;
+	}
+	virtual float getGreutate() {
+		return greutate;
+	}
+	void setRoti(int r) {
+		roti = r;
+	}
+	virtual void setGreutate(float g) {
+		greutate = g;
+	}
+	int getIncarcatura_pasageri() {
+		return incarcatura_pasageri;
+	}
+	void setIncarcatura_pasageri(int ip) {
+		incarcatura_pasageri = ip;
+	}
+	virtual int getVolum_Date() {
+		return volum_date;
+	}
+};//Vehicul
+
+class Automobil : public Vehicul {
+public:
+	void mesaj() override {
+		cout << "Mesaj din clasa Automobil\n";
+	}
+	float getGreutate() override {
+		cout << " Auto-greutate ";
+		return greutate;
+	}
+	int getVolum_Date() override {
+		cout << "Volum_Date Automobil: ";
+		return volum_date;
+	}
+	void setGreutate(float g) {
+		cout << "\nSetam greutatea automobilului: ";
+		greutate = g;
+	}
+};//Automobil
+
+class Camion : public Vehicul {
+	float incarcatura_utila;
+public:
+	float getGreutate() override {
+		cout << " Camion-greutate ";
+		return greutate;
+	}
+	float getIncarcatura_utila() {
+		return incarcatura_utila;
+	}
+	int getVolum_Date() override {
+		cout << "Volum_Date Camion: ";
+		return volum_date;
+	}
+	void setIncarcatura_utila(float iu) {
+		incarcatura_utila = iu;
+	}
+};//Camion
+
+class Barca : public Vehicul {
+public:
+	void mesaj() override {
+		cout << "Mesaj din clasa Barca\n";
+	}
+	float getGreutate() override {
+		cout << "Barca-greutate ";
+		return greutate;
+	}
+	int getVolum_date() {
+		return volum_date;
+	}
+	int getVolum_Date() override {
+		cout << "Volum_Date Barca: ";
+		return volum_date;
+	}
+	void setVolum_date(int v) {
+		volum_date = v;
+	}
+	void setGreutate(float g) {
+		cout << "\nSetam greutatea barcii: ";
+		greutate = g;
+	}
+};//Barca
+
+
+int main() {
+	// apel direct, prin intermediul unor obiecte specifice
+	Vehicul monocicleta;
+	Automobil ford;
+	Camion semi;
+	Barca barca_de_pescuit;
+
+	monocicleta.mesaj();
+	ford.mesaj();
+	semi.mesaj();
+	barca_de_pescuit.mesaj();
+
+	// apel prin intermediul unui pointer specific
+	Vehicul* pmonocicleta;
+	Automobil* pford;
+	Camion* psemi;
+	Barca* pbarca_de_pescuit;
+	cout << "\n";
+	pmonocicleta = &monocicleta;
+	pmonocicleta->mesaj();
+	pford = &ford;
+	pford->mesaj();
+	psemi = &semi;
+	psemi->mesaj();
+	pbarca_de_pescuit = &barca_de_pescuit;
+	pbarca_de_pescuit->mesaj();
+
+	// apel prin intermediul unui pointer catre un obiect al clasei de baza
+	cout << "\n";
+	pmonocicleta = &monocicleta;
+	pmonocicleta->mesaj();
+	pmonocicleta = &ford;
+	pmonocicleta->mesaj();
+	pmonocicleta = &semi;
+	pmonocicleta->mesaj();//Camion (Vehicul), deoarece nu s-a dat override functiei mesaj
+	pmonocicleta = &barca_de_pescuit;
+	pmonocicleta->mesaj();
+
+	//Lucru cu metode din clasele definite cu pointer CB
+	Vehicul* pb;
+	pb = &monocicleta;
+	pb->setRoti(1);
+	pb->setGreutate(10);
+	cout << "\nAtribute CB acces pb - Vehicul: Roti= " << pb->getRoti() << " Greutate= " << pb->getGreutate() << endl;
+	
+	pb = &ford;
+	pb->setRoti(4);
+	pb->setGreutate(1670);
+	pb->setIncarcatura_pasageri(325);
+	cout << "\nAtribute CD acces pb - Automobil: Roti= " << pb->getRoti() << " Greutate = " << pb->getGreutate() << " Incarcatura pasageri= " << pb->getIncarcatura_pasageri() << endl;
+	
+	pb = &barca_de_pescuit;
+	pb->setRoti(0);
+	pb->setGreutate(1525);
+	pb->setIncarcatura_pasageri(230);
+	barca_de_pescuit.setVolum_date(300);
+	barca_de_pescuit.setGreutate(1200);
+	cout << "\nAtribute CD access pb- Barca_de_pescuit: Roti= " << pb->getRoti() << "Greutate = " << pb->getGreutate() << " Incarcatura pasageri = " << pb->getIncarcatura_pasageri() << endl;
+	cout << "\t Volum (acces obiect) = " << barca_de_pescuit.getVolum_date() << endl;
+
+	return 0;
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 11 Pb 3, Handru Radu, Problema 3 consta in definirea unei clase Militar cu o metoda publica virtuala
+sunt_militar( ) care indica apartenenta la armata.
+Derivati clasa Militar pentru a crea clasa Soldat si clasa Ofiter.
+Derivati mai departe clasa Ofiter pentru a obtine clasele SubLocotenent, Locotenent, Capitan, Maior, Colonel, General.
+Redefiniti metoda sunt_militar( ) pentru a indica gradul militar pentru fiecare clasa specifica.
+Instantiati fiecare clasa Soldat, Locotenent,...,General, si apelati metoda sunt_militar( ).
+*/
+#include <iostream>
+using namespace std;
+
+class Militar {
+public:
+    virtual void sunt_militar() {
+        cout << "\nSunt Miliatar!";
+    }
+};
+
+
+
+//Clase derivate din clasa Militar
+class Soldat : public Militar {
+public:
+    void sunt_militar() override {
+        cout << "\nSunt soldat.";
+    }
+};
+
+class Ofiter : public Militar {
+public:
+    void sunt_militar() override {
+        cout << "\nSunt ofiter.";
+    }
+};
+
+
+
+//Clase derivate din clasa Ofiter
+class SubLocotenent : public Ofiter {
+public:
+    void sunt_militar() override {
+        cout << "\nSunt sublocotenent.";
+    }
+};
+
+class Locotenent : public Ofiter {
+public:
+    void sunt_militar() override {
+        cout << "\nSunt locotenent.";
+    }
+};
+
+class Capitan : public Ofiter {
+public:
+    void sunt_militar() override {
+        cout << "\nSunt capitan.";
+    }
+};
+
+class Maior : public Ofiter {
+public:
+    void sunt_militar() override {
+        cout << "\nSunt maior.";
+    }
+};
+
+class Colonel : public Ofiter {
+public:
+    void sunt_militar() override {
+        cout << "\nSunt colonel.";
+    }
+};
+
+class General : public Ofiter {
+public:
+    void sunt_militar() override {
+        cout << "\nSunt general.";
+    }
+};
+
+int main() {
+    Militar militar1;
+    Soldat sol1;
+    Ofiter of1;
+    SubLocotenent sl1;
+    Locotenent l1;
+    Maior m1;
+    Colonel c1;
+    General g1;
+    
+    militar1.sunt_militar();
+    sol1.sunt_militar();
+    of1.sunt_militar();
+    sl1.sunt_militar();
+    l1.sunt_militar();
+    m1.sunt_militar();
+    c1.sunt_militar();
+    g1.sunt_militar();
+
+    cout << "\n";
+    return 0;
+}
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 11 Pb 4, Handru Radu, Problema 4 consta in declararea unei clase Animal,
+care va contine o metoda pur virtuala, respira( ) si doua metode virtuale manaca( ) si doarme( ).
+Derivati in mod public o clasa Caine si alta Peste, care vor defini metoda pur virtuala,
+iar clasa Caine va redefini metoda mananca( ), iar Peste metoda doarme( ).
+Instantiati obiecte din cele doua clase si apelati metodele specifice.
+Definiti apoi un tablou de tip Animal, care va contine obiecte din clasele derivate, daca e posibil.
+Daca nu, gasiti o solutie adecvata.
+*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+using namespace std;
+
+const int dim_sir = 31;
+const int nr_animale = 3;
+
+class Animal {
+protected:
+    char* nume;
+public:
+    Animal() {
+        nume = new(nothrow)char[dim_sir];
+        strcpy(nume, "Animal");
+    }
+    Animal(char* nume1) {
+        nume = new(nothrow)char[strlen(nume1) + 1];
+        strcpy(nume, nume1);
+    }
+    char* getNume() {
+        return nume;
+    }
+    virtual void respira() = 0;
+    virtual void mananca() {
+        cout << "\nAnimalul mananca!";
+    }
+    virtual void doarme() {
+        cout << "\nAnimalul doarme!";
+    }
+};
+
+class Caine : public Animal {
+public:
+    Caine() : Animal() {}
+    Caine(char* nume1) : Animal(nume1) {}
+    void respira() {
+        cout << "\nCainele respira!";
+    }
+    void mananca()override {
+        cout << "\nCainele mananca!";
+    }
+};
+
+class Peste : public Animal {
+public:
+    Peste() : Animal() {}
+    Peste(char* nume1) :Animal(nume1) {}
+    void respira() {
+        cout << "\nPestele respira!";
+    }
+    void doarme()override {
+        cout << "\nPestele doarme!";
+    }
+};
+
+int main() {
+    char nume1[dim_sir], nume2[dim_sir], nume[dim_sir];
+    cout << "Introduceti numele Cainelui: ";
+    cin >> nume1;
+    Caine c1(nume1);
+    cout << "Introduceti numele Pestelui: ";
+    cin >> nume2;
+    Peste p1(nume2);
+    cout << c1.getNume() << "\n";
+    c1.respira();
+    c1.mananca();
+    cout <<"\n" <<  p1.getNume() << "\n";
+    p1.respira();
+    p1.doarme();
+
+    cout << "\n";
+    int varianta;
+    Animal* animale[nr_animale];
+    
+    for (int i = 0; i < nr_animale; i++) {
+        cout << "\nVariantele de animale: \n1. Caine \n2. Peste \nIntroduceti varianta: ";
+        cin >> varianta;
+        if (varianta == 1) {
+            cout << "\nIntroduceti numele cainelui: ";
+            cin >> nume;
+            animale[i] = new(nothrow) Caine(nume);
+        }
+        else if (varianta == 2)
+        {
+            cout << "\nIntroduceti numele cainelui: ";
+            cin >> nume;
+            animale[i] = new(nothrow) Peste(nume);
+        }
+    }
+    
+    //Radu Handru 1 Radu 2 Handru 1 Radu
+    cout << "\n\n\tAnimalele sunt: \n";
+    for (int i = 0; i < nr_animale; i++) {
+        cout << "\nNume: " << animale[i]->getNume();
+    }
+    for (int i = 0; i < nr_animale; i++)
+        delete animale[i];
+    cout << "\n";
+    return 0;
+}
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/*Lab 11 Pb 5, Handru Radu, Problema 5 consta in definirea unei clase Shape, atribut: nume (sir de caractere).
+Clasa va contine un constructor cu parametri si metode virtuale pure pentru area(), perimeter() si display().
+    Derivati in modul public o clasa Circle care adauga un atribut de tip int r ca si raza si un constructor adecvat avand in vedere
+atributele(nume si raza) si defineste metodele care calculeaza aria, perimetrul cu raza r, si display care afiseaza, valoare pentru r
+fiind introdusa in main() de la tastatura.
+    In acelasi mod definiti o alta clasa Square care adauga un atribut de tip int l ca latura si metode care calculeaza
+aria si perimetrul patratului de latura l, valoare pentru l fiind introdusa de la tastatura.
+    In main folosind un meniu cu instructiunea switch-case cu optiuni pentru Circle, Square si Exit
+instantiati obiecte din clasele derivate si afisati aria si perimetrul pana cand este selectat Exit.
+*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+using namespace std;
+
+const float pi = 3.14;
+const int dim_sir = 31;
+
+class Shape {
+protected:
+    char* nume;
+public:
+    Shape() {
+        nume = new(nothrow)char[dim_sir];
+        strcpy(nume, "Shape");
+    }
+    Shape(char* nume1);
+    virtual float area() = 0;
+    virtual float perimeter() = 0;
+    virtual void display() = 0;
+};
+
+Shape::Shape(char* nume1) {
+    nume = new(nothrow)char[strlen(nume1) + 1];
+    strcpy(nume, nume1);
+}
+
+
+
+class Circle : public Shape {
+private:
+    int r;
+public:
+    Circle(char* nume1, int raza) {
+        nume = new(nothrow)char[strlen(nume1) + 1];
+        strcpy(nume, nume1);
+        r = raza;
+    }
+    float area() {
+        return pi * r * r;
+    }
+    float perimeter() {
+        return 2 * pi * r;
+    }
+    void display() {
+        cout << "\nNume: " << nume;
+        cout << "\nRaza: " << r;
+        cout << "\nAria: " << area();
+        cout << "\nPerimetrul: " << perimeter();
+    }
+};
+
+
+class Square : public Shape {
+private:
+    int l;
+public:
+    Square(char* nume1, int lat) {
+        nume = new(nothrow)char[strlen(nume1) + 1];
+        strcpy(nume, nume1);
+        l = lat;
+    }
+    float area() {
+        return l * l;
+    }
+    float perimeter() {
+        return 4 * l;
+    }
+    void display() {
+        cout << "\nNume: " << nume;
+        cout << "\nLatura: " << l;
+        cout << "\nAria: " << area();
+        cout << "\nPerimetrul: " << perimeter();
+    }
+};
+
+
+int main() {
+    char nume[dim_sir];
+    int optiune, latura, raza;
+
+    Shape* shape = nullptr;
+    cout << "\nMeniu:";
+
+    do {
+        cout << "\n\n1. Circle" << "\n";
+        cout << "2. Square" << "\n";
+        cout << "3. Exit" << "\n";
+        cout << "Introduceti optiunea: ";
+        cin >> optiune;
+
+        switch (optiune) {
+        case 1:
+            cout << "\nIntroduceti numele cercului: ";
+            cin >> nume;
+            cout << "Introduceti raza cercului: ";
+            cin >> raza;
+            shape = new Circle(nume, raza);
+            shape->display();
+            break;
+        case 2:
+            cout << "\nIntroduceti numele patratului: ";
+            cin >> nume;
+            cout << "Introduceti latura patratului: ";
+            cin >> latura;
+            shape = new Square(nume, latura);
+            shape->display();
+            break;
+        case 3:
+            cout << "\n\tExit!\n";
+            break;
+        default:
+            cout << "\n\tOptiune gresita!\n";
+            break;
+        }
+    } while (optiune != 3);
+
+    delete shape;
+    return 0;
+}
+
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/*Lab 11 Pb 6, Handru Radu, Problema 6 consta in definirea unei clase abstracte care contine 3 metode pur virtuale pentru concatenarea,
+intreteserea a doua siruri de caractere si inversarea unui sir de caractere primit ca parametru.
+o subclasa implementeaza corpurile metodelor declarate in clasa de baza. Instantiati clasa derivata si afisati rezultatele aplicarii
+operatiilor implementate in clasa asupra unor siruri de caractere citite de la tastatura.
+Examinati eroarea data de incercarea de a instantia clasa de baza.
+*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+const int dim_sir = 31;
+
+class ClasaAbstracta {
+public:
+    virtual char* concatenare(char* sir1, char* sir2) = 0;
+    virtual char* intretesere(char* sir1, char* sir2) = 0;
+    virtual char* inversare(char* sir1) = 0;
+};
+
+
+class SubClasa : public ClasaAbstracta {
+public:
+    char* concatenare(char* sir1, char* sir2) {
+        char* sir_concat = new char[strlen(sir1) + strlen(sir2) + 1];
+        strcpy(sir_concat, sir1);
+        strcat(sir_concat, sir2);
+        return sir_concat;
+    }
+    
+    char* intretesere(char* sir1, char* sir2) {
+        int maxlungime = max(strlen(sir1), strlen(sir2));
+        //char* sir_intre = new(nothrow)char[maxlungime + 1];
+        char* sir_intre = new(nothrow)char[strlen(sir1) + strlen(sir2) + 1];
+
+        int ok = 1;
+        for (int i = 0; i < maxlungime; i++) {
+            while (ok == 1) {
+                if (i < strlen(sir1))
+                    sir_intre[i * 2] = sir1[i];
+                else
+                    ok = 0;
+                if (i < strlen(sir2))
+                    sir_intre[i * 2 + 1] = sir2[i];
+                else
+                    ok = 0;
+                i++;
+            }
+            
+            if (i < strlen(sir1)) {
+                int j = i * 2;
+                int k = i;
+                while (k < strlen(sir1)) {
+                    sir_intre[j] = sir1[k];
+                    j++;
+                    k++;
+                }
+            }
+            break;
+            if (i < strlen(sir2))
+            {
+                int j = i * 2;
+                int k = i;
+                while (k < strlen(sir2)) {
+                    sir_intre[j] = sir2[k];
+                    j++;
+                    k++;
+                }
+            }
+            break;
+        }
+        sir_intre[maxlungime * 2] = '\0';
+
+        return sir_intre;
+    }
+    
+    char* inversare(char* sir1) {
+        char* sir_inv = new(nothrow)char[strlen(sir1) + 1];
+        strcpy(sir_inv, sir1);
+
+        for (int i = 0; i < strlen(sir1) / 2; i++) {
+            char t = sir_inv[i];
+            sir_inv[i] = sir_inv[strlen(sir1) - i - 1];
+            sir_inv[strlen(sir1) - i - 1] = t;
+        }
+        return sir_inv;
+    }
+};
+
+int main() {
+    char sir1[dim_sir], sir2[dim_sir];
+
+    SubClasa ob1;
+
+    cout << "Introduceti sirul1: ";
+    cin >> sir1;
+    cout << "Introduceti sirul2: ";
+    cin >> sir2;
+
+    cout << "\nSirurile concatenate: " << ob1.concatenare(sir1, sir2);
+    cout << "\nSirul intretesat: " << ob1.intretesere(sir1, sir2);
+    cout << "\nInversare sirului 1: " << ob1.inversare(sir1);
+
+    return 0;
+}
+
+

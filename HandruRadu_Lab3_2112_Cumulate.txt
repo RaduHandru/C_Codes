@@ -1,0 +1,678 @@
+/*Lab 03 Pb 6, Handru Radu, Problema 6 consta in generarea a 100 de numere aleatorii cu valorii pana la 1000,
+inmagazinarea acestora intr-un fisier, urmand ca acestea sa fie citite din fisier. Folosind metoda divide et impera
+determinati minimul si maximul din acest fisier si afisati rezultatele pe ecran ca si in fisier pe un rand nou*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#define DIM 100
+
+int Minimul(int tab[], int s, int d);
+int Maximul(int tab[], int s, int d);
+
+int main() {
+    FILE* fis;
+    int tab[DIM], n, nr;
+    fis = fopen("out_in.txt", "w");
+    if (fis == 0) {
+        printf("\n\tEroare la deschiderea fisierului!\n");
+        return 1;
+    }
+
+    //Citirea numarului de numere
+    printf("Introduceti n (n < 100) : ");
+    scanf("%d", &n);
+    if (n <= 0 || n >= 100)
+    {
+        printf("\n\tValoarea introdusa incorect!\n");
+        return 1;
+    }
+
+    srand((unsigned)time(NULL));
+
+    //Generarea aleatoare a numerelor si inmagazinarea acestora in fisier
+    printf("\n");
+    for (int i = 0; i < n; i++)
+    {
+        nr = rand() % 1000;
+        printf("%d ", nr);
+        fprintf(fis, "%d ", nr);
+    }
+
+    //Inchiderea fisierului pentru scriere
+    fclose(fis);
+
+    //Deschiderea fisierului pentru citire
+    fis = fopen("out_in.txt", "r");
+    if (fis == 0) {
+        printf("\n\tEroare la deschiderea fisierului!\n");
+        return 1;
+    }
+
+    //Preluarea numerelor din fisier si punerea acestora in tablou
+    for (int i = 0; i < n; i++)
+    {
+        fscanf(fis, "%d", &tab[i]);
+    }
+    fclose(fis);
+
+    //Deschiderea fisierului pentru scriere
+    fis = fopen("out_in.txt", "w");
+    if (fis == 0) {
+        printf("\n\tEroare la deschiderea fisierului!\n");
+        return 1;
+    }
+
+    //Afisarea minimului si maximului
+    printf("\n\nMinimul din sir este: %d\n", Minimul(tab, 0, n - 1));
+    printf("\nMaximul din sir este: %d", Maximul(tab, 0, n - 1));
+
+    //Afisarea valorilor in fisier
+    fprintf(fis, "\nMinimul din sir este: %d\n", Minimul(tab, 0, n - 1));
+    fprintf(fis, "\nMaximul din sir este: %d", Maximul(tab, 0, n - 1));
+
+    //Inchiderea fisierului
+    fclose(fis);
+    return 0;
+}
+
+int Minimul(int tab[], int s, int d) {
+    int a, b, m;
+    if (s == d) {
+        return tab[s];
+    }
+    else {
+        m = (s + d) / 2;
+        a = Minimul(tab, s, m);
+        b = Minimul(tab, m + 1, d);
+        if (a > b)
+            return b;
+        else return a;
+    }
+}
+
+int Maximul(int tab[], int s, int d) {
+    int a, b, m;
+    if (s == d) {
+        return tab[s];
+    }
+    else {
+        int m = (s + d) / 2;
+        int a = Maximul(tab, s, m);
+        int b = Maximul(tab, m + 1, d);
+        if (a > b)
+            return a;
+        else return b;
+    }
+}
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 03 Pb 7, Handru Radu, Problema 7 consta in citirea unui numar n (par), urmand ca pentru aceste n numere generate aleator sa fie determinat
+cel mai mare divizor comun pentru fiecare pereche in parte*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#define DIM 202
+
+int Cmmdc(int a, int b);
+void Afisare_Perechi(FILE* fis, int tab[], int s, int d, int n);
+
+int main() {
+    FILE* fis;
+    int n, tab[DIM];
+    fis = fopen("out_in.txt", "w");
+    if (fis == 0) {
+        printf("\n\tEroare la deschiderea fisierului!\n");
+        return 1;
+    }
+
+    //Citirea numarului de numere
+    printf("Introduceti n (n <= 200 si n este numar par) : ");
+    scanf("%d", &n);
+    if (n < 0 || n > 200 || n % 2 == 1)
+    {
+        printf("\n\tValoarea introdusa incorect!\n");
+        return 1;
+    }
+
+    srand((unsigned)time(NULL));
+
+    //Generarea aleatoare a numerelor si inmagazinarea acestora in fisier
+    for (int i = 0; i < n; i++)
+    {
+        tab[i] = rand() % 501;
+        fprintf(fis, "%d ", tab[i]);
+    }
+    printf("\nTabloul este: \n");
+    for (int i = 0; i < n; i++)
+        printf("%d ", tab[i]);
+
+    Afisare_Perechi(fis, tab, 0, n - 1, n);
+
+
+    fclose(fis);
+    return 0;
+}
+
+int Cmmdc(int a, int b) {
+    if (a == b)
+        return a;
+    else if (a > b)
+        return Cmmdc(a - b, b);
+    else return Cmmdc(a, b - a);
+}
+
+void Afisare_Perechi(FILE* fis, int tab[], int s, int d, int n) {
+    if (s == d) {
+        if (s == n - 1) {
+            exit(1);
+        }
+        else {
+            printf("\nPerechea este %d   %d , iar cmmdc lor este: %d\n", tab[s], tab[s + 1], Cmmdc(tab[s], tab[s + 1]));
+            fprintf(fis, "\nPerechea este %d   %d , iar cmmdc lor este: %d\n", tab[s], tab[s + 1], Cmmdc(tab[s], tab[s + 1]));
+        }
+    }
+    else {
+        int m = (s + d) / 2;
+        Afisare_Perechi(fis, tab, s, m, n);
+        Afisare_Perechi(fis, tab, m + 1, d, n);
+    }
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 03 Pb 8, Handru Radu, Problema 8 consta in calculul integralei de a la b din 1/(1+x^2) cu ajutorul metodei trapezelor */
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+const float e = 0.0001;
+
+float f(int x);
+float Integrala(int a, int b);
+
+int main() {
+    int a, b;
+    printf("\nValoarea lui a <= b\n");
+    printf("Introduceti valoarea lui a = ");
+    scanf("%d", &a);
+    printf("Introduceti valoarea lui b = ");
+    scanf("%d", &b);
+    if (a > b)
+    {
+        printf("\n\tValori introduse incorect!!\n");
+        return 1;
+    }
+    printf("\nF(a) = %f\n", f(a));
+    if (a < 0)
+    {
+        b += -a + 1;
+        a += -a + 1;
+    }
+
+    float integrala = ((b - a) * (f(a) + f(b))) / 2;
+    printf("Valoarea integralei de la %d la %d din 1/(1+x^2) este : %f\n", a, b, integrala);
+    printf("Valoarea integralei de la %d la %d din 1/(1+x^2) este : %f", a, b, Integrala(a, b));
+    return 0;
+}
+
+float f(int x) {
+    return (1. / ((x * x) + 1));
+}
+
+float Integrala(int a, int b) {
+    if (a == b) {
+        if (f(a) < e)
+            return ((f(a) + f(a + 1)) * (b - a)) / 2;
+    }
+    else {
+        int m = (a + b) / 2;
+        float inte1 = Integrala(a, m);
+        float inte2 = Integrala(m + 1, b);
+        //return (inte1 + inte2) * (b - a) / 2;
+        return (inte1 + inte2);
+    }
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 03 Pb 9, Handru Radu, Problema 9 consta in generarea aleatoarea a 10 valori intregi, ce vor
+fi memorate intr-un tablou unidimensional. Sa se verifice daca o alta valoare generata aleator apartine acestui tablou, utilizand
+functia lsearch*/
+#include <iostream>
+#include <stdlib.h>
+#include <time.h>
+using namespace std;
+#define DIM 11
+
+int comparare(const void* a, const void* b);
+
+int main() {
+    int tab[DIM];
+    int n;
+    cout << "\nIntroduceti numarul de numere: ";
+    cin >> n;
+    if (n <= 0 || n >= 11) {
+        cout << "\n\tValoare introdusa gresit!\n";
+        exit(1);
+    }
+
+    //generarea aleatoarea a 10 numere intregi si memorarea acestora intr-un tablou unidimensional
+    srand((unsigned)time(NULL));
+    for (int i = 0; i < n; i++)
+        tab[i] = rand();
+
+    //Afisarea tabloului
+    cout << "\nTabloul este: \n";
+    for (int i = 0; i < n; i++)
+        cout << "tab[" << i << "] = " << tab[i] << "\n";
+
+    //Generarea unui numar
+    int nr = rand();
+    cout << "\nNr= " << nr << "\n";
+
+
+    unsigned int nrr = n;
+    unsigned int* nra;
+    nra = &nrr;
+
+    //Cautarea acestui numar in tabloul undimensional cu ajutorul functiei lsearch
+    int* poz;
+    poz = (int*)_lsearch(&nr, tab, nra, sizeof(int), comparare);
+
+    if (poz != NULL)
+        cout << "\n\tValoarea " << nr << " a fost gasita!\n";
+    else cout << "\n\tValoarea " << nr << " nu a fost gasita!\n";
+
+    return 0;
+}
+
+int comparare(const void* a, const void* b) {
+    return (*(int*)a - *(int*)b);
+}
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 03 Pb 10, Handru Radu, Problema 10 consta in gasirea unor imagini folosind pe rand cate o cheie din antetul imaginii (o structura)
+iar pentru fiecare cheie se va folosi o alta metoda de cautare */
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <malloc.h>
+#define DIM 51
+
+struct Antet {
+    char nume[DIM];
+    char cale[DIM];
+    int intensitate;
+    int dim_octeti;
+    void Citire_Imagine(struct Antet*);
+    void Afisare_Imagine(struct Antet*);
+};
+
+void Citire_Imagine(struct Antet* p) {
+    printf("\nIntrudceti Numele fisierului: ");
+    scanf("%s", p->nume);
+    printf("Introduceti calea: ");
+    scanf("%s", p->cale);
+    printf("Introduceti intensitatea: ");
+    scanf("%d", &p->intensitate);
+    printf("Introduceti dimensiunea in octeti: ");
+    scanf("%d", &p->dim_octeti);
+}
+
+void Afisare_Imagine(struct Antet* p) {
+    printf("\nNumele fisierului: %s", p->nume);
+    printf("\nCalea: %s", p->cale);
+    printf("\nIntensitatea: %d", p->intensitate);
+    printf("\nDimensiunea in octeti: %d\n", p->dim_octeti);
+}
+
+
+int Cautare_binara(struct Antet*, int n, int val);
+int comparare(const void* a, const void* b);
+
+int main() {
+    struct Antet* img;
+    int n;
+    printf("Introduceti numarul de imagini:");
+    scanf("%d", &n);
+
+    //Alocarea dinamica a pointerului
+    img = (Antet*)malloc(n * sizeof(Antet));
+    if (img == NULL) {
+        printf("\n\tAlocare nereusita!\n");
+        return 1;
+    }
+
+    //Citire imagini
+    for (int i = 0; i < n; i++)
+        Citire_Imagine(img + i);
+
+
+    //Afisare imagini
+    printf("\n\n\t\t\t\t\tAfisarea imaginilor\n");
+    for (int i = 0; i < n; i++)
+        Afisare_Imagine(img + i);
+
+
+    //Cheie
+    int nr_cheie;
+    printf("\nAlegeti cheia prin care doriti sa cautati o anumita imagine ");
+    printf("\nCheile sunt numerotate de la 1 la 4 dupa elementele structurii Antet");
+    printf("\nIntroduceti numarul cheii: ");
+    scanf("%d", &nr_cheie);
+    if (nr_cheie < 1 || nr_cheie > 4) {
+        printf("\n\tValoare introdusa incorect!");
+        return 1;
+    }
+    if (nr_cheie == 1) {
+        bool gasit = 0;
+        char cheie[DIM];
+        printf("Introduceti un nume de fisier: ");
+        scanf("%s", &cheie);
+        for (int i = 0; i < n; i++)
+            if (strcmp(cheie, (img + i)->nume) == 0) {
+                printf("\nImaginea numarul %d se gaseste in fisierul: %s\n", i, cheie);
+                gasit = 1;
+            }
+        if (gasit == 0) {
+            printf("\nNu se gaseste nicio imagine in fisierul: %s\n", cheie);
+        }
+    }
+    else if (nr_cheie == 2) {
+        bool gasit = 0;
+        char calea[DIM];
+        printf("Introduceti o cale: ");
+        scanf("%s", &calea);
+        for (int i = 0; i < n; i++)
+            if (strcmp(calea, (img + i)->cale) == 0) {
+                printf("\nImaginea numarul %d se gaseste in: %s\n", i, calea);
+                gasit = 1;
+            }
+        if (gasit == 0) {
+            printf("\nNu se gaseste nicio imagine avand calea: %s\n", calea);
+        }
+    }
+    else if (nr_cheie == 3) {
+        bool gasit = 0;
+        int intensi;
+        printf("Introduceti o intensitate: ");
+        scanf("%d", &intensi);
+        qsort(img, n, sizeof(Antet), comparare);
+        if (Cautare_binara(img, n, intensi) != -1)
+            printf("\nImaginea cu intensitatea = %d se afla pe pozitia: %d\n", intensi, Cautare_binara(img, n, intensi));
+        else printf("\nNu exista nicio imagine cu intensitatea = %d\n", intensi);
+    }
+    else if (nr_cheie == 4) {
+        int oct;
+        bool gasit = 0;
+        printf("Introduceti numarul de octeti pe care imaginea cautata o are: ");
+        scanf("%d", &oct);
+        for (int i = 0; i < n; i++)
+            if (oct == (img + i)->dim_octeti) {
+                printf("\nImaginea cu numarul de octeti = %d,  este imaginea numarul %d\n", oct, i);
+                gasit = 1;
+            }
+        if (gasit == 0) {
+            printf("\nNu exista nicio imagine cu numarul de octeti = %d\n", oct);
+        }
+    }
+
+
+    //Eliberarea memoriei
+    if (img)
+        free(img);
+    return 0;
+}
+
+int Cautare_binara(struct Antet* p, int n, int val) {
+    int s, d, mij;
+    s = 0;
+    d = n - 1;
+    mij = (s + d) / 2;
+
+    while ((s <= d) && (val != (p + mij)->intensitate)) {
+        if (val > (p + mij)->intensitate)
+            s = mij + 1;
+        else
+            d = mij - 1;
+        mij = (s + d) / 2;
+    }
+
+    if ((p + mij)->intensitate == val)
+        return mij;
+    else return -1;
+}
+
+int comparare(const void* a, const void* b) {
+    struct Antet* pa = (struct Antet*)a;
+    struct Antet* pb = (struct Antet*)b;
+    return (pa->intensitate) - (pb->intensitate);
+}
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 03 Pb 11, Handru Radu, Problema 11 consta in cautarea binara a unei valori a introduse de la tastatura in tabloul unidimensional de valori intregi*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <stdlib.h>
+#include <algorithm>
+using namespace std;
+#define DIM 21
+
+int Cautare_binara_recursiv(int* p, int s, int d, int val);
+void factori_primi(int n);
+int comparare(const void* a, const void* b);
+
+int main()
+{
+    int n;
+    int tab[DIM];
+    cout << "Introduceti numarul de numere: ";
+    cin >> n;
+    if (n <= 0 || n >= DIM) {
+        cout << "\n\tValoare introdusa gresit!\n";
+        exit(1);
+    }
+    for (int i = 0; i < n; i++) {
+        cout << "tab[" << i << "] = ";
+        cin >> tab[i];
+    }
+
+    //Afisarea tabloului
+    cout << "\nAfisarea tabloului: \n";
+    for (int i = 0; i < n; i++)
+        cout << tab[i] << " ";
+
+    //Sortarea tabloului
+    qsort(tab, n, sizeof(int), comparare);
+
+    //Citirea valorii care trebuie gasita
+    int a;
+    cout << "\nIntroduceti valoarea lui a: ";
+    cin >> a;
+
+    //Pointer pentru tablou
+    int* p;
+    p = &tab[0];
+
+
+    if (Cautare_binara_recursiv(p, 0, n - 1, a) != -1) {
+        cout << "\nValoarea " << a << " se gaseste in sir, iar factorii primi ai acestei valori sunt: \n";
+        factori_primi(a);
+    }
+    else printf("\nValoarea %d nu se gaseste in sir\n", a);
+
+
+    return 0;
+}
+
+int Cautare_binara_recursiv(int* p, int s, int d, int val)
+{
+    int mij = (s + d) / 2;
+    if (p[mij] == val)
+        return mij;
+
+    if (s <= d) {
+        if (val > p[mij])
+            s = mij + 1;
+        else
+            d = mij - 1;
+        return Cautare_binara_recursiv(p, s, d, val);
+    }
+
+    return -1;
+}
+
+void factori_primi(int n) {
+    int d = 2, p;
+    while (n > 1)
+    {
+        p = 0;
+        while (n % d == 0)
+        {
+            ++p;
+            n /= d;
+        }
+
+        if (p)
+            cout << d << " ^ " << p << "\n";
+        d++;
+
+        if (n > 1 && d * d > n) {
+            d = n;
+        }
+    }
+}
+
+int comparare(const void* a, const void* b)
+{
+    return (*(int*)a - *(int*)b);
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 03 Pb 12, Handru Radu, Problema 12 consta in cautarea unei valori reale a intr-un sir de numere reale ordonate,
+cu ajutorul algoritmului de cautare binara iterativ, recursiv si folosind functia de biblioteca bsearch*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <algorithm>
+#include <stdio.h>
+#include <stdlib.h>
+#define DIM 101
+
+int Cautare_binara_iterativ(float* p, int n, float val);
+int Cautare_binara_recursiv(float* p, int s, int d, float val);
+int comparare(const void* a, const void* b);
+int comp_cresc(const void* a, const void* b);
+
+int main()
+{
+    FILE* fis_in;
+    int n = 0;
+    float tab[DIM], nr;
+
+    //Deschiderea fisierului
+    fis_in = fopen("in.txt", "r");
+    if (fis_in == 0)
+    {
+        printf("\n\tFisierul nu a fost deschis corect!\n");
+        return 1;
+    }
+
+    //Citirea tabloului
+    do {
+        fscanf(fis_in, "%f", &tab[n++]);
+    } while (!feof(fis_in));
+
+    fclose(fis_in);
+
+    //Sortarea tabloului
+    qsort(tab, n, sizeof(float), comparare);
+
+    //Afisarea tabloului
+    printf("\nAfisarea tabloului:\n");
+    for (int i = 0; i < n; i++)
+        printf("%f ", tab[i]);
+
+    //Pointer al tabloului
+    float* p;
+    p = &tab[0];
+
+    //Introducerea numarului care trebuie cautat
+    printf("\n\nIntroduceti numarul: ");
+    scanf("%f", &nr);
+
+
+
+
+    //Cautarea binara iterativ
+    if (Cautare_binara_iterativ(p, n, nr) != -1)
+        printf("\n\nPozitia aflata prin metoda iterativa este: %d \n", Cautare_binara_iterativ(p, n, nr));
+    else printf("\n\nValoarea nu a fost gasita!\n");
+
+    //Cautare binara recursiv
+    if (Cautare_binara_recursiv(p, 0, n - 1, nr) != -1)
+        printf("\nPozitia aflata prin metoda recursiva este: %d \n", Cautare_binara_recursiv(p, 0, n - 1, nr));
+    else printf("\nValoarea nu a fost gasita!\n");
+
+    //Cautare binara cu functia de biblioteca bsearch()
+    int* poz;
+    poz = (int*)bsearch(&nr, tab, n, sizeof(float), comp_cresc);
+    if (poz != NULL)
+        printf("\nPozitia aflata cu ajutorul functiei bsearch este: %d\n", *poz);
+    else printf("\nValoarea nu a fost gasita!\n");
+
+    return 0;
+}
+
+int Cautare_binara_iterativ(float* p, int n, float val)
+{
+    int s, d, mij;
+    s = 0;
+    d = n - 1;
+    mij = (s + d) / 2;
+
+    while ((s <= d) && (val != p[mij])) {
+        if (val > p[mij])
+            s = mij + 1;
+        else
+            d = mij - 1;
+        mij = (s + d) / 2;
+    }
+
+    if (p[mij] == val)
+        return mij;
+    else return -1;
+}
+
+int Cautare_binara_recursiv(float* p, int s, int d, float val)
+{
+    int mij = (s + d) / 2;
+    if (p[mij] == val)
+        return mij;
+
+    if (s <= d) {
+        if (val > p[mij])
+            s = mij + 1;
+        else
+            d = mij - 1;
+        return Cautare_binara_recursiv(p, s, d, val);
+    }
+
+    return -1;
+}
+
+int comp_cresc(const void* a, const void* b) {
+    const float* pa = (const float*)a;
+    const float* pb = (const float*)b;
+    return (*pa > *pb) - (*pa < *pb);
+}
+
+int comparare(const void* a, const void* b)
+{
+    return (*(float*)a - *(float*)b);
+}
+

@@ -1,0 +1,410 @@
+/*Lab 10 Pb 1, Handru Radu, Problema 1 consta in examinarea exemplului 3 si modificarea acesteia in urmatorul mod:
+astfel incat sa se poata accesa din functia main(), prin intermediul obiectului obiect_derivat, si metodele aduna() si scade()
+din clasa de baza pastrand mostenirea de tip private
+*/
+#include <iostream>
+using namespace std;
+
+class Baza {
+protected:
+    int a, b;
+public:
+    Baza() { a = 1, b = 1; }
+    void setA(int a) {
+        this->a = a;
+    }
+    void setB(int b) {
+        this->b = b;
+    }
+    int getA() {
+        return a;
+    }
+    int getB() {
+        return b;
+    }
+    int aduna() {
+        return a + b;
+    }
+    int scade() {
+        return a - b;
+    }
+};
+
+class Derivata : private Baza
+{
+public:
+    int inmulteste() {
+        return a * b;
+    }
+    Baza::getA;
+    Baza::getB;
+    Baza::aduna;
+    Baza::scade;
+};
+
+int main()
+{
+    Baza obiect_baza;
+    cout << "\nAfis din baza (val. initiale): " << obiect_baza.getA() << " " << obiect_baza.getB() << '\n';
+    cout << "\nSuma este (cu val. initiale, baza) = " << obiect_baza.aduna();
+    cout << "\nDiferenta este (cu val. initiale, baza) = " << obiect_baza.scade();
+    obiect_baza.setA(2);
+    obiect_baza.setB(3);
+    cout << "\nAfis din baza (modificat): " << obiect_baza.getA() << " " << obiect_baza.getB() << '\n';
+    cout << "\nSuma/Diferenta dupa setare= " << obiect_baza.aduna() << "/" << obiect_baza.scade() << '\n';
+
+    Derivata obiect_derivat;
+    cout << "\nAfis din derivata: " << obiect_derivat.getA() << " " << obiect_derivat.getB() << "\n";
+    cout << "\nProdusul este (din derivat cu val. initiale) = " << obiect_derivat.inmulteste() << '\n';
+    cout << "\nSuma este (din derivat cu val. initiale, baza) = " << obiect_derivat.aduna();
+    //Acest proces va da o eroare deoarece metoda aduna() va fi de tip private in momentul mostenirii
+    cout << "\nDiferenta este (din derivat cu val. initiale, baza) = " << obiect_derivat.scade();
+    //Asemenea ca si la adunare
+
+    return 0;
+}
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 10 Pb 2, Handru Radu, Problema 2 consta in implementarea a 2 clase, folosind modelul claselor de la mostenire publica din exemplul 1, astfel:
+clasa de baza va contine:
+- metode pentru codarea unui sir de caractere (XOR cu masca fixa, public)
+- afisarea sirului original si a celui rezultat din transformare (public)
+clasa derivata contine:
+- o metoda pentru scrierea rezultatului codarii intr-un fisier, la sfarsitul acestuia (intai sirul initial si apo cel codat).
+Programul care foloseste clasele citeste un sir de caractere de la tastatura si apoi, in functie de optiunea utilizatorului,
+afiseaza rezultatul codarii si/sau il scrie in fisier.
+*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+const int DIM = 31;
+const int dim_sir = 11;
+const int masca = 3;
+
+class Sir {
+protected:
+    char* nume;
+public:
+    Sir() {
+        nume = new(nothrow)char[dim_sir];
+        strcpy(nume, "Necunoscut");
+    }
+    //Sir(char* nume1) {
+    //        nume = new(nothrow)char[strlen(nume1) + 1];
+    //        strcpy(nume, nume1);
+    //}
+    char* codareSir() {
+        char* sir_codat;
+        sir_codat = new(nothrow)char[strlen(nume) + 1];
+        strcpy(sir_codat, nume);
+        for (int i = 0; i < strlen(nume); i++)
+            sir_codat[i] = sir_codat[i] ^ masca;
+        return sir_codat;
+    }
+    void AfisareSiruri() {
+        cout << "\nSirul initial este: " << nume << "\n";
+        cout << "\nSirul dupa codare este: " << codareSir() << "\n";
+    }
+};
+
+class Sir_Derivat : public Sir {
+public:
+    Sir_Derivat(char* nume1) {
+        nume = new(nothrow)char[strlen(nume1) + 1];
+        strcpy(nume, nume1);
+    }
+    void Afisare_Fisier() {
+        ofstream fis_out("fis_out.txt");
+        fis_out << "\nSirul initial este: " << nume << "\n";
+        fis_out << "\nSirul dupa codare este: " << codareSir() << "\n";
+        fis_out.close();
+    }
+};
+
+int main() {
+    char nume[DIM];
+    cout << "Introduceti un sir de caractere: ";
+    cin >> nume;
+    Sir_Derivat s1(nume);
+    s1.Afisare_Fisier();
+    s1.AfisareSiruri();
+    return 0;
+}
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 10 Pb 3, Handru Radu, Problema 3 consta in implementarea unei clase de baza cu doua atribute protected de tip intreg
+care contine o metoda mutator pentru fiecare atribut al clasei, parametrii metodelor fiind preluati in main() de la tastaura si metode accesor
+pentru fiecare atribut care returneaza atributul specific.
+Sa se scrie o a doua clasa, derivata din aceasta, care implementeaza operatiile matematice elementare: +/-/ *   \ / asupra atributelor din clasa de baza.
+Sa se scrie o a treia clasa derivata din cea de-a doua, care implementeaza in plus o metoda pentru extragerea radacinii patrate dintr-un numar
+ si de ridicare la putere cat si puterea.
+Verificati apelul metodelor considerand metode la diferite ierarhii.
+*/
+#include <iostream>
+#include <math.h>
+using namespace std;
+
+class Baza {
+protected:
+    int a, b;
+public:
+    int getA() {
+        return a;
+    }
+    int getB() {
+        return b;
+    }
+    void setA(int a1) {
+        a = a1;
+    }
+    void setB(int b1) {
+        b = b1;
+    }
+};
+
+class Deriv_Baza : public Baza {
+public:
+    int Adunare() {
+        return a + b;
+    }
+    int Scadere() {
+        return a - b;
+    }
+    int Inmultire() {
+        return a * b;
+    }
+    float Impartire() {
+        return (float)a / b;
+    }
+};
+
+class D_Deriv_Baza : public Deriv_Baza {
+public:
+    float Radical() {
+        if (Inmultire() < 0)
+            return -1;
+        return sqrt(Inmultire());
+    }
+    int Ridicare_Putere() {
+        return pow(Adunare(), Scadere());
+    }
+};
+
+int main() {
+    int a, b;
+    //Obiect Derivata
+    cout << "Introduceti numerul a: ";
+    cin >> a;
+    cout << "Introduceti numarul b: ";
+    cin >> b;
+    Deriv_Baza nr1;
+    nr1.setA(a);
+    nr1.setB(b);
+    cout << "\nSuma este: " << nr1.Adunare();
+    cout << "\nDiferenta este: " << nr1.Scadere();
+    cout << "\nInmultirea este: " << nr1.Inmultire();
+    if (nr1.getB() != 0)
+        cout << "\nImpartirea este: " << nr1.Impartire();
+    else cout << "\n\tNu se poate realiza impartirea!\n";
+    //Obiect al Clasei Derivata a derivatei de Baza
+    D_Deriv_Baza nr2;
+    cout << "\n\nIntroduceti numerul a: ";
+    cin >> a;
+    cout << "Introduceti numarul b: ";
+    cin >> b;
+    nr2.setA(a);
+    nr2.setB(b);
+    if (nr2.Radical() != -1)
+        cout << "\nRadicalul rezultatului inmultirii este: " << nr2.Radical();
+    else cout << "\n\tRadicalul de ordin par dintr-un numar negativ nu poate fi realizat!\n";
+    cout << "\nRidicarea la putere este: " << nr2.Ridicare_Putere() << "\n";
+
+    return 0;
+}
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/*Lab 10 Pb 4, Handru Radu, Problema 4 consta in definirea unei clase Triangle care are 3 atribute
+protected pentru laturi si o metoda care calculeaza perimetrul unui triunghi ale carui laturi sunt citite de la tastatura
+(se va valida existenta unui triunghi inainte de a folosi un constructor adecvat) si apoi o clasa derivata in mod public din Triangle
+Triangle_extended, care in plus, calculeaza si aria triunghiului.
+Folosind obiecte din cele doua clase apelati metodele specifice.
+*/
+#include <iostream>
+#include <math.h>
+using namespace std;
+
+class Triangle {
+protected:
+    int a, b, c;
+public:
+    int Perimetrul() {
+        return a + b + c;
+    }
+};
+
+class Triangle_extended : public Triangle {
+public:
+    Triangle_extended(int a, int b, int c) {
+        this->a = a;
+        this->b = b;
+        this->c = c;
+    }
+    float Aria() {
+        float p = (float)(a + b + c) / 2.;
+        return sqrt(p) * sqrt(p - a) * sqrt(p - b) * sqrt(p - c);
+    }
+};
+
+
+int main() {
+    int a, b, c;
+    cout << "Introduceti cele 3 laturi ale triunghiului: ";
+    cin >> a >> b >> c;
+    if ((a + b) > c && (b + c) > a && (a + c) > b) {
+        Triangle_extended t1(a, b, c);
+        cout << "\nPerimetrul triunghiului este: " << t1.Perimetrul();
+        cout << "\nAria triunghiului este: " << t1.Aria();
+    }
+    else cout << "\n\tDimensiuni ale laturilor incorecte!\n";
+    cout << "\n";
+    return 0;
+}
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 10 Pb 5, Handru Radu, Problema 5 consta in adaugarea unei functii care calculeaza inaltimea, problemei anterioare
+*/
+#include <iostream>
+#include <math.h>
+using namespace std;
+
+class Triangle {
+protected:
+    int a, b, c;
+public:
+    int Perimetrul() {
+        return a + b + c;
+    }
+};
+
+class Triangle_extended : public Triangle {
+public:
+    Triangle_extended(int a, int b, int c) {
+        this->a = a;
+        this->b = b;
+        this->c = c;
+    }
+    float Aria() {
+        float p = (float)(a + b + c) / 2.;
+        return sqrt(p) * sqrt(p - a) * sqrt(p - b) * sqrt(p - c);
+    }
+    float Inaltime() {
+        return (2 * Aria()) / max(max(a, b), c);
+    }
+};
+
+
+int main() {
+    int a, b, c;
+    cout << "Introduceti cele 3 laturi ale triunghiului: ";
+    cin >> a >> b >> c;
+    if ((a + b) > c && (b + c) > a && (a + c) > b) {
+        Triangle_extended t1(a, b, c);
+        cout << "\nPerimetrul triunghiului este: " << t1.Perimetrul();
+        cout << "\nAria triunghiului este: " << t1.Aria();
+        cout << "\nInaltimea triunghiului este: " << t1.Inaltime() << "\n";
+    }
+    else cout << "\n\tDimensiuni ale laturilor incorecte!\n";
+    return 0;
+}
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*Lab 10 Pb 7, Handru Radu, Problema 7 consta in definirea unei clase de baza Cerc definita printr-un atribut protected raza, care are un
+constructor cu parametri si o metoda care determina aria cercului.
+Considerati o alta clasa de baza Patrat cu un atribut protected latura similar clasei Cerc.
+Derivati un mod public clasa CercPatrat care are un constructor ce apeleaza constructorii claselor de baza si o metoda care
+verifica daca patratul de latura l poate fi inclus in cercul de raza r.
+De asemenea clasa derivata determina si perimetrul celor doua figuri geometrice.
+Instantiati un obiect din clasa derivata (datele introduse de la tastatura),
+determinati aria si perimetrul cercului si al patratului.
+Afisati daca patratul cu latura introdusa poate fi inclus în cercul de raza specificat.
+*/
+#include <iostream>
+#include <math.h>
+using namespace std;
+
+const int pi = 3.14;
+
+class Cerc {
+protected:
+    float raza;
+public:
+    Cerc(float raza) {
+        this->raza = raza;
+    }
+    float getRaza() {
+        return raza;
+    }
+    float Aria() {
+        return pi * raza * raza;
+    }
+};
+
+class Patrat {
+protected:
+    float latura;
+public:
+    Patrat(float lat) {
+        latura = lat;
+    }
+    float Perimetrul() {
+        return 4 * latura;
+    }
+};
+
+class CercPatrat : public Cerc, public Patrat {
+public:
+    CercPatrat(float raza, float lat) : Cerc(raza), Patrat(lat) {}
+    float Perimetrul_total() {
+        return Perimetrul() + 2 * pi * raza;
+    }
+    int Patrat_inclus_in_Cerc() {
+        return latura <= (2 * raza / sqrt(2));
+    }
+};
+
+int main() {
+    float r, l;
+    cout << "Introduceti raza cercului: ";
+    cin >> r;
+    cout << "Introduceti latura patratului: ";
+    cin >> l;
+    CercPatrat cercpat(r, l);
+
+    cout << "\nPerimetrul patratului este: " << cercpat.Perimetrul() << "\n";
+    cout << "Aria cercului este: " << cercpat.Aria() << "\n";
+    cout << "Perimetrul cercului este: " << 2 * pi * cercpat.getRaza() << "\n";
+
+    //Verificam daca Patratul este inclus in cerc
+    if (cercpat.Patrat_inclus_in_Cerc())
+        cout << "\nPatratul este inclus in cerc!\n";
+    else cout << "\nPatratul nu este inclus in cerc!\n";
+
+    //Perimetrul total
+    cout << "\nPerimetrul total este: " << cercpat.Perimetrul_total() << "\n";
+
+    return 0;
+}
+
