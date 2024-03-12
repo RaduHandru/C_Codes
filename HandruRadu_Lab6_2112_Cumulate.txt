@@ -1,0 +1,268 @@
+/*pb1_lab06, Handru Radu, Problema 1 consta in construirea polinomului de gradul al 3-lea dupa formula sa (a*x^3 + b*x^2 + c * x + d) si afisarea valorii acestuia */
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+void citire_pol(float&, int&, int&, int&, int&);
+void afisare_pol(float);
+
+int main() {
+	int q, w, e, r;
+	float x;
+	citire_pol(x, q, w, e, r);
+	float val_pol;
+	val_pol = x * x * x * q + x * x * w + x * e + r;
+	afisare_pol(val_pol);
+	return 0;
+}
+
+void citire_pol(float& x, int& q, int& w, int& e, int& r) {
+	printf("Vom construi polinomul de grad 3 cu datele introduse de dumneavoastra si ii vom afisa valoarea\n");
+	printf("Introduceti o valoare reprezentand variabila x a polinomului de grad 3:");
+	scanf("%f", &x);
+	printf("Introduceti o valoare reprezentand coeficientul a:");
+	scanf("%d", &q);
+	printf("Introduceti o valoare reprezentand coeficientul b:");
+	scanf("%d", &w);
+	printf("Introduceti o valoare reprezentand coeficientul c:");
+	scanf("%d", &e);
+	printf("Introduceti o valoare reprezentand coeficientul d:");
+	scanf("%d", &r);
+}
+
+void afisare_pol(float valoarea_pol) {
+	printf("\nValoarea polinomului de grad 3 este: %f\n", valoarea_pol);
+}
+
+float valoare_pol(float y, int n, int m, int z, int t) {
+	return (y * y * y * n) + (y * y * m) + (y * z) + t;
+}
+
+
+
+
+
+
+
+/*pb2_lab06, Handru Radu, Problema 2 consta in folosirea formulei lui Heron pentru aflarea ariei triunghiului, cunoscand cele 3 laturi ale sale */
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <cmath>
+
+int citire_l();
+void afisare_arie(float);
+float aria_t(int, int, int);
+
+int main() {
+	int lat1, lat2, lat3;
+	printf("\nSe vor introduce valorile laturilor unui triunghi\n");
+	lat1 = citire_l();
+	lat2 = citire_l();
+	lat3 = citire_l();
+	float aria_tr = aria_t(lat1, lat2, lat3);
+	afisare_arie(aria_tr);
+	return 0;
+}
+
+int citire_l() {
+	int val;
+	printf("Introduceti o valoare:");
+	scanf("%d", &val);
+	return val;
+}
+
+void afisare_arie(float aria_triunghiului) {
+	printf("Aria triunghiului este: %f", aria_triunghiului);
+}
+
+float aria_t(int l1, int l2, int l3) {
+	float p = (float)(l1 + l2 + l3) / 2;
+	return (float)sqrt(p * (p - l1) * (p - l2) * (p - l3));
+}
+
+
+
+
+
+
+
+
+/*pb3_lab06, Handru Radu, Problema 3 consta in parcurgerea bitilor numarului prin deplasarea cu o pozitie spre dreapta a bitilor numarului si inmagazinarea acestora intr-un tablou unidimensional urmand ca acestia sa fie afisati*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int main() {
+	int x[64], k = 0;
+	unsigned char c1 = 200;
+	printf("Se vor afisa valorile bitilor unei variabile de tip unsigned char\n");
+	while(c1) {
+		x[k++] = c1 % 2;
+		c1 >>= 1;
+	}
+	for (int i = k - 1; i >= 0; i--)
+		printf("%d", x[i]);
+	printf("\n");
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+/*pb5_lab06, Handru Radu, Problema 5 consta in contorizarea bitilor care au valoarea 0 din reprezentarea numarului intreg introdus*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int citire_int();
+
+int main() {
+	int intreg, nr = 0;
+	intreg = citire_int();
+	int cint = intreg;
+	while (intreg) {
+		if (intreg % 2 == 0)
+			nr++;
+		intreg >>= 1;
+	}
+	printf("Numarul de zerouri ale numarului %d in reprezentarea binara este %d", cint, nr);
+	return 0;
+}
+
+int citire_int() {
+	int val;
+	printf("Introduceti o valoare intreaga:");
+	scanf("%d", &val);
+	return val;
+}
+
+
+
+
+
+
+
+
+
+/*pb6_lab06, Handru Radu, Problema 6 consta in inmagazinarea tuturor bitilor reprezentarii intregului intr-un tablou unidimensional urmand ca acesta sa fie parcurs pe octeti, iar octetii vor fi afisati in zecimal*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int main() {
+	int n, nr = 0, x[32];
+	printf("Introduceti un intreg:");
+	scanf("%d", &n);
+	while (n) {
+		x[nr++] = n % 2;
+		n >>= 1;
+	}
+	printf("Octetii numarului afisati in zecimal sunt:\n");
+	int cnt = 0, j = 0, p = 1;
+	for (int i = 0; i < nr; i++)
+		if (cnt == 8 || i == nr - 1)
+		{
+			int numar = 0;
+			for (int k = j; k <= i; k++)
+			{
+				numar += x[k] * p;
+				p = p * 2;
+			}
+			printf("%d ", numar);
+			j = i;
+			p = 1;
+			cnt = 0;
+		}
+		else cnt++;
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/*pb7_lab06, Handru Radu, Problema 7 consta in efectuarea operatiilor de adunare/scadere/inmultire/impartire, acestea vor fi afisate urmand sa fie rotunjite cu ajutorul operatorului cast. 
+In final este efectuata comparatia dintre cele doua valori introduse si afisarea valorii minime*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+float citire();
+
+int main() {
+	float e, t;
+	e = citire();
+	t = citire();
+	float adunare = e + t, scadere = e - t, inmultire = e * t, impartire = e / t;
+	printf("Adunarea este: %f\nScaderea este: %f\nInmultirea este: %f\nImpartirea este: %f\n", adunare, scadere, inmultire, impartire);
+	adunare = (int)adunare, scadere = (int)scadere, inmultire = (int)inmultire, impartire = (int)impartire;
+	printf("\nValorile rotunjite sunt:\n");
+	printf("Adunarea este: %f\nScaderea este: %f\nInmultirea este: %f\nImpartirea este: %f\n", adunare, scadere, inmultire, impartire);
+	if (e > t)
+		printf("Valoare minima dintre cele doua valori introduse este: %f", t);
+	else printf("Valoare minima dintre cele doua valori introduse este: %f", e);
+	return 0;
+}
+
+float citire() {
+	float val;
+	printf("Introduceti o valoare reala:");
+	scanf("%f", &val);
+	return val;
+}
+
+
+
+
+
+
+
+
+/*pb9_lab06, Handru Radu, Problema 9 consta in compararea celor 2 valori introduse, in cazul in care acestea sunt egale vom calcula aria cercului cu ajutorul formulei pi * r^2, 
+iar daca acestea nu sunt egale vom calcula aria dreptunghiului (L * l)*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <cmath>
+
+int citire_int();
+void afisare_arie_cerc(float);
+void afisare_arie_drept(int);
+
+int main() {
+	int val1, val2;
+	val1 = citire_int();
+	val2 = citire_int();
+	if (val1 == val2) {
+		float pi = 3.141;
+		float aria_cercului = val1 * val2 * pi;
+		afisare_arie_cerc(aria_cercului);
+	}
+	else {
+		int aria_drept = val1 * val2;
+		afisare_arie_drept(aria_drept);
+	}
+	return 0;
+}
+
+int citire_int() {
+	int val;
+	printf("Introduceti o valoare intreaga:");
+	scanf("%d", &val);
+	return val;
+}
+
+void afisare_arie_cerc(float aria_cerc) {
+	printf("Aria cercului este: %f", aria_cerc);
+}
+
+void afisare_arie_drept(int aria_dreptunghi) {
+	printf("Aria derptunghiului este: %d", aria_dreptunghi);
+}
+

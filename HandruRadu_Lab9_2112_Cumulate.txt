@@ -1,0 +1,304 @@
+/*pb1_lab09, Handru Radu, Problema 1 consta in realizarea produsului scalar a celor doua tablouri cu ajutorul unei functii*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#define DIM 8
+
+void citire(int&, int tab[]);
+int produs_scalar(int, int tab[], int, int tab4[]);
+
+int main() {
+    int d1, d2;
+    int tab1[DIM], tab2[DIM];
+    //Citirea tabloului 1
+    citire(d1, tab1);
+    //Citirea tabloului 2
+    citire(d2, tab2);
+    //Testarea posibilitati de realizare a produsului scalar si afisarea acestuia
+    if (d1 == d2)
+        printf("\nProdusul lor scalar este: %d\n", produs_scalar(d1, tab1, d2, tab2));
+    else printf("\nProdusul lor scalar nu poate fi realizat deoarece dimensiunile sunt diferite!!\n");
+    return 0;
+}
+
+void citire(int& d, int tab[]) {
+    int* p;
+    p = &tab[0];
+    do {
+        printf("Introduceti dimensiunea tabloului ( <= %d): ", DIM - 1);
+        scanf("%d", &d);
+        if (d >= DIM) printf("\nDimensiunea este prea mare!!\n");
+        if (d <= 0) printf("\nDimensiunea nu este valida\n");
+    } while (d >= DIM || d <= 0);
+    printf("Introduceti elementele tabloului:\n");
+    for (int i = 0; i < d; i++)
+    {
+        printf("\tx[%d]=", i);
+        scanf("%d", p + i);
+    }
+}
+
+int produs_scalar(int d3, int tab3[], int d4, int tab4[]) {
+    int* p3, * p4;
+    int prod = 0;
+    p3 = &tab3[0];
+    p4 = &tab4[0];
+    for (int i = 0; i < d3; i++)
+        prod += (*(p3 + i)) * (*(p4 + i));
+    return prod;
+}
+
+
+
+
+
+
+
+
+/*pb2_lab09, Handru Radu, Problema 2 consta in stergerea elementelor impare dintr-un tablou unidimensional, de dimensiune maxima 20
+si care este generat aleator cu numere intre 1 si 50*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#define DIM 20
+
+void random_num1_50(int tab[]);
+void stergere_imp(int&, int tab[]);
+
+int main() {
+	int d1 = DIM, tab[DIM];
+	random_num1_50(tab);
+	//Tablou initial
+	printf("Tabloul initial este:\n");
+	for (int i = 0; i < DIM; i++)
+		printf("\tx[%d] = %d\n", i, tab[i]);
+	//Tablou dupa stergerea elementelor impare
+	printf("Tabloul dupa stergerea elementelor impare este:\n");
+	stergere_imp(d1, tab);
+	for (int i = 0; i < d1; i++)
+		printf("\tx[%d] = %d\n", i, tab[i]);
+}
+
+void random_num1_50(int tab[]) {
+	int* p;
+	p = &tab[0];
+	srand((unsigned)time(NULL));
+	for (int i = 0; i < DIM; i++) {
+		*(p + i) = rand() % 51;
+		if (*(p + i) == 0)
+		{
+			while (*(p + i) == 0)
+				*(p + i) = rand() % 51;
+		}
+	}
+}
+
+void stergere_imp(int& d, int tab[]) {
+	int* p, ok = 1;
+	p = &tab[0];
+	for (int i = 0; i < d; i++)
+		if ((*(p + i)) % 2 == 1)
+		{
+			for (int j = i; j < d; j++)
+				*(p + j) = *(p + j + 1);
+			d--;
+			i--;
+		}
+}
+
+
+
+
+
+
+
+
+
+/*pb3_lab09, Handru Radu, Problema 3 consta in copierea elementelor mai mari decat valoarea medie intr-un alt tablou, cu ajutorul pointerilor*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#define DIM 21
+
+void citire(int&, float tab[]);
+void afisare(int, float tab[]);
+void tablou_2(int, float tab[], int&, float tab3[]);
+
+
+int main() {
+    int d1, d2 = 0;
+    float tab1[DIM], tab2[DIM];
+    citire(d1, tab1);
+    tablou_2(d1, tab1, d2, tab2);
+    printf("\nValorile din tabloul initial sunt:\n");
+    afisare(d1, tab1);
+    printf("\nValorile din tabloul final sunt:\n");
+    afisare(d2, tab2);
+    return 0;
+}
+
+void citire(int& d, float tab[]) {
+    do {
+        printf("Introduceti dimensiunea tabloului ( <= %d): ", DIM - 1);
+        scanf("%d", &d);
+        if (d >= DIM) printf("\nDimensiunea este prea mare!!\n");
+        if (d <= 0) printf("\nDimensiunea nu este valida\n");
+    } while (d >= DIM || d <= 0);
+    float* p;
+    p = &tab[0];
+    printf("\nIntroduceti elementele tabloului:\n");
+    for (int i = 0; i < d; i++)
+    {
+        printf("\tx[%d]=", i);
+        scanf("%f", p + i);
+    }
+}
+
+void afisare(int d, float tab[]) {
+    float* p;
+    p = &tab[0];
+    for (int i = 0; i < d; i++)
+        printf("%f ", *(p + i));
+    printf("\n");
+}
+
+void tablou_2(int d, float tab[], int& d2, float tab3[]) {
+    float s = 0;
+    float* p, * p3;
+    p = &tab[0];
+    p3 = &tab3[0];
+    for (int i = 0; i < d; i++)
+        s += *(p + i);
+    float val_m = s / d;
+    printf("\nValoarea medie este: %f\n", val_m);
+    for (int i = 0; i < d; i++)
+        if (*(p + i) > val_m) {
+            *(p3 + d2) = *(p + i);
+            d2++;
+        }
+}
+
+
+
+
+
+
+/*pb4_lab09, Handru Radu, Problema 4 consta in eliminarea caracterelor care se repeta dintr-un sir de caractere, cu ajutorul functiei strcpy, care returneaza un pointer 
+al pozitiei urmatoare pentru a sterge elementul care se repeta de pe pozitia respectiva*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <string.h>
+#define DIM 31
+
+int main() {
+    char sir[DIM];
+    printf("Introduceti un sir de caractere (dimensiunea <= %d):", DIM - 1);
+    fgets(sir, DIM, stdin);
+    char* p;
+    p = &sir[0];
+    for (int i = 0; i < strlen(sir); i++)
+        for (int j = i + 1; j < strlen(sir); j++)
+            if (*(p + i) == *(p + j) && *(p + i) != ' ') {
+                strcpy(p + j, p + j + 1);
+                j--;
+            }
+    printf("\n%s", sir);
+    return 0;
+}
+
+
+
+
+
+/*pb5_lab09, Handru Radu, Problema 5 consta in afisarea numarului de caractere prin care primul sir difera de al 2-lea si invers
+cu ajutorul unei functii prin care eliminam toate dublurile si verificam proprietatea ca acesta nu se gaseste in celalalt sir*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <string.h>
+#define DIM 31
+
+int nr_caract(char sir[], char sir1[]);
+
+int main() {
+    char sir[DIM], sir1[DIM];
+    printf("Introduceti un sir de caractere (dimensiunea <= %d):", DIM - 1);
+    scanf("%s", &sir);
+    printf("Introduceti un sir de caractere (dimensiunea <= %d):", DIM - 1);
+    scanf("%s", &sir1);
+    if (nr_caract(sir, sir1) != 0)
+        printf("\nNumarul de caractere care se gasesc in sirul 1, dar nu si in sirul 2 este:  %d\n", nr_caract(sir, sir1));
+    else printf("\nNu exista caractere distincte in sirul 1\n");
+    if (nr_caract(sir1, sir) != 0)
+        printf("\nNumarul de caractere care se gasesc in sirul 2, dar nu si in sirul 1 este:  %d\n", nr_caract(sir1, sir));
+    else printf("\nNu exista caractere distincte in sirul 2\n");
+    return 0;
+}
+
+int nr_caract(char sir[], char sir1[]) {
+    char* p, * p1;
+    p = &sir[0], p1 = &sir1[0];
+    int nr = 0, ok;
+    for (int i = 0; i < strlen(sir); i++)
+        if (p[i] == ' ') {
+            ok = 0;
+        }
+        else
+        {
+            ok = 1;
+            for (int j = 0; j < strlen(sir1); j++)
+                if (p[i] == p1[j]) {
+                    ok = 0;
+                    break;
+                }
+            for (int j = i + 1; j < strlen(sir); j++)
+                if (p[i] == p[j]) {
+                    strcpy(p + j, p + j + 1);
+                    j--;
+                }
+            if (ok == 1)
+                nr++;
+        }
+    return nr;
+}
+
+
+
+
+
+
+/*pb6_lab09, Handru Radu, Problema 6 consta in afisarea fiecarui caracter si numarul de aparitii ale acestuia*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <string.h>
+#define DIM 31
+
+void afisare_c_ap(char sir1[]);
+
+int main() {
+    char sir[DIM];
+    printf("Introduceti un sir de caractere (dimensiunea <= %d):", DIM - 1);
+    scanf("%s", &sir);
+    afisare_c_ap(sir);
+    return 0;
+}
+
+void afisare_c_ap(char sir1[]) {
+    char* p;
+    p = &sir1[0];
+    int nr;
+    printf("Aparitiile caracterelor si numarul de aparitii sunt:\n");
+    for (int i = 0; i < strlen(sir1); i++) {
+        nr = 1;
+        for (int j = i + 1; j < strlen(sir1); j++)
+            if (p[i] == p[j]) {
+                nr++;
+                strcpy(p + j, p + j + 1);
+                j--;
+            }
+        printf("%c  %d\n", p[i], nr);
+    }
+}
+
+
+
+
+

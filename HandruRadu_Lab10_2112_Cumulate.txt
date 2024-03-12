@@ -1,0 +1,685 @@
+/*pb1_lab10, Handru Radu,  Problema 1 (Lab 8) consta in realizarea unor functii pentru valoarea medie a numerelor pozitive cat si a celor negative, urmand ca acestea sa fie afisate*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#define DIM 101
+
+void citire_tablou(int& e, int* p);
+float val_med_p(int e, int* p);
+float val_med_n(int e, int* p);
+
+int main() {
+	int dim, tab[DIM];
+	int* p;
+	p = tab;
+	//Citire tablou
+	citire_tablou(dim, p);
+	//Valoarea medie a numerelor pozitive
+	if (dim > 0 && dim < DIM) {
+		if (val_med_p(dim, p) == 0)
+			printf("Valoarea medie a numerelor pozitive nu exista deoarece nu exista numere pozitive\n");
+		else printf("Valoarea medie a valorilor pozitive este: %0.3f\n", val_med_p(dim, tab));
+		//Valoarea medie a numerelor negative
+		if (val_med_n(dim, p) == 0)
+			printf("Valoarea medie a numerelor negative nu exista deoarece nu exista numere negative\n");
+		else printf("Valoarea medie a valorilor negative este: %0.3f\n", val_med_n(dim, tab));
+	}
+	return 0;
+}
+
+void citire_tablou(int& e, int* p) {
+	printf("Introduceti dimensiunea tabloului (dim <= %d): ", DIM - 1);
+	scanf("%d", &e);
+	if (e >= DIM) {
+		printf("\n\tDimensiunea este prea mare !\n");
+	}
+	else if (e <= 0) {
+		printf("\n\tDimensiunea nu este valida !\n");
+	}
+	else {
+		printf("\nIntroduceti elementele tabloului:\n");
+		for (int i = 0; i < e; i++)
+		{
+			printf("\tx[%d] = ", i);
+			scanf("%d", p + i);
+		}
+	}
+}
+
+float val_med_p(int e, int* p) {
+	float s = 0;
+	int nr = 0;
+	for (int i = 0; i < e; i++)
+		if (*(p + i) > 0) {
+			s += *(p + i);
+			nr++;
+		}
+	if (s == 0)
+		return 0;
+	return s / nr;
+}
+
+float val_med_n(int e, int* p) {
+	float s = 0;
+	int nr = 0;
+	for (int i = 0; i < e; i++)
+		if (*(p + i) < 0) {
+			s += *(p + i);
+			nr++;
+		}
+	if (s == 0)
+		return 0;
+	return s / nr;
+}
+
+
+
+
+
+
+
+
+
+
+/*pb1_lab10, Handru Radu, Problema 2 (Lab 8) consta in determinarea celui mai mic numar pozitiv si afisarea acestuia, iar in cazul in care nu exista numere pozitive
+va aparea un mesaj care ne va exprima acest lucru*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#define DIM 101
+
+void citire_tablou(int& e, int* p);
+int det_cmm_nr_pozitiv(int e, int* p);
+
+int main() {
+	int dim, tab[DIM];
+	int* p;
+	p = tab;
+	//Citirea tabloului
+	citire_tablou(dim, p);
+	//Afisarea cmmnp a elementelor pozitive
+	if (dim > 0 && dim < DIM) {
+		if (det_cmm_nr_pozitiv(dim, p) == 0)
+			printf("\nNu exista elemente pozitive!!!");
+		else printf("\nCel mai mic numar pozitiv este: %d", det_cmm_nr_pozitiv(dim, p));
+	}
+	return 0;
+}
+
+void citire_tablou(int& e, int* p) {
+	printf("Introduceti dimensiunea tabloului (dim <= %d): ", DIM - 1);
+	scanf("%d", &e);
+	if (e >= DIM) {
+		printf("\n\tDimensiunea este prea mare !\n");
+	}
+	else if (e <= 0) {
+		printf("\n\tDimensiunea nu este valida !\n");
+	}
+	else {
+		printf("\nIntroduceti elementele tabloului:\n");
+		for (int i = 0; i < e; i++)
+		{
+			printf("\tx[%d] = ", i);
+			scanf("%d", p + i);
+		}
+	}
+}
+
+int det_cmm_nr_pozitiv(int e, int* p) {
+	int ok = 0, min_p = 0;
+	while (ok != 1 && e != 0) {
+		if (p[e] > 0)
+		{
+			min_p = p[e];
+			ok = 1;
+		}
+		e--;
+	}
+	if (e == 0)
+		return 0;
+	for (int i = e; i >= 0; i--)
+		if (p[i] < min_p && p[i] > 0)
+			min_p = p[i];
+	return min_p;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*pb1_lab10, Handru Radu, Problema 3 (Lab 8) consta in citirea a 10 elemente intregi ale unui tablou unidimensional, realizand ordonarea acestora
+cu ajutorul algorimtului bubble sort si afisarea elementelor tabloului*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <stdio.h>
+#define DIMT 11
+#define DIM 10
+
+void citire_10_elemente(int e, int* p);
+void afisare_cresc(int e, int* p);
+
+int main() {
+	int tab[DIMT], * p;
+	p = tab;
+	//Citirea celor 10 elemente
+	citire_10_elemente(DIM, p);
+	//Afisarea crescatoare a acestora
+	afisare_cresc(DIM, p);
+	return 0;
+}
+
+void citire_10_elemente(int e, int* p) {
+	printf("Va rugam sa introduceti 10 numere intregi ale unui tablou unidimensional:\n");
+	for (int i = 0; i < DIM; i++) {
+		printf("\tx[%d] = ", i);
+		scanf("%d", p + i);
+	}
+}
+
+void afisare_cresc(int e, int* p) {
+	for (int i = 0; i < e - 1; i++)
+		for (int j = i + 1; j < e; j++)
+			if (p[i] > p[j])
+				std::swap(p[i], p[j]);
+	printf("\nElementele tabloului ordonate crescator sunt:\n");
+	for (int i = 0; i < e; i++)
+		printf("%d ", p[i]);
+}
+
+
+
+
+
+
+
+
+
+/*pb2_lab10, Handru Radu, Problema 2 consta in preluarea a 4 a numere din linia de comanda, 2 vor fi de tip (int), iar celelalte 2 vor fi de tip (float)
+urmand ca pentru cele doua numere intregi sa fie calculata si afisata suma, iar pentru cele reale sa fie afisat produsul*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(int argc, char* argv[]) {
+    int suma = 0;
+    float numar, prod = 1;
+    if (argc == 1) {
+        printf("\n\tNumerele nu au fost introduse !!!\n");
+        exit(1);
+    }
+    int nr_int = 0, nr_reale = 0;
+    for (int i = 1; i < argc; i++)
+    {
+        if (nr_int < 2) {
+            numar = atoi(argv[i]);
+            nr_int++;
+            suma += numar;
+        }
+        else if (nr_reale < 2) {
+            numar = atof(argv[i]);
+            nr_reale++;
+            prod *= numar;
+        }
+    }
+    printf("Suma numerelor intregi este: %d\n", suma);
+    printf("Produsul numerelor reale este: %0.3f\n", prod);
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+/*pb3_lab10, Handru Radu, Problema 3 consta in citirea unui sir de caractere cu dimensiunea mai mare decat 7 si afisarea caracterelor
+de pe pozitiile 1, 3, 5 si 7 cu ajutorul unui pointer pentru accesa caracterele din sirul introdus*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <string.h>
+#define DIM 20
+
+int main() {
+    char sir[DIM];
+    printf("Introduceti un sir de caractere de (%d < dimensiune <= %d): ", 7, DIM - 1);
+    fgets(sir, DIM, stdin);
+    printf("\n%d\n", strlen(sir));
+    if (strlen(sir) <= 8)
+    {
+        printf("\n\tDimensiunea este prea mica!\n");
+        return 1;
+    }
+    char* p;
+    p = &sir[0];
+    printf("Caracterele de pe poztiile 1, 3, 5 si 7 sunt:\n");
+    for (int i = 0; i < strlen(sir); i++)
+        if (i == 1 || i == 3 || i == 5 || i == 7)
+            printf("Caracterul de pe pozitia %d este %c\n", i, *(p + i));
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+/*pb4_lab10, Handru Radu, Problema 4 consta in realizarea sumei matricelor (in cazul in care acest lucru este realizabil) cu ajutorul unei functii care returneaza un pointer dublu
+urmand ca aceasta sa fie afisata, cat si elementele de pe diagonala secundara a acesteia*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#define DIM 20
+
+void citire(int& l, int& c, int mat[][DIM]);
+void afisare_matrice_suma(int l, int c, int** suma);
+void afisare_elemente_diagonala_secundara(int l, int c, int** suma);
+int** suma_mat(int l, int c, int(*p1)[DIM], int(*p2)[DIM]);
+
+int main() {
+	int mat1[DIM][DIM], mat2[DIM][DIM];
+	int l1, c1, l2, c2;
+	//Matricea 1
+	citire(l1, c1, mat1);
+	//Matricea 2
+	citire(l2, c2, mat2);
+	//Suma Matricilor
+	if (l1 == l2 && c1 == c2) {
+		printf("\nSuma Matricelor este:\n");
+		int(*p1)[DIM], (*p2)[DIM], ** p_suma;
+		p1 = mat1;
+		p2 = mat2;
+		p_suma = suma_mat(l1, c1, p1, p2);
+		//Afisarea Matricei suma
+		afisare_matrice_suma(l1, c1, p_suma);
+		//Afisarea elementelor de pe diagonala secundara
+		afisare_elemente_diagonala_secundara(l1, c1, p_suma);
+	}
+	else
+		printf("\nSuma matricelor nu poate fi realizata deoarece dimensiunile acestora nu sunt egale!!");
+	return 0;
+}
+
+void citire(int& l, int& c, int mat[][DIM]) {
+	int verif = 1;
+	printf("Introduceti numarul de linii ale matricei 1 (dimensiune <= %d): ", DIM);
+	scanf("%d", &l);
+	if (l > DIM - 1)
+	{
+		printf("\nDimensiunea este prea mare!!\n");
+		verif = 0;
+	}
+	else if (l <= 0)
+	{
+		printf("\nDimensiunea nu este valida\n");
+		verif = 0;
+	}
+	printf("Introduceti numarul de coloane ale matricei 1 (dimensiune <= %d): ", DIM);
+	scanf("%d", &c);
+	if (l > DIM - 1)
+	{
+		printf("\nDimensiunea este prea mare!!\n");
+		verif = 0;
+	}
+	else if (l <= 0)
+	{
+		printf("\nDimensiunea nu este valida\n");
+		verif = 0;
+	}
+	if (verif == 1) {
+		int(*p)[DIM] = mat;
+		printf("Introduceti elementele matricei 1: \n");
+			for (int i = 0; i < l; i++)
+				for (int j = 0; j < c; j++) {
+					printf("\tmat[%d][%d] = ", i, j);
+					scanf("%d", &mat[i][j]);
+				}
+	}
+}
+
+void afisare_matrice_suma(int l, int c, int** suma) {
+	printf("\nMatricea suma este:\n");
+	for (int i = 0; i < l; i++) {
+		for (int j = 0; j < c; j++)
+			printf("%d ", suma[i][j]);
+		printf("\n");
+	}
+}
+
+void afisare_elemente_diagonala_secundara(int l, int c, int** suma) {
+	printf("\nElementele matricei de pe diagonala secundara sunt:\n");
+	for (int i = 0; i < l; i++)
+		for (int j = 0; j < c; j++)
+			if (i + j == l - 1)
+				printf("%d ", suma[i][j]);
+	printf("\n");
+}
+
+int** suma_mat(int l, int c, int(*p1)[DIM], int(*p2)[DIM]) {
+	static int mat3[DIM][DIM];
+	static int* pmat[DIM];
+	for (int i = 0; i < l; i++) {
+		for (int j = 0; j < c; j++)
+			mat3[i][j] = p1[i][j] + p2[i][j];
+		pmat[i] = { mat3[i] };
+	}
+	return pmat;
+}
+
+
+
+
+
+
+
+
+
+/*pb5_lab10, Handru Radu, Problema 5 consta in definirea unui tablou de pointeri catre siruri de caractere, Aplicatia genereaza un numar aleator între 1 si 100
+//si apoi citeste în mod repetat intrarea de la tastatura pana cand utilizatorul introduce valoarea corecta*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <time.h>
+#define DIM 4
+#define MAX 101
+#define MIN 0
+
+int main() {
+	const char* sir[DIM] = { "Valoare prea mare", "Valoare prea mica", "Valoare corecta" };
+	static int nr;
+	int nr_citit;
+	srand((unsigned)time(NULL));
+	do {
+		nr = rand();
+	} while (nr >= MAX || nr <= MIN);
+	do {
+		printf("Introduceti un numar cuprins intre (%d <= nr <= %d): ", MIN + 1, MAX - 1);
+		scanf("%d", &nr_citit);
+		if (nr == nr_citit)
+		{
+			printf("%s\n\n", sir[2]);
+		}
+		else if (nr > nr_citit)
+		{
+			printf("%s\n\n", sir[1]);
+		}
+		else {
+			printf("%s\n\n", sir[0]);
+		}
+	} while (nr != nr_citit);
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+/*pb6_lab10, Handru Radu, Problema 6 consta in initializarea unui tablou de pointeri spre siruri de caractere si afisarea tuturor sirurilor*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <string.h>
+#define DIM 40
+
+int main() {
+	const char *sir[DIM] = {"Programare", "Informatica", "Matematica", "Fizica"};
+	int i = 0;
+	while (sir[i] != NULL) {
+		printf("%s\n", sir[i]);
+		i++;
+	}
+	return 0;
+}
+
+
+
+
+
+
+
+
+/*pb7_lab10, Handru Radu, Problema 7 consta in introducerea unor siruri de caractere in linia de comanda si concatenarea acestora intr-un singur sir
+urmand ca acesta sa fie afisat*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#define DIM 200
+
+int main(int argc, char* argv[])
+{
+	char sir1[DIM];
+	if (argc == 1) {
+		printf("\nSirurile nu au fost introduse !!!!\n");
+		exit(1);
+	}
+	int s = 0;
+	for (int i = 1; i < argc; i++)
+	{
+		s += strlen(argv[i]);
+		if (s > DIM) {
+			printf("\n Ati introdus siruri ale caror dimensiunea adunata este mai mare decat dimensiunea posibila (%d)\n", DIM);
+			return 1;
+		}
+		if (i == 1) 
+			strcpy(sir1, argv[i]);
+		else strcat(sir1, argv[i]);
+	}
+	printf("\nSirul rezultat din concatenarea sirurilor introduse in linia de comanda este: %s\n", sir1);
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+/*pb8_lab10, Handru Radu, Problema 8 consta in inversarea sirului de caractere introdus in linia de comanda si afisarea acestuia*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <iostream>
+#include <string.h>
+#include <stdlib.h>
+#define DIM 50
+
+void inversare(char sir1[]);
+
+int main(int argc, char* argv[])
+{
+	char sir1[DIM];
+	if (argc == 1) {
+		printf("\nSirurile nu au fost introduse !!!!\n");
+		exit(1);
+	}
+	int s = 0;
+	for (int i = 1; i < argc; i++)
+	{
+		s += strlen(argv[i]);
+		if (s > DIM) {
+			printf("\n Ati introdus siruri ale caror dimensiunea adunata este mai mare decat dimensiunea posibila (%d)\n", DIM);
+			return 1;
+		}
+		strcpy(sir1, argv[i]);
+	}
+	inversare(sir1);
+	printf("\nSirul inversat este: %s\n", sir1);
+	return 0;
+}
+
+void inversare(char sir1[]) {
+	for (int i = 0; i < strlen(sir1) / 2; i++)
+		std::swap(sir1[i], sir1[strlen(sir1) - 1 - i]);
+}
+
+
+
+
+
+
+
+
+/*pb9_lab10, Handru Radu, Problema 9 consta in afisarea numarului de medii mai mari sau egale cu 8*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#define DIM 20
+
+void citire(int& n, float tab[]);
+int nr_medii(int n, float tab[]);
+
+int main() {
+	float tab[DIM];
+	int d;
+	citire(d, tab);
+	printf("\nNumarul elevilor cu media >= 8 este: %d", nr_medii(d, tab));
+	return 0;
+}
+
+void citire(int& nr, float tab[]) {
+	float* p;
+	p = tab;
+	printf("\nIntroduceti numarul de medii (nr <= %d): ", DIM-1);
+	scanf("%d", &nr);
+	printf("\nIntroduceti mediile elevilor:\n");
+	for (int i = 0; i < nr; i++) {
+		printf("\tx[%d] = ", i);
+		scanf("%f", p + i);
+	}
+}
+
+int nr_medii(int n, float tab[]) {
+	int nr = 0;
+	float* p;
+	p = tab;
+	for (int i = 0; i < n; i++)
+		if (*(p + i) >= 8)
+			nr++;
+	return nr;
+}
+
+
+
+
+
+
+
+/*pb14_lab10, Handru Radu, Problema 14 consta in interclasarea a doua tablouri unidimensionale cu ajutorul pointerilor*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#define DIM 50
+#define DIMM 100
+
+void citire_tablou(int &d, int vec[]);
+void interclasare(int d1, int d2, int& d3,  int vec1[DIM], int vec2[DIM], int vec3[DIMM]);
+void afisare_tablou_interclasat(int d3, int vec3[DIMM]);
+
+int main() {
+	int vec1[DIM], vec2[DIM], vec3[DIMM];
+	int d1, d2, d3 = 0;
+	//Citirea tabloului 1
+	citire_tablou(d1, vec1);
+	if (d1 > 0 && d1 < DIM) {
+		//Citirea tabloului 2
+		citire_tablou(d2, vec2);
+		if (d2 > 0 && d2 < DIM) {
+			//Interclasarea a celor 2 vectori
+			interclasare(d1, d2, d3, vec1, vec2, vec3);
+			afisare_tablou_interclasat(d3, vec3);
+		}
+	}
+	return 0;
+}
+
+void citire_tablou(int &d, int vec[]) {
+	printf("Introduceti numarul de elemente ale tabloului (dimensiune <= %d): ", DIM - 1);
+	scanf("%d", &d);
+	if (d >= DIM) {
+		printf("\n\tDimensiunea este prea mare !\n");
+	}
+	else if (d <= 0) {
+		printf("\n\tDimensiunea nu este valida !\n");
+	}
+	else {
+		int* p;
+		p = vec;
+		printf("Introduceti elementele tabloului: \n");
+		for (int i = 0; i < d; i++)
+		{
+			printf("\tx[%d] = ", i);
+			scanf("%d", p + i);
+		}
+	}
+}
+
+void interclasare(int d1, int d2, int &d3, int vec1[DIM], int vec2[DIM], int vec3[DIMM]) {
+	int i = 0, j = 0;
+	int* p1, * p2, *p3;
+	p1 = vec1;
+	p2 = vec2;
+	p3 = vec3;
+	while (i < d1 && j < d2)
+	{
+		if (*(p1 + i) < *(p2 + j))
+		{
+			*(p3 + d3) = *(p1 + i);
+			d3++;
+			i++;
+		}
+		else {
+			*(p3 + d3) = *(p2 + j);
+			d3++;
+			j++;
+		}
+	}
+	if (i <= d1)
+	{
+		for (int k = i; k < d1; k++)
+		{
+			*(p3 + d3) = *(p1 + k);
+			d3++;
+		}
+	}
+	if (j <= d1)
+	{
+		for (int k = j; k < d2; k++)
+		{
+			*(p3 + d3) = *(p2 + k);
+			d3++;
+		}
+	}
+}
+
+void afisare_tablou_interclasat(int d3, int vec3[DIMM]) {
+	int* p = vec3;
+	printf("\nTabloul rezultat in urma interclasarii este: \n");
+	for (int i = 0; i < d3; i++)
+		printf("%d ", *(p + i));	
+	printf("\n");
+}
+
+
+
+
+
+
+
+
+

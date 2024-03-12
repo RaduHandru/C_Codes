@@ -1,0 +1,790 @@
+/*pb1_lab11, Handru Radu,  Problema 1 consta in alocarea dinamica a unui tablou si calcularea si afisarea sumei elementelor negative*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <malloc.h>
+#define DIM 50
+
+void citire_tablou(int, float*);
+void afisare_tablou(int, float*);
+float suma_elem_negative(int, float*);
+
+int main() {
+	int dim;
+	float* tab;
+	//Citirea si validarea valorii numarului de elemente
+	do {
+		printf("Introduceti numarul de elemente: (0 < nr < %d): ", DIM);
+		scanf("%d", &dim);
+		if (dim <= 0) printf("\nValoare invalida!\n");
+		if (dim >= DIM) printf("\nValoarea este prea mare!!\n");
+	} while (dim <= 0 || dim >= DIM);
+	//alocarea dinamica a unui tablou de numere reale
+	tab = (float*)malloc(dim * sizeof(float));
+	if (tab == 0)
+	{
+		printf("\nAlocare nereusita!");
+		return 1;
+	}
+	//Citirea tabloului
+	citire_tablou(dim, tab);
+	//Afisarea sumei numerelor negative
+	if (suma_elem_negative(dim, tab) == 0)
+		printf("\n\tNu exista elemente negative!!!!!\n");
+	else printf("\nSuma numerelor negative este: %0.3f\n", suma_elem_negative(dim, tab));
+
+	//Eliberarea zonei de memorie alocate
+	if (tab)free(tab);
+	return 0;
+}
+
+void citire_tablou(int dim, float* tab) {
+	printf("\nIntroduceti elementele tabloului:\n");
+	for (int i = 0; i < dim; i++) {
+		printf("\ttab[%d] = ", i);
+		scanf("%f", tab + i);
+	}
+}
+
+void afisare_tablou(int dim, float* tab) {
+	printf("\nAfisarea tabloului este:\n");
+	for (int i = 0; i < dim; i++)
+		printf("%f ", *(tab + i));
+}
+
+float suma_elem_negative(int dim, float* tab) {
+	float sum = 0;
+	for (int i = 0; i < dim; i++)
+		if (*(tab + i) < 0)
+			sum += *(tab + i);
+	return sum;
+}
+
+
+
+
+
+
+
+
+
+
+/*pb3_lab11, Handru Radu, Problema 3 consta in alocarea dinamica a doua matrici si realizarea si afisarea sumei acestora in cazul in care acest lucru este posibil*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <malloc.h>
+#define DIM 50
+
+void Citire_Matrice(int, int, int*);
+void Afisare_Matrice(int, int, int*);
+int* Matrice_Suma(int, int, int*, int*);
+int verificare_dim(int);
+
+int main() {
+	int l1, c1, l2, c2;
+	int* mat1, * mat2, * mat3;
+
+	//Matricea 1
+	printf("Introduceti numarul de linii:");
+	scanf("%d", &l1);
+	if (verificare_dim(l1) == 0)
+	{
+		printf("\n\tDimensiunea este incorecta!!!\n");
+		return 1;
+	}
+	printf("Introduceti numarul de coloane:");
+	scanf("%d", &c1);
+	if (verificare_dim(c1) == 0)
+	{
+		printf("\n\tDimensiunea este incorecta!!!\n");
+		return 1;
+	}
+	mat1 = (int*)malloc(l1 * c1 * sizeof(int));
+	if (mat1 == 0) {
+		printf("\n\tAlocare nereusita !!\n");
+		return 1;
+	}
+	Citire_Matrice(l1, c1, mat1);
+
+	//Matricea 2
+	printf("Introduceti numarul de linii:");
+	scanf("%d", &l2);
+	if (verificare_dim(l2) == 0)
+	{
+		printf("\n\tDimensiunea este incorecta!!!\n");
+		return 1;
+	}
+	printf("Introduceti numarul de coloane:");
+	scanf("%d", &c2);
+	if (verificare_dim(c2) == 0)
+	{
+		printf("\n\tDimensiunea este incorecta!!!\n");
+		return 1;
+	}
+	mat2 = (int*)malloc(l2 * c2 * sizeof(int));
+	if (mat2 == 0) {
+		printf("\n\tAlocare nereusita !!\n");
+		return 1;
+	}
+	Citire_Matrice(l2, c2, mat2);
+
+	//Validarea si afisarea Matricei suma
+	if (l1 == l2 && c1 == c2)
+	{
+		printf("\nMatricele initiale sunt:\n");
+		printf("Matricea 1\n");
+		Afisare_Matrice(l1, c1, mat1);
+		printf("\nMatricea 2\n");
+		Afisare_Matrice(l2, c2, mat2);
+		printf("\nSuma Matricelor este:\n");
+		mat3 = Matrice_Suma(l1, c1, mat1, mat2);
+		Afisare_Matrice(l1, c1, mat3);
+	}
+	else printf("\n\tDimensiunile matricelor sunt diferite!!!!\n");
+	return 0;
+}
+
+void Citire_Matrice(int l, int c, int* mat) {
+	printf("\nIntroduceti elementele matricei:\n");
+	for (int i = 0; i < l; i++) {
+		for (int j = 0; j < c; j++) {
+			printf("\tmat[%d][%d] = ", i, j);
+			scanf("%d", (mat + i * c + j));
+		}
+		printf("\n");
+	}
+}
+
+void Afisare_Matrice(int l, int c, int* mat) {
+	for (int i = 0; i < l; i++)
+	{
+		for (int j = 0; j < c; j++)
+			printf("%d ", *(mat + i * c + j));
+		printf("\n");
+	}
+}
+
+int* Matrice_Suma(int l, int c, int* mat1, int* mat2) {
+	int* mat;
+	mat = (int*)malloc(l * c * sizeof(int));
+	for (int i = 0; i < l; i++)
+		for (int j = 0; j < c; j++)
+			*(mat + i * c + j) = *(mat1 + i * c + j) + *(mat2 + i * c + j);
+	return mat;
+}
+
+int verificare_dim(int d) {
+	if (d <= 0)
+		return 0;
+	if (d >= DIM)
+		return 0;
+	return 1;
+}
+
+
+
+
+
+
+
+
+/*pb4_lab11, Handru Radu, Problema 4 consta in alocarea dinamica a unor siruri de caractere*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <string.h>
+#include <malloc.h>
+#define NR_SIRURI 20
+#define DIM 50
+
+int main() {
+	int n, l_sir = 0;
+	char* sir;
+	char** siruri;
+	//Citirea numarului de siruri de caractere
+	printf("Introduceti numarul de siruri de caractere: (0 < numar de siruri < %d): ", DIM);
+	scanf("%d", &n);
+	if (n <= 0 || n >= NR_SIRURI) {
+		printf("\n\tValoarea incorecta !!\n");
+		return 1;
+	}
+
+	//alocarea dinamica a tabloului de siruri de caractere
+	siruri = new char* [NR_SIRURI];
+	if (siruri == 0) {
+		printf("Alocare nereusita!!");
+		return 1;
+	}
+
+	//Alocarea dinamica a sirului
+	sir = new char[NR_SIRURI];
+	if (sir == 0)
+	{
+		printf("Alocare nereusita!");
+		return 1;
+	}
+
+	//Citirea si inmagazinarea sirurilor
+	printf("\nIntroduceti sirurile de caractere: (0 < dimensiune < %d)\n", DIM);
+	for (int i = 0; i < n; i++) {
+		printf("Sir[%d]: ", i);
+		scanf("%s", sir);
+		l_sir = strlen(sir);
+		if (l_sir >= DIM)
+		{
+			printf("\n\tDimensiune incorecta!\n");
+			return 1;
+		}
+		siruri[i] = new char[l_sir + 1];
+		if (siruri[i] == 0) {
+			printf("Alocare gresita!!");
+			return 1;
+		}
+		strcpy(siruri[i], sir);
+	}
+
+	//Afisarea sirurilor
+	printf("\nAfisarea sirurilor:\n");
+	for (int i = 0; i < n; i++)
+		printf("Sirul[%d] este: %s\n", i, siruri[i]);
+
+	//Eliberarea memoriei
+	if (siruri) {
+		for (int i = 0; i < n; i++)
+			delete[]siruri[i];
+		delete[]siruri;
+	}
+	delete[]sir;
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+/*pb5_lab11, Handru Radu, Problema 5 consta in afisarea mediei elementelor si rezolvarea ecuatiei respective*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <malloc.h>
+#include <math.h>
+#define DIM 30
+
+float* tab;
+
+float valoare_medie(int, float*);
+float valoarea_lui_Mn(int, float*);
+
+int main() {
+	int m;
+	printf("Introduceti dimensiunea tabloului de numere: (0 < dim < %d):", DIM);
+	scanf("%d", &m);
+	if (m <= 0 || m >= DIM)
+	{
+		printf("\n\tValoarea este incorecta!!\n");
+		return 1;
+	}
+	//Alocarea dinamica a tabloului
+	tab = (float*)malloc(m * sizeof(float));
+	//tab = new float[m];
+	if (tab == 0) {
+		printf("Alocare nereusita!!");
+		return 1;
+	}
+	//Citirea elementelor tabloului
+	printf("\nIntroduceti elementele tabloului: (elementele sunt de tip real(float))\n");
+	for (int i = 0; i < m; i++) {
+		printf("\ttab[%d] = ", i);
+		scanf("%f", &tab[i]);
+	}
+	//Valoarea medie
+	printf("\nValoarea medie este: %f\n", valoare_medie(m, tab));
+	//Valoarea calcului Mn=(sum(pow((xi-xmed),n))/m;
+	printf("\nValoarea calculului Mn=(sum(pow((xi-xmed),n))/m = %f\n", valoarea_lui_Mn(m, tab));
+	//Eliberarea memoriei
+	if (tab)free(tab);
+	//delete[]tab;
+	return 0;
+}
+
+float valoare_medie(int n, float* tab) {
+	float s = 0;
+	for (int i = 0; i < n; i++)
+		s += tab[i];
+	return s / n;
+}
+
+float valoarea_lui_Mn(int m, float* tab) {
+	float s = 0, val_med = valoare_medie(m, tab);
+	for (int i = 0; i < m; i++)
+		for (int n = 1; n <= 3; n++)
+			s += pow(tab[i] - val_med, n);
+	float Mn = s / m;
+	return Mn;
+}
+
+
+
+
+
+
+
+
+
+
+
+/*pb6_lab11, Handru Radu, Problema 6 consta in calcularea determinantului unei matrici cu ajutorul regulii lui Sarrus*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <malloc.h>
+#define DIM 7
+
+int determinant(int, int*);
+
+int main() {
+	int m, n;
+	int* mat;
+	//Introducerea dimensiunilor
+	printf("Introduceti numarul de linii: (0 < dim < %d):", DIM);
+	scanf("%d", &m);
+	if (m <= 0 || m >= DIM)
+	{
+		printf("\n\tValoarea este incorecta!!\n");
+		return 1;
+	}
+	printf("Introduceti numarul de coloane: (0 < dim < %d):", DIM);
+	scanf("%d", &n);
+	if (n <= 0 || n >= DIM)
+	{
+		printf("\n\tValoarea este incorecta!!\n");
+		return 1;
+	}
+	//Alocarea dinamica
+	mat = (int*)malloc(m * n * sizeof(int));
+	if (mat == 0)
+	{
+		printf("Alocare incorecta!!");
+		return 1;
+	}
+	//Citirea matricii
+	printf("\nIntroduceti elementele matricii:\n");
+	for (int i = 0; i < m; i++) {
+		for (int j = 0; j < n; j++)
+		{
+			printf("mat[%d][%d] = ", i, j);
+			scanf("%d", (mat + i * n + j));
+		}
+		printf("\n");
+	}
+	//Calcularea valorii determinantului
+	if (n == m && determinant(n, mat) != -1) {
+		printf("Valoarea determinantului matricii este: %d\n", determinant(n, mat));
+	}
+	else {
+		printf("\tDeterminantul nu poate fi realizat deoarece matricea nu este una patratica!!!\n");
+	}
+	//Eliberarea memoriei
+	if (mat) free(mat);
+	return 0;
+}
+
+int determinant(int n, int* mat) {
+	int sum = 0, prod, k, r;
+	if (n == 1) {
+		return *(mat + 0 * n + 0);
+	}
+	if (n == 2) {
+		return *(mat + 0 * n + 0) * *(mat + 1 * n + 1) - *(mat + 1 * n + 0) * *(mat + 0 * n + 1);
+	}
+	//Alocarea dinamica
+	int* mat1 = (int*)malloc(n * (2 * n - 1) * sizeof(int));
+	if (mat1 == 0) {
+		printf("Alocarea nu a fost reusita!!");
+		return -1;
+	}
+	//Atribuirea valorilor din matricea initiala
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < n; j++)
+			*(mat1 + i * (2 * n - 1) + j) = *(mat + i * n + j);
+	//Adaugarea celor n - 1 coloane ca si coloane
+	for (int i = 0; i < n; i++)
+		for (int j = n, k = 0; j < (2 * n - 1); j++, k++)
+			*(mat1 + i * (2 * n - 1) + j) = *(mat + i * n + k);
+	//Suma de pe diagonalele principale (adunata)
+	for (int j = 0; j < n; j++)
+	{
+		prod = 1;
+		for (r = j, k = 0; r < j + n; r++, k++)
+			prod *= *(mat1 + k * (2 * n - 1) + r);
+		sum += prod;
+	}
+	//Suma de pe diagonalele secundare (scazuta)
+	for (int j = (2 * n - 2); j >= n - 1; j--)
+	{
+		prod = 1;
+		for (r = j, k = 0; r > j - n; r--, k++)
+			prod *= *(mat1 + k * (2 * n - 1) + r);
+		sum -= prod;
+	}
+
+	if (mat1) free(mat1);
+	return sum;
+}
+
+
+
+
+
+
+
+
+
+
+
+/*pb7_lab11, Handru Radu, Problema 7 consta in generarea unor numere aleatoare cuprinse intre 1 si 100 si inmagazinarea acestora intr-un tablou unidimensional
+urmand ca cele mai frecvente dintre acestea cu valori mai mici sau egale cu 10 sa fie afisate alaturi de numarul lor de aparitii*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <malloc.h>
+#include <stdlib.h>
+#include <time.h>
+#define DIM 10001
+
+void afisare_numere_frecv(int, int*, int);
+
+int main() {
+	int n;
+	int* tab;
+	//Citirea numarului de elemente
+	printf("Introduceti numarul de elemente (0 < nr < %d): ", DIM - 1);
+	scanf("%d", &n);
+	//Alocarea dinamica a tabloului unidimensional
+	tab = (int*)malloc(n * sizeof(int));
+	if (tab == 0) {
+		printf("Alocare nereusita!!!");
+		return 1;
+	}
+	//Generarea elementelor aleeatoare intre 1 si 100
+	srand(time(NULL));
+	for (int i = 0; i < n; i++)
+	{
+		tab[i] = rand();
+		if (tab[i] == 0 || tab[i] >= 101) {
+			while (tab[i] == 0 || tab[i] >= 101)
+				tab[i] = rand();
+		}
+	}
+	//Cele mai frecvente numere k <= 10 si numarul lor de aparitii in tabloul initial
+	int k;
+	printf("\nIntroduceti numarul de elemente frecvente care vor fi afisate (k <= 10): ");
+	scanf("%d", &k);
+	if (k <= 0 || k > 10) {
+		printf("\n\tValoare incorecta!\n");
+		return 1;
+	}
+	afisare_numere_frecv(n, tab, k);
+	//Eliberarea memoriei
+	if (tab) free(tab);
+	return 0;
+}
+
+void afisare_numere_frecv(int n, int* tab, int k) {
+	int ap_max = 0, nr_max = 0;
+	int vec[101] = { 0 };
+	for (int i = 0; i < n; i++) 
+		vec[tab[i]]++;
+	printf("\nCele mai frecvente k (%d) numere sunt:", k);
+	for(int j = 0; j < k; j ++){
+		for (int i = 1; i <= 100; i++) 
+			if (vec[i] > ap_max)
+			{
+				nr_max = i;
+				ap_max = vec[i];
+			}
+		vec[nr_max] = 0;
+		printf("\n\tNumarul %d apare de: %d ori", nr_max, ap_max);
+		ap_max = 0;
+	}
+}
+
+
+
+
+
+
+
+
+/*pb8_lab11, Handru Radu, Problema 8 consta in crearea unui tablou unidimensional unde vor fi inmagazinate valorile radicalilor tuturor numerelor valide*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <malloc.h>
+#include <cmath>
+#define DIM 100
+
+void extrage_radical(int, int, int*, float*);
+
+int main() {
+	int n, m = 0;
+	int* tab;
+	float *tab1;
+	//Citirea numarului de elemente
+	do {
+		printf("Introduceti numarul de elemente: (0 < nr < %d): ", DIM);
+		scanf("%d", &n);
+		if (n <= 0) printf("\nValoare invalida!\n");
+		if (n >= DIM) printf("\nValoarea este prea mare!!\n");
+	} while (n <= 0 || n >= DIM);
+	//Alocarea dinamica a tabloului unidimensional initial
+	tab = (int*)malloc(n * sizeof(int));
+	if (tab == 0) {
+		printf("Alocare nereusita!!!");
+		return 1;
+	}
+	//Citirea elementelor
+	printf("\nIntroduceti elementele tabloului:\n");
+	for (int i = 0; i < n; i++)
+	{
+		printf("\ttab[%d]=", i);
+		scanf("%d", &tab[i]);
+		if (tab[i] > 0)
+			m++;
+	}
+	//Alocarea dinamica a tabloului unidimensional final
+	tab1 = (float*)malloc(m * sizeof(float));
+	if (tab1 == 0) {
+		printf("Alocare nereusita!!!");
+		return 1;
+	}
+	//Crearea tabloului cu valorile radicalilor numerelor valide
+	extrage_radical(n, m, tab, tab1);
+	//Afisarea elementelor tabloului initial
+	printf("\nElementele tablolui initial sunt:\n");
+	for (int i = 0; i < n; i++)
+		printf("%d ", tab[i]);
+	printf("\n");
+
+	//Afisarea elementelor tabloului final
+	printf("\nElementele tablolui final sunt:\n");
+	for (int i = 0; i < n; i++)
+		printf("%0.3f ", tab1[i]);
+	printf("\n");
+
+	//Eliberarea memoriei
+	if (tab) free(tab);
+	if (tab1)free(tab1);
+	return 0;
+}
+
+void extrage_radical(int n, int m, int* tab, float* tab1) {
+	int k = 0;
+	for (int i = 0; i < n; i++)
+		if (tab[i] > 0)
+			tab1[k++] = (float)sqrt(tab[i]);
+}
+
+
+
+
+
+
+
+
+
+/*pb10_lab11, Handru Radu,  Problema 10 consta in calcularea sumei elementelor de sub diagonala principala (care sunt pare si pozitive), cat si afisarea sumei si a matricii*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <malloc.h>
+#define DIM 20
+
+int suma_sub_dp(int, int*);
+
+int main() {
+	int n;
+	int* mat;
+	//Introducerea dimensiunii
+	printf("Introduceti numarul de linii si coloane: (0 < dim < %d):", DIM);
+	scanf("%d", &n);
+	if (n <= 0 || n >= DIM)
+	{
+		printf("\n\tValoarea este incorecta!!\n");
+		return 1;
+	}
+	//Alocarea dinamica
+	mat = (int*)malloc(n * n * sizeof(int));
+	if (mat == 0)
+	{
+		printf("Alocare incorecta!!");
+		return 1;
+	}
+	//Citirea matricii
+	printf("\nIntroduceti elementele matricii:\n");
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++)
+		{
+			printf("mat[%d][%d] = ", i, j);
+			scanf("%d", (mat + i * n + j));
+		}
+		printf("\n");
+	}
+	//Afisarea sumei de sub diagonala principala, cat si a matricii
+	if (suma_sub_dp(n, mat) == 0)
+		printf("\nNu exista elemente pare si pozitive sub diagonala principala!!\n");
+	else printf("\nSuma elementelor este: %d\n", suma_sub_dp(n, mat));
+
+	printf("Matricea este:\n");
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+			printf("%d ", *(mat + i * n + j));
+		printf("\n");
+	}
+
+	//Eliberarea memoriei
+	if (mat) free(mat);
+	return 0;
+}
+
+int suma_sub_dp(int n, int* mat) {
+	int s = 0;
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < n; j++)
+			if (i > j && *(mat + i * n + j) > 0 && *(mat + i * n + j) % 2 == 0)
+				s += *(mat + i * n + j);
+	return s;
+}
+
+
+
+
+
+
+
+
+
+
+/*pb12_lab11, Handru Radu, Problema 12 consta in afisarea tabloului initial, a valorii minime, a valorii maxime, a valorii medii, cat si tabloul final
+//obtinut din eliminarea valorii maxime cat si a celei minime din tabloul initial*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <stdio.h>
+#include <malloc.h>
+#define DIM 11
+#define MARG1 2 //margine inferioara
+#define MARG2 10 //margine superioara
+
+int val_min(int, int*);
+int val_max(int, int*);
+float val_medie(int, int*);
+int* olympic_filter(int&, int*);
+
+int main() {
+	int dim1;
+	int* tab1, * tab2;
+	//Citirea dimensiunea
+	printf("Introduceti dimensiunea tabloului ( <= %d): ", DIM - 1);
+	scanf("%d", &dim1);
+	if (dim1 <= 0 || dim1 >= DIM) {
+		printf("\n\tDimensiune prea mare sau invalida !\n");
+		return 1;
+	}
+	//Alocarea dinamica a tabloului
+	tab1 = (int*)malloc(dim1 * sizeof(int));
+	if (tab1 == 0) {
+		printf("\n\tAlocare dinamica nereusita!!\n");
+		return 1;
+	}
+	//Citirea elementelor cuprinse intre 2 si 10
+	printf("\nIntroduceti elementele tabloului, valorile acestora fiind cuprinse intre (%d <= val <= %d):\n", MARG1, DIM - 1);
+	for (int i = 0; i < dim1; i++)
+	{
+		printf("\tx[%d] = ", i);
+		scanf("%d", &tab1[i]);
+		if (tab1[i] > MARG2 || tab1[i] < MARG1)
+		{
+			while (tab1[i] > MARG2 || tab1[i] < MARG1) {
+				printf("Va rugam sa introduceti o alta valoare, deoarece valoarea introdusa nu se afla in intervalul precizat!\n");
+				printf("\tx[%d] = ", i);
+				scanf("%d", &tab1[i]);
+			}
+		}
+	}
+	printf("\nAfisarea tabloului initial:\n");
+	for (int i = 0; i < dim1; i++)
+		printf("%d ", tab1[i]);
+	//Afisarea tuturor datelor necesare
+	printf("\nValorea minima: %d", val_min(dim1, tab1));
+	printf("\nValoarea maxima: %d", val_max(dim1, tab1));
+	printf("\nValoarea medie a tabloului initial este: %0.3f\n", val_medie(dim1, tab1));
+	//Construirea tabloului 2
+	tab2 = olympic_filter(dim1, tab1);
+	if (dim1 <= 0) {
+		printf("\nTabloul final nu are elemente!!\n");
+	}
+	else {
+		printf("\nAfisarea tabloului final:\n");
+		for (int i = 0; i < dim1; i++)
+			printf("%d ", tab2[i]);
+	}
+	//Eliberarea memoriei
+	if (tab1) free(tab1);
+	if (tab2) free(tab2);
+	return 0;
+}
+
+int val_min(int n, int* tab1) {
+	int minim = tab1[0];
+	for (int i = 0; i < n; i++)
+		if (tab1[i] < minim)
+			minim = tab1[i];
+	return minim;
+}
+
+int val_max(int n, int* tab1) {
+	int maxim = tab1[0];
+	for (int i = 0; i < n; i++)
+		if (tab1[i] > maxim)
+			maxim = tab1[i];
+	return maxim;
+}
+
+float val_medie(int n, int* tab1) {
+	int s = 0;
+	for (int i = 0; i < n; i++)
+		s += tab1[i];
+	return (float)s / n;
+}
+
+int* olympic_filter(int &n, int* tab1) {
+	int v_max = val_max(n, tab1);
+	int v_min = val_min(n, tab1);
+	for (int i = 0; i < n; i++)
+		if (tab1[i] == v_max)
+		{
+			for (int j = i; j < n - 1; j++)
+				tab1[j] = tab1[j + 1];
+			n--;
+			break;
+		}
+	for (int i = 0; i < n; i++)
+		if (tab1[i] == v_min)
+		{
+			for (int j = i; j < n - 1; j++)
+				tab1[j] = tab1[j + 1];
+			n--;
+			break;
+		}
+	int* tab = (int*)malloc(n * sizeof(int));
+	for (int i = 0; i < n; i++)
+		tab[i] = tab1[i];
+	for (int i = 0; i < n; i++)
+		for (int j = i + 1; j < n; j++)
+			if (tab[i] > tab[j])
+				std::swap(tab[i], tab[j]);
+	return tab;
+}
+
+
+

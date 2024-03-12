@@ -1,0 +1,274 @@
+/*pb01_lab13, Handru Radu, Problema 1 consta in citirea numelui unui fisier din care vor fi preluate numere intregi
+urmand ca acestea sa fie afisate*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#define DIM 31
+
+
+int main() {
+	FILE* fis;
+	int n;
+	char fisier[DIM];
+	//Introducerea numelui fisierului
+	printf("Introduceti numele fisierului (dim <= %d): ", DIM - 1);
+	scanf("%s", &fisier);
+	errno_t err;
+	err = fopen_s(&fis, fisier, "r");
+	if (err != 0) {
+		printf("Eroare la deschiderea fisierului sursa %s\n", fisier);
+		exit(1);
+	}
+	while (feof(fis) == 0){
+		fscanf(fis, "%d", &n);
+		printf("%d ", n);
+	}
+	fclose(fis);
+	return 0;
+}
+
+
+
+
+
+
+/*pb02_lab13, Handru Radu, Problema 2 consta in citirea a 10 numere intregi, aranjarea acestora in ordine crescatoare
+si aflarea numarului de elemente pare, urmand ca acestea sa fie afisate in fisierul initial*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <iostream>
+#include <stdlib.h>
+#define DIMT 11 // dimensiune tablou
+#define DIMF 31 // dimensiune nume fisier
+#define DIM 10 // numarul de numere intregi
+
+void aranjare_cresc(int[]);
+int nr_pare(int[]);
+
+int main() {
+	FILE* fis;
+	int tab[DIMT];
+	char fisier[DIMF];
+	//Introducerea numelui fisierului
+	printf("Introduceti numele fisierului (dim <= %d): ", DIMF - 1);
+	scanf("%s", &fisier);
+	fis = fopen(fisier, "r");
+	if (fis == 0) {
+		printf("Eroare la deschiderea fisierului sursa %s\n", fisier);
+		exit(1);
+	}
+
+	//Citirea si scrierea elementelor in fisier
+	while (feof(fis) == 0) {
+		for (int i = 0; i < DIM; i++) {
+			fscanf(fis, "%d", &tab[i]);
+			if (i != DIM - 1 && tab[i] == EOF)
+			{
+				printf("Nu sau introdus destule numere");
+			}
+		}
+	}
+	fclose(fis);
+
+	//Citirea elementelor din fisier si determinarea mediei aritmetice
+	fis = fopen(fisier, "w");
+	if (fis == 0) {
+		printf("Eroare la deschiderea fisierului sursa %s\n", fisier);
+		exit(1);
+	}
+	//Afisarea tabloului in fisier ordonate crescator
+	aranjare_cresc(tab);
+	fprintf(fis, "Elementele tabloului sunt:\n");
+	for (int i = 0; i < DIM; i++)
+		fprintf(fis, "%d ", tab[i]);
+	fprintf(fis, "\nNumarul de numere pare este: %d ", nr_pare(tab));
+	fclose(fis);
+	return 0;
+}
+
+void aranjare_cresc(int tab[]) {
+	for (int i = 0; i < DIM - 1; i++)
+		for (int j = i + 1; j < DIM; j++)
+			if (tab[i] > tab[j])
+				std::swap(tab[i], tab[j]);
+}
+
+int nr_pare(int tab[]) {
+	int nr = 0;
+	for (int i = 0; i < DIM; i++)
+		if (tab[i] % 2 == 0)
+			nr++;
+	return nr;
+}
+
+
+
+
+
+
+
+/*pb03_lab13, Handru Radu, Problema 3 consta in citirea a n numere intregi de la consola pe care le vom scrie intr-un fisier text
+cu numele citit de la tastatura. Cititi apoi numerele din fisier, determinati media lor aritmetica, pe care o vom afisa atat in fisier cat si pe ecran*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#define DIM 31
+
+int main() {
+	FILE* fis;
+	int n, m;
+	char fisier[DIM];
+	//Introducerea numelui fisierului
+	printf("Introduceti numele fisierului (dim <= %d): ", DIM - 1);
+	scanf("%s", &fisier);
+	fis = fopen(fisier, "w");
+	if (fis == 0) {
+		printf("Eroare la deschiderea fisierului sursa %s\n", fisier);
+		exit(1);
+	}
+
+	//Citirea si scrierea elementelor in fisier
+	printf("\nIntroduceti numarul n de numere: ");
+	scanf("%d", &n);
+	printf("\nIntroduceti elementele:\n");
+	for (int i = 0; i < n; i++) {
+		printf("tab[%d] = ", i);
+		scanf("%d", &m);
+		fprintf(fis, "%d ", m);
+	}
+	fclose(fis);
+
+	//Citirea elementelor din fisier si determinarea mediei aritmetice
+	fis = fopen(fisier, "r");
+	if (fis == 0) {
+		printf("Eroare la deschiderea fisierului sursa %s\n", fisier);
+		exit(1);
+	}
+	int s = 0;
+	while(feof(fis) == 0)
+		for (int i = 0; i < n; i++)
+		{
+			fscanf(fis, "%d", &m);
+			s += m;
+		}
+	float ma = (float)s / n;
+	printf("\nMedia aritmetica a elementelor este: %f", ma);
+	fclose(fis);
+
+	//Afisarea Mediei aritmetice in fisier
+	fis = fopen(fisier, "w");
+	if (fis == 0) {
+		printf("Eroare la deschiderea fisierului sursa %s\n", fisier);
+		exit(1);
+	}
+	fprintf(fis, "\nMedia aritmetica a elementelor este: %f", ma);
+	fclose(fis);
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+/*pb04_lab13, Handru Radu, Problema 4 consta in citirea unui caracter de la tastatura, iar apoi scrie acest caracter in forma de matrice pe n linii si n coloane
+n citit de la consola*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <iostream>
+#include <stdlib.h>
+#define DIM 11
+
+int main() {
+	FILE* fis;
+	int n;
+	char c;
+	char tab[DIM][DIM], num_fis[] = "fis1.txt";
+	//Crearea fisierului
+	fis = fopen(num_fis, "w");
+	if (fis == 0) {
+		printf("Eroare la deschiderea fisierului sursa %s\n", num_fis);
+		exit(1);
+	}
+	//Citirea caracterului si numarului de linii si coloane
+	printf("Cititi caracterul care doriti sa fie afisat pe n linii si n coloane:");
+	scanf(" %c", &c);
+	printf("Introduceti numarul de linii si coloane (n <= %d): ", DIM - 1);
+	scanf("%d", &n);
+	if (n <= 0 || n >= DIM) {
+		printf("\n\tDimensiune incorecta sau invalida!!\n");
+		return 1;
+	}
+
+	//Afisarea matricii de caractere in fisier
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++)
+			fprintf(fis, "%c ", c);
+		fprintf(fis, "\n");
+	}
+
+	fclose(fis);
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+/*pb08_lab13, Handru Radu, Problema 8 consta in citirea unor numere reale dintr-un fisier creat in prealabil si scrie intr-un alt fisier partea intreaga
+a numerelor*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <iostream>
+#include <stdlib.h>
+#define DIMT 51 // dimensiune tablou
+#define DIMF 31 // dimensiune nume fisier
+
+int main() {
+	FILE* fis_in, *fis_out;
+	float tab[DIMT];
+	char fisier_in[DIMF], fisier_out[DIMF];
+	//Introducerea numelui fisierului
+	printf("Introduceti numele fisierului de iesire (dim <= %d): ", DIMF - 1);
+	scanf("%s", &fisier_out);
+	fis_out = fopen(fisier_out, "r");
+	if (fis_out == 0) {
+		printf("Eroare la deschiderea fisierului sursa %s\n", fisier_out);
+		exit(1);
+	}
+
+	int n = 0;
+	while (feof(fis_out) == 0) {
+		fscanf(fis_out, "%f", &tab[n++]);
+	}
+	
+	printf("Introduceti numele fisierului de iesire (dim <= %d): ", DIMF - 1);
+	scanf("%s", &fisier_in); 
+	fis_in = fopen(fisier_in, "w");
+	if (fis_in == 0) {
+		printf("Eroare la deschiderea fisierului sursa %s\n", fisier_in);
+		exit(1);
+	}
+
+	//Scrierea in fisier a intregilor
+	for (int i = 0; i < n; i++)
+		fprintf(fis_in, "%d ", (int)tab[i]);
+
+	fclose(fis_in);
+	fclose(fis_out);
+	return 0;
+}
+
+
+
+

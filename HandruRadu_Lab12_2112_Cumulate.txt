@@ -1,0 +1,765 @@
+/*pb1_lab12, Handru Radu,  Problema 1 consta in afisarea elementelor unei structuri cu ajutorul a doua functii de afisare
+una folosind pointer, iar cealalalta o valoare*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <string.h>
+#define DIM 31
+
+struct Data_nastere {
+    int an;
+    char luna[DIM];
+    int zi;
+};
+
+void afisare_valoare(Data_nastere);
+void afisare_adresa(Data_nastere*);
+
+int main() {
+    struct Data_nastere data;
+    printf("Introduceti anul: ");
+    scanf("%d", &data.an);
+    printf("Introduceti luna (dim <= %d): ", DIM-1);
+    scanf("%s", &data.luna);
+    printf("Introduceti ziua: ");
+    scanf("%d", &data.zi);
+    printf("\nAfisare prin valoare:\n");
+    afisare_valoare(data);
+    printf("\nAfisare prin adresa:\n");
+    afisare_adresa(&data);
+    return 0;
+}
+
+void afisare_valoare(Data_nastere dat) {
+    printf("\nAnul este: %d", dat.an);
+    printf("\nLuna este: %s", dat.luna);
+    printf("\nZiua este: %d\n", dat.zi);
+}
+
+void afisare_adresa(Data_nastere* dataa) {
+    printf("\nAnul este: %d", dataa->an);
+    printf("\nLuna este: %s", dataa->luna);
+    printf("\nZiua este: %d\n", dataa->zi);
+}
+
+
+
+
+
+
+
+
+/*pb2_lab12, Handru Radu, Problema 2 consta in creearea unei functii care returneaza o structura de date*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <string.h>
+#define DIM 31
+
+struct Sume {
+    float suma_poz;
+    float suma_neg;
+};
+
+Sume Calculul_sumelor(int, float[]);
+void afisare_sume(Sume*);
+
+int main() {
+    int n;
+    float tab[DIM];
+    //Citirea tabloului
+    printf("Introduceti numarul de elemente a unui tablou (0 < dim < %d): ", DIM - 1);
+    scanf("%d", &n);
+    if (n <= 0 || n >= DIM)
+    {
+        printf("\n\tValoare incorecta!!\n");
+        return 1;
+    }
+    printf("\nIntroduceti elementele tabloului:\n");
+    for (int i = 0; i < n; i++)
+    {
+        printf("\ttab[%d] = ", i);
+        scanf("%f", &tab[i]);
+    }
+    //Alocarea unei structuri, structura rezultata in functie
+    Sume s1 = Calculul_sumelor(n, tab);
+    printf("\nAfisarea elementelor initiale:\n");
+    for (int i = 0; i < n; i++)
+        printf("%0.3f ", tab[i]);
+    printf("\n");
+    afisare_sume(&s1);
+    return 0;
+}
+
+Sume Calculul_sumelor(int n, float tab[]) {
+    Sume s = {};
+    for (int i = 0; i < n; i++)
+        if (tab[i] > 0)
+            s.suma_poz += tab[i];
+        else s.suma_neg += tab[i];
+    return s;
+}
+
+void afisare_sume(Sume* s) {
+    if (s->suma_poz != 0)
+        printf("\nSuma numerelor pozitive este: %0.3f\n", s->suma_poz);
+    else printf("\n\tNu exista numere pozitive!!\n");
+    if (s->suma_neg != 0)
+        printf("\nSuma numerelor negative este: %0.3f\n", s->suma_neg);
+    else printf("\n\tNu exista numere negative!!\n");
+}
+
+
+
+
+
+
+
+/*pb3_lab12, Handru Radu, Problema 3 consta in afisarea tuturor datelor persoanelor cu Ocupatia inginer*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <malloc.h>
+#include <string.h>
+#define DIM 31
+#define DIMS 51
+
+struct Data_Nasterii {
+    int an;
+    char luna[DIMS];
+    int zi;
+};
+
+struct Angajat {
+    char Nume[DIMS];
+    char Prenume[DIMS];
+    char Ocupatie[DIMS];
+    struct Data_Nasterii data_nast;
+    char Sectia[DIMS];
+};
+
+void Citire_Date_Angajat(Angajat*);
+void Afisare_Date_Angajat(Angajat*);
+
+int main() {
+    struct Angajat* dp;
+    int n, nr = 0;
+    //Introducerea numarului de persoane
+    printf("Introduceti numarul de persoane (0 < nr <= %d): ", DIM - 1);
+    scanf("%d", &n);
+    if (n <= 0)
+    {
+        printf("\n\tDimensiune invalida!!\n");
+        return 1;
+    }
+    else if (n >= DIM) {
+        printf("\n\tDimensiune prea mare!!\n");
+        return 1;
+    }
+    //Alocare dinamica
+    dp = new Angajat[n];
+    if (dp == 0) {
+        printf("Alocare nereusita!");
+        return 1;
+    }
+    //Citirea persoanelor
+    printf("\nIntroduceti datele personale:\n");
+    for (int i = 0; i < n; i++)
+    {
+        printf("\nPersoana: %d\n", i);
+        Citire_Date_Angajat(dp + i);
+        if (strcmp((dp + i)->Ocupatie, "Inginer") == 0)
+            nr++;
+    }
+    //Persoanele cu ocupatia de inginer
+    if (nr > 0) {
+        printf("\nPersoanele cu ocupatia Inginer sunt:\n");
+        for (int i = 0; i < n; i++)
+            if (strcmp((dp + i)->Ocupatie, "Inginer") == 0)
+                Afisare_Date_Angajat(dp + i);
+    }
+    else printf("\n\tNu exista persoane cu ocupatia Inginer!!!\n");
+    //Eliberarea memoriei
+    if (dp) delete[]dp;
+    return 0;
+}
+
+void Citire_Date_Angajat(Angajat* p) {
+    printf("Numele este (dim <= %d): ", DIMS - 1);
+    scanf("%s", p->Nume);
+    printf("Prenumele este (dim <= %d): ", DIMS - 1);
+    scanf("%s", p->Prenume);
+    printf("Ocupatia este (dim <= %d): ", DIMS - 1);
+    scanf("%s", p->Ocupatie);
+    printf("Introduceti anul: ");
+    scanf("%d", &(p->data_nast).an);
+    printf("Introduceti luna (dim <= %d): ", DIMS - 1);
+    scanf("%s", (p->data_nast).luna);
+    printf("Introduceti ziua: ");
+    scanf("%d", &(p->data_nast).zi);
+    printf("Sectia este (dim <= %d): ", DIMS - 1);
+    scanf("%s", p->Sectia);
+}
+
+void Afisare_Date_Angajat(Angajat* p) {
+    printf("Numele este: %s\n", p->Nume);
+    printf("Prenumele este: %s\n", p->Prenume);
+    printf("Ocupatia este: %s\n", p->Ocupatie);
+    printf("Anul este: %d\n", (p->data_nast).an);
+    printf("Luna este: %s\n", (p->data_nast).luna);
+    printf("Ziua este: %d\n", (p->data_nast).zi);
+    printf("Sectia este: %s\n", p->Sectia);
+}
+
+
+
+
+
+
+
+
+/*pb4_lab12, Handru Radu, Problema 4 consta in afisarea celor n persoane in ordinea datei angajarii*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <malloc.h>
+#include <string.h>
+#define DIM 31
+#define DIMS 51
+
+struct Data {
+    int an;
+    char luna[DIMS];
+    int zi;
+};
+
+struct Angajat {
+    char Nume[DIMS];
+    char Prenume[DIMS];
+    struct Data data_nast;
+    long long CNP;
+    struct Data data_angajarii;
+};
+
+void Citire_Date_Pers(Angajat*);
+void Afisare_Date_Pers(Angajat*);
+int Valoare_Luna(char []);
+void swap_char(char[], char[]);
+void swap_int(int, int);
+void swap_ll(long long, long long);
+void swap_Angajati(Angajat*, Angajat*);
+
+int main() {
+    struct Angajat* dp;
+    int n;
+    //Introducerea numarului de persoane
+    printf("Introduceti numarul de persoane (0 < nr <= %d) :", DIM - 1);
+    scanf("%d", &n);
+    if (n <= 0)
+    {
+        printf("\n\tDimensiune invalida!!\n");
+        return 1;
+    }
+    else if (n >= DIM) {
+        printf("\n\tDimensiune prea mare!!\n");
+        return 1;
+    }
+    //Alocare dinamica
+    dp = new Angajat[n];
+    if (dp == 0) {
+        printf("Alocare nereusita!");
+        return 1;
+    }
+    //Citirea persoanelor
+    printf("\nIntroduceti datele personale:\n");
+    for (int i = 0; i < n; i++)
+    {
+        printf("\nPersoana: %d\n", i);
+        Citire_Date_Pers(dp + i);  
+        for(int j = 0; j <= i; j ++)
+            if (((dp + j)->data_angajarii).an > ((dp + i)->data_angajarii).an) {
+                swap_Angajati(dp + j, dp + i);
+            }
+            else if (((dp + j)->data_angajarii).an == ((dp + i)->data_angajarii).an) {
+                if (((dp + j)->data_angajarii).luna > ((dp + i)->data_angajarii).luna)
+                    swap_Angajati(dp + j, dp + i);
+                else if (((dp + j)->data_angajarii).luna == ((dp + i)->data_angajarii).luna) {
+                    if (((dp + j)->data_angajarii).zi > ((dp + i)->data_angajarii).zi)
+                        swap_Angajati(dp + j, dp + i);
+                }
+            }
+      }
+    //Persoanele in ordinea datei angajarii
+    printf("\nPersoanele in ordinea datei angajarii:\n");
+    for (int i = 0; i < n; i++) {
+        printf("\nPersoana %d este:\n", i);
+        Afisare_Date_Pers(dp + i);
+    }
+    //Eliberarea memoriei
+    if (dp) delete[]dp;
+    return 0;
+}
+
+void Citire_Date_Pers(Angajat* p) {
+    printf("Numele este (dim <= %d): ", DIMS - 1);
+    scanf("%s", p->Nume);
+    printf("Prenumele este (dim <= %d): ", DIMS - 1);
+    scanf("%s", p->Prenume);
+    printf("Introduceti data nasterii\nIntroduceti anul: ");
+    scanf("%d", &(p->data_nast).an);
+    printf("Introduceti luna (dim <= %d): ", DIMS - 1);
+    scanf("%s", (p->data_nast).luna);
+    printf("Introduceti ziua: ");
+    scanf("%d", &(p->data_nast).zi);
+    printf("Introduceti CNP-ul: ");
+    scanf("%lli", &p->CNP);
+    printf("Introduceti data angajarii\nIntroduceti anul: ");
+    scanf("%d", &(p->data_angajarii).an);
+    printf("Introduceti luna (dim <= %d): ", DIMS - 1);
+    scanf("%s", (p->data_angajarii).luna);
+    printf("Introduceti ziua: ");
+    scanf("%d", &(p->data_angajarii).zi);
+}
+
+void Afisare_Date_Pers(Angajat* p) {
+    printf("Numele este: %s\n", p->Nume);
+    printf("Prenumele este: %s\n", p->Prenume);
+    printf("Data nasterii: \n");
+    printf("Anul este: %d\n", (p->data_nast).an);
+    printf("Luna este: %s\n", (p->data_nast).luna);
+    printf("Ziua este: %d\n", (p->data_nast).zi);
+    printf("CNP-ul este: %lli\n", p->CNP);
+    printf("Data Angajarii: \n");
+    printf("Anul este: %d\n", (p->data_angajarii).an);
+    printf("Luna este: %s\n", (p->data_angajarii).luna);
+    printf("Ziua este: %d\n", (p->data_angajarii).zi);
+}
+
+int Valoare_Luna(char luna[]) {
+    if (strcmp(luna, "Ianuarie") == 0) return 1;
+    else if (strcmp(luna, "Februarie") == 0) return 2;
+    else if (strcmp(luna, "Martie") == 0) return 3;
+    else if (strcmp(luna, "Aprilie") == 0) return 4;
+    else if (strcmp(luna, "Mai") == 0) return 5;
+    else if (strcmp(luna, "Iunie") == 0) return 6;
+    else if (strcmp(luna, "Iulie") == 0) return 7;
+    else if (strcmp(luna, "August") == 0) return 8;
+    else if (strcmp(luna, "Septembrie") == 0) return 9;
+    else if (strcmp(luna, "Octombrie") == 0) return 10;
+    else if (strcmp(luna, "Noiembrie") == 0) return 11;
+    else if (strcmp(luna, "Decembrie") == 0) return 12;
+    else return 0;
+}
+
+void swap_int(int n, int m) {
+    int aux;
+    aux = n;
+    n = m;
+    m = aux;
+}
+
+void swap_ll(long long n, long long m) {
+    long long aux;
+    aux = n;
+    n = m;
+    m = aux;
+}
+
+void swap_char(char sir[], char sir1[]) {
+    char aux[DIMS];
+    strcpy(aux, sir);
+    strcpy(sir, sir1);
+    strcpy(sir1, aux);
+}
+
+void swap_Angajati(Angajat *p, Angajat* p1) {
+    swap_char(p->Nume, p1->Nume);
+    swap_char(p->Prenume, p1->Prenume);
+    swap_int((p->data_nast).an, (p1->data_nast).an);
+    swap_char(((p->data_nast).luna), ((p1->data_nast).luna));
+    swap_int((p->data_nast).zi, (p1->data_nast).zi);
+    swap_ll(p->CNP, p1->CNP);
+    swap_int((p->data_angajarii).an, (p1->data_angajarii).an);
+    swap_char(((p->data_angajarii).luna), ((p1->data_angajarii).luna));
+    swap_int((p->data_angajarii).zi, (p1->data_angajarii).zi);
+}
+
+
+
+
+
+
+
+
+/*pb7_lab12, Handru Radu, Problema 7 consta in citirea unor studenti si genul acestora, urmand ca numarul studentelor sa fie afisat*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <malloc.h>
+#include <string.h>
+#define DIM 31
+#define DIMS 51
+
+struct Student {
+    char Nume[DIMS];
+    char Prenume[DIMS];
+    char Gen[DIMS];
+};
+
+void Citire_Date_Student(Student*);
+
+int main() {
+    struct Student* ds;
+    int n;
+    //Introducerea numarului de persoane
+    printf("Introduceti numarul de persoane (0 < nr <= %d) :", DIM - 1);
+    scanf("%d", &n);
+    if (n <= 0)
+    {
+        printf("\n\tDimensiune invalida!!\n");
+        return 1;
+    }
+    else if (n >= DIM) {
+        printf("\n\tDimensiune prea mare!!\n");
+        return 1;
+    }
+    //Alocare dinamica
+    ds = new Student[n];
+    if (ds == 0) {
+        printf("Alocare nereusita!");
+        return 1;
+    }
+    //Citirea persoanelor si numararea fetelor
+    int nr = 0;
+    for (int i = 0; i < n; i++) {
+        printf("\nPersoana %d:\n", i);
+        Citire_Date_Student(ds + i);
+        if(strcmp((ds + i)->Gen,"feminim") == 0 || strcmp((ds+i)->Gen,"Feminin") == 0)
+            nr++;
+    }
+    //Afisarea numarului de studente
+    printf("\nNumarul de studente este: %d\n", nr);
+    //Eliberarea memoriei
+    delete[]ds;
+    return 0;
+}
+
+void Citire_Date_Student(Student* p) {
+    printf("Numele este (dim <= %d): ", DIMS - 1);
+    scanf("%s", p->Nume);
+    printf("Prenumele este (dim <= %d): ", DIMS - 1);
+    scanf("%s", p->Prenume);
+    printf("Genul este (dim <= %d): ", DIMS -1 );
+    scanf("%s", p->Gen);
+}
+
+
+
+
+
+
+
+
+
+
+
+/*pb8_lab12, Handru Radu, Problema 8 consta in crearea unei structuri statice si a unui pointer O_struct, urmand ca pentru acestea sa fie citite valori si sa fie afisate
+iar pentru pointer sa fie eliberata memoria*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <malloc.h>
+#include <string.h>
+#define DIM 1
+#define DIMS 257
+
+struct O_struct {
+    int n;
+    char c;
+    char sir[DIMS];
+};
+
+void Citire_Date_Struct(O_struct*);
+
+int main() {
+    static O_struct op;
+    struct O_struct* po_struct;
+    //Citirea datelor structurii statice
+    Citire_Date_Struct(&op);
+    //Alocarea dinamica a pointerului
+    po_struct = new O_struct[DIM];
+    if (po_struct == 0) {
+        printf("Alocare nereusita!");
+        return 1;
+    }
+    //Declararea pointerului
+    Citire_Date_Struct(po_struct);
+    //Afisarea datelor
+    printf("\nStrucutura statica este:");
+    printf("\nNumarul este: %d", op.n);
+    printf("\nCaracterul este: %c", op.c);
+    printf("\nSirul este: %s\n", op.sir);
+    printf("\nStrucutura prin pointer este:");
+    printf("\nNumarul este: %d", po_struct->n);
+    printf("\nCaracterul este: %c", po_struct->c);
+    printf("\nSirul este: %s\n", po_struct->sir);
+    //Eliberarea memoriei
+    delete[]po_struct;
+    return 0;
+}
+
+void Citire_Date_Struct(O_struct* p) {
+    printf("Numarul este: ");
+    scanf("%d", &p->n);
+    printf("Caracterul este: ");
+    scanf(" %c", &p->c);
+    printf("Sirul este (dim <= %d): ", DIMS - 1);
+    scanf("%s", p->sir);
+}
+
+
+
+
+
+
+
+
+
+
+/*pb9_lab12, Handru Radu, Problema 9 consta in afisarea produsului cu cea mai mare cantitate existenta pe stoc*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <malloc.h>
+#include <string.h>
+#define DIM 31
+#define DIMS 101
+
+struct Produs {
+    char Denumire[DIMS];
+    int Pret;
+    int Cantitate;
+};
+
+void Citire_Date_Produs(Produs*);
+void Afisare_Date_Produs(Produs*);
+
+int main() {
+    struct Produs* p;
+    int n;
+    //Introducerea numarului de produse
+    printf("Introduceti numarul de produse (0 < nr <= %d): ", DIM - 1);
+    scanf("%d", &n);
+    if (n <= 0)
+    {
+        printf("\n\tDimensiune invalida!!\n");
+        return 1;
+    }
+    else if (n >= DIM) {
+        printf("\n\tDimensiune prea mare!!\n");
+        return 1;
+    }
+    //Alocarea dinamica a pointerului
+    p = new Produs[n];
+    if (p == 0) {
+        printf("Alocare nereusita!");
+        return 1;
+    }
+    //Citirea produselor
+    int cant_max = -1, poz = -1;
+    for (int i = 0; i < n; i++)
+    {
+        printf("\nProdusul %d:\n", i);
+        Citire_Date_Produs(p + i);
+        if ((p + i)->Cantitate > cant_max)
+        {
+            cant_max = (p + i)->Cantitate;
+            poz = i;
+        }
+    }
+    //Afisarea produsului din care avem cel mai mult pe stoc
+    printf("\nProdusul cu cea mai mare cantitate pe stoc este:");
+    Afisare_Date_Produs(p + poz);
+    //Eliberarea memoriei
+    delete[]p;
+    return 0;
+}
+
+void Citire_Date_Produs(Produs* p) {
+    printf("Denumirea este: (dim <= %d): ",DIMS-1);
+    scanf("%s", p->Denumire);
+    printf("Pretul este: ");
+    scanf("%d", &p->Pret);
+    printf("Cantitatea este: ");
+    scanf("%d", &p->Cantitate);
+}
+
+void Afisare_Date_Produs(Produs* p) {
+    printf("\nDenumirea este: %s", p->Denumire);
+    printf("\nPretul este: %d", p->Pret);
+    printf("\nCantitea este: %d\n", p->Cantitate);
+}
+
+
+
+
+
+
+
+/*pb10_lab12, Handru Radu,  Problema 10 consta in afisarea masinilor inregistrate de culoare rosie, fabricate dupa anul 2020*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <malloc.h>
+#include <string.h>
+#define DIM 31
+#define DIMS 101
+
+struct Masina {
+    char Producator[DIMS];
+    int Anul_fabricatiei;
+    int Capacitatea_cilindrica;
+    char Culoare[DIMS];
+};
+
+void Citire_Date_Masina(Masina*);
+void Afisare_Date_Masina(Masina*);
+
+int main() {
+    struct Masina *m;
+    int n;
+    //Introducerea numarului de masini
+    printf("Introduceti numarul de masini (0 < nr <= %d): ", DIM - 1);
+    scanf("%d", &n);
+    if (n <= 0)
+    {
+        printf("\n\tDimensiune invalida!!\n");
+        return 1;
+    }
+    else if (n >= DIM) {
+        printf("\n\tDimensiune prea mare!!\n");
+        return 1;
+    }
+    //Alocarea dinamica a pointerului
+    m = new Masina[n];
+    if (m == 0) {
+        printf("Alocare nereusita!");
+        return 1;
+    }
+    //Citirea datelor masinilor
+    for (int i = 0; i < n; i++)
+    {
+        printf("\nMasina %d:\n", i);
+        Citire_Date_Masina(m + i);
+    }
+    //Afisarea datelor masinilor de culoare rosie si cu anul de fabricatie dupa 2020
+    printf("\nMasinile de culoare rosie si cu anul de fabricatie dupa 2020 sunt: \n");
+    for (int i = 0; i < n; i++)
+        if (strcmp((m + i)->Culoare, "rosie") == 0 && (m + i)->Anul_fabricatiei > 2020) {
+            printf("\nMasina %d:\n", i);
+            Afisare_Date_Masina(m + i);
+        }
+    //Eliberarea memoriei
+    delete[]m;
+    return 0;
+}
+
+void Citire_Date_Masina(Masina* p) {
+    printf("Producatorul este: ");
+    scanf("%s", p->Producator);
+    printf("Anul fabricatiei este: ");
+    scanf("%d", &p->Anul_fabricatiei);
+    printf("Capacitatea cilindrica este: ");
+    scanf("%d", &p->Capacitatea_cilindrica);
+    printf("Culoarea este: ");
+    scanf("%s", p->Culoare);
+}
+
+void Afisare_Date_Masina(Masina* p) {
+    printf("\nProducatorul este: %s", p->Producator);
+    printf("\nAnul fabricatiei este: %d", p->Anul_fabricatiei);
+    printf("\nCapacitatea cilindrica este: %d", p->Capacitatea_cilindrica);
+    printf("\nCuloarea este: %s\n", p->Culoare);
+}
+
+
+
+
+
+
+
+
+
+
+
+/*pb11_lab12, Handru Radu,  Problema 11 consta in afisarea tuturor elementelor posibile de afisat si dimensiunea elementului de tip union + aceeasi pasi realizati pentru o structura care are aceleasi campuri*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <malloc.h>
+#include <string.h>
+
+union grup{
+    int n;
+    long long a;
+    double b;
+    char c;
+} g;
+
+struct grupa{
+    int n;
+    long long a;
+    double b;
+    char c;
+};
+
+int main() {
+    int m;
+    long long d;
+    double e;
+    char f;
+    //Citirea elementelor
+    printf("Introduceti un element intreg (dim <= %d octeti): ", sizeof(int));
+    scanf("%d", &g.n);
+    m = g.n;
+    printf("Introduceti un element intreg (dim <= %d octeti): ", sizeof(long long));
+    scanf("%lld", &g.a);
+    d = g.a;
+    printf("Introduceti un element real (dim <= %d octeti): ", sizeof(double));
+    scanf("%lf", &g.b);
+    e = g.b;
+    printf("Introduceti un caracter: ");
+    scanf(" %c", &g.c);
+    f = g.c;
+    //Afisarea elementelor (in cazul union-ului pe care eu l-am creat, nu vor putea fi afisate toate elementele niciodata)
+    if (m == g.n && d == g.a && e == g.b && f == g.c) 
+        printf("\nElementele sunt: {%d, %lld, %lf, %c}\n", g.n, g.a, g.b, g.c);
+    else {
+        printf("\nElementele nu pot fi afisate in acelasi timp!\n");
+        if (m == g.n)
+            printf("Elementul intreg de tip int este: %d\n", g.n);
+        if (d == g.a)
+            printf("Elementul intreg de tip long long este: %lld\n", g.a);
+        //Cu toate ca valoarea lui g.b este aceeasi cu cea a lui e in cazul acesta
+        //Acesta nu va fi afisat deoarece memoria a fost ocupata de ultima variabila citita
+        //Pentru ca double este pe 8 octeti si char este pe 4 biti, (elementul union este pe 8 biti, datorita elementului de tip long long)
+        //iar astfel nu mai avem destula memorie pentru a stoca ambele tipuri de variabile
+        if (e == g.b)
+            printf("Elementul real de tip double este: %lf\n", g.b);
+        if (f == g.c)
+            printf("Caracterul este: %c\n", g.c);
+    }
+    //Afisarea dimensiunii elementului de tip union
+    printf("Dimensiunea structurii grup este: %d octeti\n", sizeof(g));
+
+
+    struct grupa g1;
+    //Citirea structurii
+    printf("\nIntroduceti un element intreg (dim <= %d octeti): ", sizeof(int));
+    scanf("%d", &g1.n);
+    printf("Introduceti un element intreg (dim <= %d octeti): ", sizeof(long long));
+    scanf("%lld", &g1.a);
+    printf("Introduceti un element real (dim <= %d octeti): ", sizeof(double));
+    scanf("%lf", &g1.b);
+    printf("Introduceti un caracter: ");
+    scanf(" %c", &g1.c);
+    //Afisarea elementelor
+    printf("\nElementele sunt: {%d, %lld, %lf, %c}\n", g1.n, g1.a, g1.b, g1.c);
+
+    //Afisarea dimensiunii
+    printf("Dimensiunea structurii este: %d octeti\n", sizeof(g1));
+    return 0;
+}
+
+

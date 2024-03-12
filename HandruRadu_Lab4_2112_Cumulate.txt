@@ -1,0 +1,209 @@
+/*pb1_lab04, Handru Radu, Problema 1 consta in determinarea mediei aritmetice a trei numere neintregi */
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+float citirea(void);
+void afisare_ma(float);
+float medie_ar(float, float, float);
+
+int main() {
+	float r, t, p, media_nr;
+	r = citirea();
+	t = citirea();
+	p = citirea();
+	media_nr = medie_ar(r, t, p);
+	afisare_ma(media_nr);
+	return 0;
+}
+
+float citirea() {
+	float numarul;
+	printf("Introduceti o valoarea neintreaga:");
+	scanf("%f", &numarul);
+	return numarul;
+}
+
+void afisare_ma(float m_aritmetica) {
+	printf("Media aritmetica a celor trei numere neintregi introduse este: %f", m_aritmetica);
+}
+
+float medie_ar(float q, float w, float e) {
+	return (q + w + e) / 3;
+}
+
+
+
+
+/*pb2_lab04, Handru Radu, Problema 2 consta in determinarea mediei geometrice a doua numere intregi */
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <cmath>
+
+int citire_int(void);
+void afisare_mg(float);
+float medie_g(int, int);
+
+int main() {
+	int p, r;
+	float media_nr;
+	p = citire_int();
+	r = citire_int();
+	media_nr = medie_g(p, r);
+	afisare_mg(media_nr);
+	return 0;
+}
+
+int citire_int(void) {
+	int numarul;
+	printf("Introduceti o valoare intreaga:");
+	scanf("%d", &numarul);
+	return numarul;
+}
+
+void afisare_mg(float med_geo) {
+	printf("Media geometrica a celor doua numere intregi: %f", med_geo);
+}
+
+float medie_g(int v, int w) {
+	return (float)sqrt(v * w);
+}
+
+
+
+
+
+
+/*pb3_lab04, Handru Radu, Problema 3 consta in definirea unei variabile intregi si in afisarea acesteia prin supraincarcarea operatorului cout */
+#include <iostream>
+
+int main() {
+	int variabila_intreaga = 57912;
+	std::cout << variabila_intreaga;
+	return 0;
+}
+
+
+
+
+/*pb4_lab04, Handru Radu, Problema 4 consta in afisarea cu cout a unui sir de caractere si un alt sir folosind secvente escape, urmand ca acestea sa fie afisate */
+#include <iostream>
+
+using namespace std;
+
+int main() {
+	char sir1[] = "Afara este frig si soarele nu este vizibil";
+	char sir2[] = "Programarea este un lucru interesant. \nInsa necesita o foarte mare atentie, pregatire si determinare \t\t pentru a reusi.";
+	cout << sir1 << "\n";
+	cout << sir2;
+	return 0;
+}
+
+
+
+
+
+/*pb5_lab04, Handru Radu, Problema 5 consta in afisarea mediei ponderate a 3 numere intregi */
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int citire_int(void);
+float citire_p(void);
+void afisare_med(float);
+float medie_arp(int, int, int, float, float, float);
+
+int main() {
+	int r, q, w;
+	float pr, pq, pw, media_ponderata;
+	r = citire_int();
+	pr = citire_p();
+	q = citire_int();
+	pq = citire_p();
+	w = citire_int();
+	pw = citire_p();
+	media_ponderata = medie_arp(r, q, w, pr, pq, pw);
+	afisare_med(media_ponderata);
+	return 0;
+}
+
+int citire_int() {
+	int numar;
+	printf("Introduceti un numar intreg: ");
+	scanf("%d", &numar);
+	return numar;
+}
+
+float citire_p() {
+	float pon;
+	printf("Introduceti ponderea acestui numar: ");
+	scanf("%f", &pon);
+	return pon;
+}
+
+void afisare_med(float med_pon) {
+	printf("Media aritmetica ponderata a celor trei numere introduse este: %f", med_pon);
+}
+
+float medie_arp(int a, int b, int c, float pa, float pb, float pc) {
+	// Media aritmetica este reprezentata doar de inmultirea numerelor cu ponderile si insumarea acestora
+	return (float)(a * pa + b * pb + c * pc);
+}
+
+
+
+
+
+
+/*pb6_lab04, Handru Radu, Problema 6 consta in definirea unor constante simbolice de tipuri diferite si afisarea acestora cu ajutorul fluxui cout */
+#include <iostream>
+
+using namespace std;
+
+int main() {
+	int numar_int = 2173;
+	float numar_real = 17.9241;
+	char sir[] = { "Ana are pantaloni rosii, iar colegul ei Andrei are pantaloni albastri" };
+	cout << numar_int << "\n";
+	cout << numar_real << "\n";
+	cout << sir;
+	return 0;
+}
+
+
+
+
+
+
+/*pb7_lab04, Handru Radu, Problema 7 consta in definirea a 3 numere reale si afisarea rezultatului operatiei 1/a + 1/b + 1/c */
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+float citire_int(void);
+void afisare_suma_inv(float);
+float suma_fractii(float, float, float);
+
+int main() {
+	float r, t, p, suma_inv;
+	r = citire_int();
+	t = citire_int();
+	p = citire_int();
+	suma_inv = suma_fractii(r, t, p);
+	afisare_suma_inv(suma_inv);
+	return 0;
+}
+
+float citire_int() {
+	float numar;
+	printf("Introduceti o valoare reala: ");
+	scanf("%f", &numar);
+	return numar;
+}
+
+void afisare_suma_inv(float sum_inv) {
+	printf("Suma inverselor numerelor este: %f", sum_inv);
+}
+
+float suma_fractii(float a, float b, float c) {
+	return 1. / a + 1. / b + 1. / c;
+}
+
+

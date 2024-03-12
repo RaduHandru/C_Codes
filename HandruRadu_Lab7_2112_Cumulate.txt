@@ -1,0 +1,629 @@
+/*pb1_lab07, Handru Radu, Problema 1 consta in calculul ariei dreptunghiului cu laturile a si b, cu ajutorul formulei L*l 
+si in verificarea egaltitatii valorii lui c cu valoarea diagonalei dreptunghiului*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <cmath>
+
+float citire_fl();
+
+int main() {
+	float a, b, c;
+	a = citire_fl();
+	b = citire_fl();
+	c = citire_fl();
+	printf("Aria dreptunghiului este: %f\n", a * b);
+	if ((float)sqrt(a * a + b * b) == c)
+		printf("Ultima valoare introdusa este egala cu valoarea diagonalei dreptunghiului");
+	else printf("Ultima valoarea introdusa nu este egala cu valoarea diagonalei dreptunghiului");
+	return 0;
+}
+
+float citire_fl() {
+	float nr;
+	printf("Introduceti o valoare reala:");
+	scanf("%f", &nr);
+	return nr;
+}
+
+
+
+
+
+
+/*pb2_lab07, Handru Radu, Problema 2 consta in compararea radicalului cu valoarea intreaga a radicalului, in cazul in care acestea sunt egale
+numarul va fi patrat perfect */
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <cmath>
+
+float citire_nr();
+
+int main() {
+	float numar;
+	numar = citire_nr();
+	if ((int)sqrt(numar) == sqrt(numar))
+		printf("Numarul este patrat perfect");
+	else printf("Numarul nu este patrat perfect");
+	return 0;
+}
+
+float citire_nr() {
+	float nr;
+	printf("Introduceti o valoare reala:");
+	scanf("%f", &nr);
+	return nr;
+}
+
+
+
+
+
+
+
+
+/*pb3_lab07, Handru Radu, Problema 3 consta in definirea unui produs (a_n) cu valoarea 1, care va fi inmultit de n-ori cu valoarea lui a cu ajutorul unui while*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int citire_nr();
+
+int main() {
+	int n, a = 2, a_n = 1;
+	n = citire_nr();
+	printf("Valoarea lui %d la puterea a %d-a este: ", a, n);
+	while (n) {
+		a_n *= a;
+		n--;
+	}
+	printf("%d", a_n);
+	return 0;
+}
+
+int citire_nr() {
+	int nr;
+	printf("Introduceti o valoare reala:");
+	scanf("%d", &nr);
+	return nr;
+}
+
+
+
+
+
+
+
+/*pb4_lab07, Handru Radu, Problema 4 consta in inmultirea tuturor numerelor de la 2 la n (am initializat variabila facto cu 1) si stocarea acestora in variabila facto*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int citire_nr();
+void afisare_f(int, int);
+int factorial(int);
+
+int main() {
+	int n, factorial_n;
+	n = citire_nr();
+	factorial_n = factorial(n);
+	afisare_f(n, factorial_n);
+	return 0;
+}
+
+int citire_nr() {
+	int nr;
+	printf("Introduceti o valoare intreaga:");
+	scanf("%d", &nr);
+	return nr;
+}
+
+void afisare_f(int y, int fact) {
+	printf("Factorialul numarului %d este %d", y, fact);
+}
+
+int factorial(int y) {
+	int facto = 1;
+	for (int i = 2; i <= y; i++)
+		facto *= i;
+	return facto;
+}
+
+
+
+
+
+
+
+/*pb5_lab07, Handru Radu, Problema 5 consta in construirea unui algoritm de numar prim, urmand sa aflam cmmnr mai mic decat n
+Ulterior vom afisa toate numerele prime mai mici decat n*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int citire_nr();
+int prim(int);
+void cmmnr_p(int);
+void nr_p(int);
+
+int main() {
+	int nr_natural;
+	nr_natural = citire_nr();
+	cmmnr_p(nr_natural);
+	nr_p(nr_natural);
+	return 0;
+}
+
+int citire_nr() {
+	int nr;
+	printf("Introduceti o valoare intreaga:");
+	scanf("%d", &nr);
+	return nr;
+}
+
+int prim(int e) {
+	if (e <= 1)
+		return 0;
+	if (e == 2)
+		return 1;
+	for (int i = 2; i * i <= e; i++)
+		if (e % i == 0)
+			return 0;
+	return 1;
+}
+
+void cmmnr_p(int q) {
+	int ok = 0;
+	for (int i = q - 1; i >= 1; i--)
+		if (prim(i) == 1)
+		{
+			printf("Cel mai mare numar prim mai mic decat numarul dat %d este: %d \n", q, i);
+			ok = 1;
+			break;
+		}
+	if (ok == 0)
+		printf("Nu exista cel mai mare numar prim mai mic decat numarul %d! \n", q);
+}
+
+void nr_p(int q) {
+	if (prim(q) == 1)
+		printf("Nu exista numere prime mai mici decat numarul %d! \n", q);
+	else {
+		printf("Numerele prime care sunt mai mici decat n sunt:\n");
+		for (int i = 1; i < q; i++)
+			if (prim(i) == 1)
+				printf("%d \n", i);
+	}
+}
+
+
+
+
+
+
+
+/*pb6_lab07, Handru Radu, Problema 6 consta in determinarea cmmdc-ului a doua numere introduse de la tastatura cu ajutorul algoritmului lui Euclid*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int citire_nr();
+void afisare_cmmdc(int);
+int cmmdc(int, int);
+
+int main() {
+	int r, t;
+	r = citire_nr();
+	t = citire_nr();
+	afisare_cmmdc(cmmdc(r, t));
+	return 0;
+}
+
+int citire_nr() {
+	int nr;
+	printf("Introduceti o valoare intreaga:");
+	scanf("%d", &nr);
+	return nr;
+}
+
+void afisare_cmmdc(int cmmdc_1) {
+	printf("Cmmdc-ul celor 2 numere introduse este: %d", cmmdc_1);
+}
+
+int cmmdc(int w, int s) {
+	int re;
+	while (s) {
+		re = w % s;
+		w = s;
+		s = re;
+	}
+	return w;
+}
+
+
+
+
+
+
+
+
+/*pb7_lab07, Handru Radu, Problema 7 consta in verificarea primalitati numarului, in caz contrar vom afisa toti divizorii de la 1 pana la n / 2, ulterior si numarul in sine*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int citire_nr();
+int prim(int);
+void divizori_nr(int);
+
+int main() {
+	int nr_natural;
+	nr_natural = citire_nr();
+	divizori_nr(nr_natural);
+	return 0;
+}
+
+int citire_nr() {
+	int nr;
+	printf("Introduceti o valoare intreaga:");
+	scanf("%d", &nr);
+	return nr;
+}
+
+int prim(int e) {
+	if (e <= 1)
+		return 0;
+	if (e == 2)
+		return 1;
+	for (int i = 2; i <= e / 2; i++)
+		if (e % i == 0)
+			return 0;
+	return 1;
+}
+
+void divizori_nr(int e) {
+	if (prim(e) == 1)
+		printf("Divizorii numarului %d sunt:\n1 si %d (deoarece numarul este prim)", e, e);
+	else {
+		printf("Divizorii numarului %d sunt:\n", e);
+		for (int i = 1; i <= e / 2; i++)
+			if (e % i == 0)
+				printf("%d\n", i);
+		printf("%d\n", e);
+	}
+}
+
+
+
+
+
+
+
+
+/*pb8_lab07, Handru Radu, Problema 8 consta in construirea unui produs, prin parcurgerea unui while de n ori, urmand sa adunam de acele n-ori numarul m la produs*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int citire_nr();
+int produs_nr(int, int);
+
+int main() {
+	int n, m;
+	n = citire_nr();
+	m = citire_nr();
+	printf("Produsul celor doua numere este:%d", produs_nr(n, m));
+	return 0;
+}
+
+int citire_nr() {
+	int nr;
+	printf("Introduceti o valoare intreaga:");
+	scanf("%d", &nr);
+	return nr;
+}
+
+int produs_nr(int r, int t) {
+	int p = 0;
+	while (r) {
+		p += t;
+		r--;
+	}
+	return p;
+}
+
+
+
+
+
+
+
+/*pb9_lab07, Handru Radu, Problema 9 consta in scaderea succesiva a celui de-al doilea numar din primul, pana cand acesta va fi mai mic
+decat cel de-al doilea numar, si contorizarea acestor pasi*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int citire_nr();
+int cat_s(int, int);
+
+int main() {
+	int n, m;
+	n = citire_nr();
+	m = citire_nr();
+	printf("Catul impartiri determinat prin scaderi este %d", cat_s(n, m));
+	return 0;
+}
+
+int citire_nr() {
+	int nr;
+	printf("Introduceti o valoare intreaga:");
+	scanf("%d", &nr);
+	return nr;
+}
+
+int cat_s(int e, int t) {
+	if (t == e)
+		return 1;
+	int nr = 0;
+	while (e >= t)
+	{
+		e -= t;
+		nr++;
+	}
+	return nr;
+}
+
+
+
+
+
+
+
+
+/*pb10_lab07, Handru Radu, Problema 10 consta in parcurgerea cu ajutorul unui while a fiecarei cifre din scrierea lui n, si contorizarea acestora*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int citire_nr();
+int nr_c(int);
+
+int main() {
+	int n;
+	n = citire_nr();
+	printf("Numarul de cifre care il compun pe %d este %d", n, nr_c(n));
+	return 0;
+}
+
+int citire_nr() {
+	int nr;
+	printf("Introduceti o valoare intreaga:");
+	scanf("%d", &nr);
+	return nr;
+}
+
+int nr_c(int e) {
+	int nr = 0;
+	while (e) {
+		nr++;
+		e /= 10;
+	}
+	return nr;
+}
+
+
+
+
+
+
+/*pb11_lab07, Handru Radu, Problema 11 consta in citirea si inmagazinarea numerelor intr-un tablou unidimensional
+ulterior vom afisa numerele cu ajutorul unui for si verificarea faptului ca numerele impartite la 2 dau restul 1*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+void citire_numere(int&, int[50]);
+void afisare_numere_div_3(int, int[50]);
+
+int main() {
+	int n, x[50];
+	citire_numere(n, x);
+	afisare_numere_div_3(n, x);
+	return 0;
+}
+
+void citire_numere(int& n, int x[50]) {
+	printf("Introduceti numarul de numere:");
+	scanf("%d", &n);
+	printf("Introduceti numerele:\n");
+	for (int i = 0; i < n; i++)
+		scanf("%d", &x[i]);
+}
+
+void afisare_numere_div_3(int n, int x[50]) {
+	printf("\nNumerele impare sunt:\n");
+	for (int i = 0; i < n; i++)
+		if (x[i] % 2 == 1)
+			printf("%d\n", x[i]);
+}
+
+
+
+
+
+
+
+
+/*pb12_lab07, Handru Radu, Problema 12 consta in citirea numerelor si adunarea acestora la o suma pana cand aceasta va depasi valoarea lui n*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+void citire_numere_reale_si_afisarea_sumei();
+
+int main() {
+	citire_numere_reale_si_afisarea_sumei();
+	return 0;
+}
+
+void citire_numere_reale_si_afisarea_sumei() {
+	int n, nr = 0;
+	float val, s = 0;
+	printf("Introduceti valoarea lui n:");
+	scanf("%d", &n);
+	printf("Introduceti numere pana cand acestea au suma mai mare decat n:\n");
+	do {
+		scanf("%f", &val);
+		s += val;
+		nr++;
+	} while (s < n);
+	printf("Suma numerelor este: %0.2f \nIar numarul de numere este: %d", s, nr);
+}
+
+
+
+
+
+
+
+
+
+/*pb13_lab07, Handru Radu, Problema 13 consta in realizarea cmmdc-ului, urmand ca numerele initial introduse inmultite, sa fie impartite la cmmdc*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int citire_nr();
+int cmmmc(int, int);
+
+int main() {
+	int n, m;
+	n = citire_nr();
+	m = citire_nr();
+	printf("Cmmmc-ul numerelor este: %d", cmmmc(n, m));
+	return 0;
+}
+
+int citire_nr() {
+	int val;
+	printf("Introduceti o valoare intreaga:");
+	scanf("%d", &val);
+	return val;
+}
+
+int cmmmc(int q, int e) {
+	int cq = q, ce = e, r;
+	while (e) {
+		r = q % e;
+		q = e;
+		e = r;
+	}
+	return (cq * ce) / q;
+}
+
+
+
+
+
+
+
+
+
+
+
+/*pb14_lab07, Handru Radu, Problema 14 consta in citirea si inmagazinarea numerelor intr-un tablou unidimensional
+ulterior acestea vor fi afisate cu ajutorul unui for si verificarea divizibilitati fiecarui numar cu 3*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#define DIM 51
+
+void citire_numere(int&, int[DIM]);
+void afisare_numere_div_3(int, int[DIM]);
+
+int main() {
+	int n, x[DIM];
+	citire_numere(n, x);
+	if (n > 0 && n <= 50)
+		afisare_numere_div_3(n, x);
+	else return 1;
+	return 0;
+}
+
+void citire_numere(int& val, int x[]) {
+	printf("Introduceti numarul de numere (0 < nr <= %d): ", DIM -1);
+	scanf("%d", &val);
+	if (val <= 0 || val >= DIM) {
+		printf("\n\tDimensiune incorecta!!\n");
+	}
+	else {
+		printf("Introduceti numerele:\n");
+		for (int i = 0; i < val; i++)
+			scanf("%d", &x[i]);
+	}
+}
+
+void afisare_numere_div_3(int val, int x[]) {
+	printf("\nNumerele divizibile cu 3 sunt:\n");
+	for (int i = 0; i < val; i++)
+		if (x[i] % 3 == 0)
+			printf("%d\n", x[i]);
+}
+
+
+
+
+
+
+
+/*pb15_lab07, Handru Radu, Problema 15 consta in citirea caracterului si numarului de linii/coloane
+urmand ca acest caracter sa fie afisat pe n linii si n coloane, asemenea unei matrici patratice, cu ajutorul a doua for-uri*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+void citire_si_afisare_caracter();
+
+int main() {
+	citire_si_afisare_caracter();
+	return 0;
+}
+
+void citire_si_afisare_caracter() {
+	int n;
+	char c, raw;
+	printf("Introduceti un caracter:");
+	scanf(" %c", &c);
+	printf("Introduceti numarul de linii/coloane:");
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+			printf("%c", c);
+		printf("\n");
+	}
+}
+
+
+
+
+
+
+
+
+
+/*pb16_lab07, Handru Radu, Problema 16 consta in citirea unor numere intregi pana la apasarea tastei ESC, si afisarea mediei lor*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <conio.h>
+#define ESC 27
+
+int main() {
+	int e, key = 1, suma = 0, nr = 0;
+	printf("Introduceti numere pana la apasarea tastei ESC:\n");
+	do {
+		scanf("%d", &e);
+		if (e % 2 == 1) {
+			suma += e;
+			nr++;
+		}
+		key = _getch();
+	} while (key != ESC);
+	float ma = (float)(suma / nr);
+	printf("Media numerelor impare este: %f", ma);
+	return 0;
+}
+
+
+
+
+
+
+

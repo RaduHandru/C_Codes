@@ -1,0 +1,413 @@
+/*pb1_lab05, Handru Radu, Problema 1 consta in calculul rezistentei echivalente serie si paralel */
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int citire_int(void);
+void afisare_se(int);
+void afisare_pa(float);
+int rez_serie(int, int);
+float rez_paralel(int, int);
+
+int main() {
+	int rezi1, rezi2, rezi_ser;
+	float rezi_par;
+	rezi1 = citire_int();
+	rezi2 = citire_int();
+	rezi_ser = rez_serie(rezi1, rezi2);
+	rezi_par = rez_paralel(rezi1, rezi2);
+	afisare_se(rezi_ser);
+	afisare_pa(rezi_par);
+	return 0;
+}
+
+int citire_int() {
+	int val;
+	printf("Introduceti o valoare intreaga:");
+	scanf("%d", &val);
+	return val;
+}
+
+void afisare_se(int rez_se) {
+	printf("\nValoarea rezistentei echivalente serie este: %d \n", rez_se);
+}
+
+void afisare_pa(float rez_pa) {
+	printf("Valoarea rezistentei echivalente paralel este: %0.3f \n", rez_pa);
+}
+
+int rez_serie(int q, int w) {
+	return q + w;
+}
+
+float rez_paralel(int q, int w) {
+	return (float)(q * w) / (q + w);
+}
+
+
+
+
+
+
+/*pb2_lab05, Handru Radu, Problema 2 consta in calculul capacitatii echivalente serie si paralel */
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int citire_int();
+void afisare_ser(float);
+void afisare_par(int);
+float capa_serie(int, int);
+int capa_paralel(int, int);
+
+int main() {
+	int cond1, cond2, cond_par;
+	float cond_ser;
+	cond1 = citire_int();
+	cond2 = citire_int();
+	cond_ser = capa_serie(cond1, cond2);
+	cond_par = capa_paralel(cond1, cond2);
+	afisare_ser(cond_ser);
+	afisare_par(cond_par);
+	return 0;
+}
+
+int citire_int() {
+	int val;
+	printf("Introduceti o valoare intreaga:");
+	scanf("%d", &val);
+	return val;
+}
+
+void afisare_ser(float con_s) {
+	printf("\nValoarea rezistentei echivalente serie este: %-0.4f \n", con_s);
+}
+
+void afisare_par(int con_p) {
+	printf("Valoarea rezistentei echivalente paralel este: %-d \n", con_p);
+}
+
+float capa_serie(int cap_1, int cap_2) {
+	return (float)(cap_1 * cap_2) / (cap_1 + cap_2);
+}
+
+int capa_paralel(int cap_1, int cap_2) {
+	return cap_1 + cap_2;
+}
+
+
+
+
+
+
+
+/*pb3_lab05, Handru Radu, Problema 3 consta in calculul valorii ipotenuzei cat si a perimetrului triunghiului unui triunghi dreptunghic */
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <cmath>
+
+int citire_int();
+void afisare_ipo_t(float);
+void afisare_per_t(float);
+float ipo_t(int, int);
+float perim_t(int, int, float);
+
+
+int main() {
+	int cat1, cat2;
+	float ipot, perim;
+	cat1 = citire_int();
+	cat2 = citire_int();
+	ipot = ipo_t(cat1, cat2);
+	perim = perim_t(cat1, cat2, ipot);
+	afisare_ipo_t(ipot);
+	afisare_per_t(perim);
+	return 0;
+}
+
+int citire_int() {
+	int val;
+	printf("Introduceti o valoare intreaga reprezentand cateta unui triunghi:");
+	scanf("%d", &val);
+	return val;
+}
+
+void afisare_ipo_t(float ipo) {
+	printf("\nValoarea ipotenuzei este: %f \n", ipo);
+}
+
+void afisare_per_t(float per) {
+	printf("Valoarea perimetrului triunghiului este: %f \n", per);
+}
+
+float ipo_t(int cate1, int cate2) {
+	return (float)sqrt(cate1 * cate1 + cate2 * cate2);
+}
+
+float perim_t(int cate1, int cate2, float ip) {
+	return (float)(cate1 + cate2 + ip);
+}
+
+
+
+
+
+
+
+
+
+/*pb4_lab05, Handru Radu, Problema 4 consta in rezolvarea ecuatiei de gradul 1 avand coeficientii ecuatiei, datele introduse de utilizator */
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+float citire();
+void afisare_nec(float);
+float nec_ecuatiei(float, float);
+
+
+int main() {
+	float a,b, x;
+	a = citire();
+	b = citire();
+	x = nec_ecuatiei(a, b);
+	afisare_nec(x);
+	return 0;
+}
+
+float citire() {
+	float val;
+	printf("Introduceti o valoare intreaga:");
+	scanf("%d", &val);
+	return val;
+}
+
+void afisare_nec(float nec_ec_grad1) {
+	printf("\nValoarea necunoscutei este: %f \n", nec_ec_grad1);
+}
+
+float nec_ecuatiei(float n, float m) {
+	return -(m / n);
+}
+
+
+
+
+
+
+
+
+/*pb5_lab05, Handru Radu, Problema 5 consta in combinarea problemelor 1 si 2 intr-un singur program */
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int citire();
+void afisare_rez_s(int);
+void afisare_rez_p(float);
+void afisare_cap_s(float);
+void afisare_cap_p(int);
+int rezi_serie(int, int);
+float rezi_paralel(int, int);
+float cap_serie(int, int);
+int cap_paralel(int, int);
+
+int main() {
+	int rez1, rez2, rez_ser;
+	float rez_par;
+	rez1 = citire();
+	rez2 = citire();
+	rez_ser = rezi_serie(rez1, rez2);
+	rez_par = rezi_paralel(rez1, rez2);
+	afisare_rez_s(rez_ser);
+	afisare_rez_p(rez_par);
+	int con1, con2, con_par;
+	float con_ser;
+	con1 = citire();
+	con2 = citire();
+	con_ser = cap_serie(con1, con2);
+	con_par = cap_paralel(con1, con2);
+	afisare_cap_s(con_ser);
+	afisare_cap_p(con_par);
+	return 0;
+}
+
+int citire() {
+	int val;
+	printf("Introduceti o valoare intreaga:");
+	scanf("%d", &val);
+	return val;
+}
+
+void afisare_rez_s(int rez_s) {
+	printf("Valoarea rezistentei echivalente serie este: %d \n", rez_s);
+}
+
+void afisare_rez_p(float rez_p) {
+	printf("Valoarea rezistentei echivalente paralel este: %f \n\n", rez_p);
+}
+
+void afisare_cap_s(float con_s) {
+	printf("Valoarea rezistentei echivalente serie este: %f \n", con_s);
+}
+
+void afisare_cap_p(int con_p) {
+	printf("Valoarea rezistentei echivalente paralel este: %d \n", con_p);
+}
+
+int rezi_serie(int q, int w) {
+	return q + w;
+}
+
+float rezi_paralel(int q, int w) {
+	return (float)(q * w) / (q + w);
+}
+
+float cap_serie(int cap1, int cap2) {
+	return (float)(cap1 * cap2) / (cap1 + cap2);
+}
+
+int cap_paralel(int capa1, int capa2) {
+	return capa1 + capa2;
+}
+
+
+
+
+
+
+
+/*pb6_lab05, Handru Radu, Problema 6 consta in afisare pe linii separate a numelui fiecarui student intr-un camp de afisare cu dimensiunea 20, aliniat la dreapta 
+respectiv la stanga si media notelor lor, cu o precizie de 2 zecimale la partea fractionara */
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int citire_val();
+
+int main() {
+	char nume1[21], nume2[21];
+	int nota1, nota2;
+	float media;
+	printf("Introduceti un nume:");
+	scanf("%s", &nume1);
+	nota1 = citire_val();
+	printf("\nIntroduceti un nume:");
+	scanf("%s", &nume2);
+	nota2 = citire_val();
+	media = (float)(nota1 + nota2) / 2;
+	printf("\nNumele primei persoane este: %20s\n", nume1);
+	printf("Numele a celei de-a doua persoana: %-20s\n", nume2);
+	printf("Media notelor acestora: %0.2f \n", media);
+	return 0;
+}
+
+int citire_val() {
+	int numar;
+	printf("Introduceti nota persoanei de mai sus:");
+	scanf("%d", &numar);
+	return numar;
+}
+
+
+
+
+
+
+
+/*pb7_lab05, Handru Radu, Problema 7 consta in afisarea lungimii cercului*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int citire_raza();
+void afisare_lungime_si_aria_cercului(int, float);
+
+int main() {
+	int r;
+	float pi = 3.141;
+	r = citire_raza();
+	afisare_lungime_si_aria_cercului(r, pi);
+	return 0;
+}
+
+int citire_raza() {
+	int nr;
+	printf("Introduceti valoare razei:");
+	scanf("%d", &nr);
+	return nr;
+}
+
+void afisare_lungime_si_aria_cercului(int raza, float pii) {
+	printf("\nLungimea cercului este: %10.3f \n", 2 * raza * pii);
+	printf("Aria cercului este: %10.3f \n", raza * raza * pii);
+}
+
+
+
+
+
+
+/*pb8_lab05, Handru Radu, Problema 8 consta in afisarea duratei calatoriei de la Cluj la Brasov stiiundu-se timpul de placare, cat si cel de sosire*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int main() {
+	int h1, m1, h2, m2;
+	printf("Introduceti ora plecarii:");
+	scanf("%d", &h1);
+	printf("Introduceti minutele plecarii:");
+	scanf("%d", &m1);
+	printf("Introduceti ora sosirii:");
+	scanf("%d", &h2);
+	printf("Introduceti minutele sosirii:");
+	scanf("%d", &m2);
+	if (h1 > h2)
+		h2 = h2 + 24;
+	if (m2 > m1)
+		printf("Durata calatoriei este: %d %d", h2 - h1, m2 - m1);
+	else
+	{
+		h2--;
+		m2 = m2 + 60;
+		printf("Durata calatoriei este: %d %d", h2 - h1, m2 - m1);
+	}
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+/*pb9_lab05, Handru Radu, Problema 9 consta in afisarea timpului in minute, in care cele doua masini se vor intalni*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <cmath>
+
+int citire();
+void afisare_timp_min(int);
+int timp_min(int, int);
+
+int main() {
+    int vit1, vit2, timp_in_minute;
+    vit1 = citire();
+    vit2 = citire();
+    timp_in_minute = timp_min(vit1, vit2);
+    afisare_timp_min(timp_in_minute);
+    return 0;
+}
+
+int citire() {
+    int numarul;
+    printf("Introduceti o valoare reprezentand viteza:");
+    scanf("%d", &numarul);
+    return numarul;
+}
+
+void afisare_timp_min(int timp_minute) {
+    printf("\nTimpul in care cele doua masini se vor intalni este: %d de minute \n", timp_minute);
+}
+
+int timp_min(int q, int w) {
+    float timp_h = (float)100 / (q + w);
+    timp_h = timp_h * 60;
+    return ceil(timp_h);
+}
